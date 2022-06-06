@@ -2,6 +2,7 @@ class User::Operation::Create < Trailblazer::Operation
     step :extract_params
     step :validate_for_create?
     step :create_model
+    step :save
     step :initialize_game
     step :notify
 
@@ -17,6 +18,9 @@ class User::Operation::Create < Trailblazer::Operation
 
     def create_model(ctx, my_params:, **)
         ctx[:user] = User.new(**my_params)
+    end
+
+    def save(ctx, **)
         ctx[:user].save
     end
 
