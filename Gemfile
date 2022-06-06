@@ -53,6 +53,8 @@ gem "bootsnap", require: false
 
 # lorem ipsum
 gem "simple_form"
+gem "reform"
+gem "reform-rails"
 gem "dry-validation"
 gem "haml"
 
