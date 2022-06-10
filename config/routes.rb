@@ -1,14 +1,9 @@
 Rails.application.routes.draw do
-  namespace :admin do
-    resource :game, only: [:new, :create, :edit] do
-      resources :users, only: [:new, :create]
-    end
-  end
 
-  resource :game, only: [:edit] do
-    resources :turns, only: [:create]
-  end
+  resource :game, only: [:new, :create] do
+  resources :users, only: [:new, :create]
+  resources :turns, only: [:create]
 
   # Defines the root path route ("/")
-  root to: "game#edit"
+  root to: "turns#create"
 end
