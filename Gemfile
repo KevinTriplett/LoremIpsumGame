@@ -56,6 +56,7 @@ gem "simple_form"
 gem "reform"
 gem "reform-rails"
 gem "dry-validation"
+gem "trailblazer-macro-contract"
 gem "haml"
 
 gem "trailblazer", ">= 2.1.0"
