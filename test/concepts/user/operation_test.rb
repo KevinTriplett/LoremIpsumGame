@@ -27,7 +27,7 @@ class UserOperationTest < MiniTest::Spec
         }})
 
         model = result[:user]
-        game = Game.find(model.game_id)
+        game = Game.find(game.id)
         assert_equal model.id, game.current_player_id
     end
 
@@ -43,7 +43,14 @@ class UserOperationTest < MiniTest::Spec
         assert_equal 1234, game.current_player_id
     end
 
-    it "Fails with invalid name attribute" do
+    it "Fails with invalid parameters" do
+        result = User::Operation::Create.wtf?(params: {})
+    
+        assert_equal false, result.success?
+        assert_nil(result["result.contract.default"])
+      end
+        
+    it "Fails with no name attribute" do
         game = Game.create(name: "game")
 
         result = User::Operation::Create.wtf?(params: {user: {
@@ -53,9 +60,23 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
+        assert_equal({:name=>["must be filled"]}, result["result.contract.default"].errors.to_h)
     end
 
     it "Fails with invalid email attribute" do
+        game = Game.create(name: "game")
+
+        result = User::Operation::Create.wtf?(params: {user: {
+            name: "john smith", 
+            email: "hello@splat", 
+            game_id: game.id}
+        })
+
+        assert_equal false, result.success?
+        assert_equal({:email=>["has invalid format"]}, result["result.contract.default"].errors.to_h)
+    end
+
+    it "Fails with no email attribute" do
         game = Game.create(name: "game")
 
         result = User::Operation::Create.wtf?(params: {user: {
@@ -65,9 +86,10 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
+        assert_equal({:email=>["must be filled"]}, result["result.contract.default"].errors.to_h)
     end
 
-    it "Fails with invalid game_id attribute" do
+    it "Fails with no game_id attribute" do
         game = Game.create(name: "game")
 
         result = User::Operation::Create.wtf?(params: {user: {
@@ -77,5 +99,19 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
+        assert_equal({:game_id=>["must be filled"]}, result["result.contract.default"].errors.to_h)
+    end
+
+    it "Fails with non-integer game_id attribute" do
+        game = Game.create(name: "game")
+
+        result = User::Operation::Create.wtf?(params: {user: {
+            name: "john smith", 
+            email: "abc@xyz.com", 
+            game_id: "hello"}
+        })
+
+        assert_equal false, result.success?
+        assert_equal({:game_id=>["must be an integer"]}, result["result.contract.default"].errors.to_h)
     end
 end

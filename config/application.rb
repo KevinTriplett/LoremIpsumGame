@@ -18,7 +18,8 @@ module LoremIpsum
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    config.entry_length_max = 10
+    config.entry_length_min = 10
+    config.entry_length_max = 1024
     config.turn_hours = 48
     config.game_days = 30
   end
