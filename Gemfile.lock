@@ -153,7 +153,7 @@ GEM
     matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    minitest (5.15.0)
+    minitest (5.16.0)
     minitest-line (0.6.5)
       minitest (~> 5.0)
     msgpack (1.5.2)
