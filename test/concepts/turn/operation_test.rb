@@ -133,10 +133,10 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Fails when entry is too short" do
-        entry = ""
-        (Rails.configuration.entry_length_min - 1).times { entry += "x" }
+        invalid_entry = ""
+        (Rails.configuration.entry_length_min - 1).times { invalid_entry += "x" }
         result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: entry, 
+            entry: invalid_entry, 
             user_id: 1234, 
             game_id: 5678
         }})
@@ -148,10 +148,10 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Fails when entry is too long" do
-        entry = ""
-        (Rails.configuration.entry_length_max + 1).times { entry += "x" }
+        invalid_entry = ""
+        (Rails.configuration.entry_length_max + 1).times { invalid_entry += "x" }
         result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: entry, 
+            entry: invalid_entry, 
             user_id: 1234, 
             game_id: 5678
         }})
