@@ -1,0 +1,7 @@
+%h2 New Game
+
+= simple_form_for @form, as: :game, url: games_path do |f|
+  .row
+    = f.input :name, placeholder: "Game Name", label: false
+  .row
+    = f.submit "Create Game"

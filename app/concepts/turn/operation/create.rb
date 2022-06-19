@@ -11,6 +11,10 @@ class Turn::Operation::Create < Trailblazer::Operation
     step :update_game
     step :notify
 
+    def MyTransaction
+    
+    end
+
     def update_game(ctx, **)
       turn = ctx[:model]
       game = Game.find(turn.game_id)

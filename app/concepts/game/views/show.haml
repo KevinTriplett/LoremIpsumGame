@@ -1,0 +1,22 @@
+%h2= name
+
+= turns.each do |t|
+  %p.entry= t.entry
+
+.timestamps
+  .timestamp
+    Game Started:
+    = game_start
+  .timestamp
+    Game Ends:
+    = game_end
+  .timestamp
+    Current Turn Started:
+    = turn_start
+  .timestamp
+    Current Turn Ends:
+    = turn_end
+
+%ul
+  = users.each do |u|
+    %li= @u.name

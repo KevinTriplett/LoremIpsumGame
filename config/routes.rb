@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
 
-  resource :game, only: [:new, :create]
+  resource :games, only: [:show, :new, :create]
   resources :users, only: [:new, :create]
-  resources :turns, only: [:create]
+  resources :turns, only: [:new, :create]
 
   # Defines the root path route ("/")
-  root to: "game#show"
+  root to: "games#show"
 end

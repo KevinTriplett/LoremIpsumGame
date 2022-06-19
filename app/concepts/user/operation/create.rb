@@ -6,6 +6,7 @@ module User::Operation
       step Contract::Build(constant: User::Contract::Create)
     end
     
+    # step :initialize_game_id
     step Subprocess(Present)
     step Contract::Validate(key: :user)
     step Contract::Persist()

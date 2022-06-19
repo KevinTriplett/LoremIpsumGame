@@ -1,0 +1,23 @@
+= concept("game/cell", show)
+%h2= @game.name
+
+= @turns.each do |t|
+  %p.entry= t.entry
+
+.timestamps
+  .timestamp
+    Game Started:
+    = @game.game_start
+  .timestamp
+    Game Ends:
+    = @game.game_end
+  .timestamp
+    Current Turn Started:
+    = @game.turn_start
+  .timestamp
+    Current Turn Ends:
+    = @game.turn_end
+
+%ul
+  = @users.each do |u|
+    %li= @u.name
