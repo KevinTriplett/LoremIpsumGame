@@ -57,6 +57,10 @@ gem "reform"
 # gem "reform-rails"
 gem "dry-validation"
 gem "trailblazer-macro-contract"
+
+gem "trailblazer-cells"
+gem "cells-hamlit"
+gem "cells-rails"
 gem "haml"
 
 gem "trailblazer", ">= 2.1.0"
