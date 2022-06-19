@@ -1,4 +1,4 @@
-class Game::Cell < Cell::ViewModel
+class Game::Cell::Show < Cell::ViewModel
   property :name
   property :turns
   property :users
