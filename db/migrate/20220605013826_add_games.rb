@@ -1,5 +1,5 @@
 class AddGames < ActiveRecord::Migration[7.0]
-  def change
+  def up
     create_table :games do |t|
       t.string :name
       t.references :current_player
@@ -9,5 +9,9 @@ class AddGames < ActiveRecord::Migration[7.0]
       t.datetime :game_end
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :games
   end
 end
