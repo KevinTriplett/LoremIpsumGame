@@ -8,6 +8,6 @@ class Game::Cell::Show < Cell::ViewModel
   property :turn_end
 
   def show
-    render # renders app/concepts/game/views/show.haml
+    render # renders app/cells/game/cell/show.haml
   end
 end

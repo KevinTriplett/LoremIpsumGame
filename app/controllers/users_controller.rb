@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def new
-    run User::Operation::Create::Present do |ctx|
+    run User::Operation::Create::Present, game_id: current_game.id do |ctx|
       @form = ctx["contract.default"]
       render
     end

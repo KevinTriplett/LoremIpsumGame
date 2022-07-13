@@ -1,0 +1,19 @@
+!!! XML
+!!!
+%html
+  %head
+    %title Lorem Ipsum Game
+    %meta{ name: "viewport", content: "width=device-width,initial-scale=1" }
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+
+  %body
+    .container
+      .row
+        .col-sm
+          %h1 Lorem Ipsum Game
+          = yield
+        .col-sm
