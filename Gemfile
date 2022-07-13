@@ -55,7 +55,7 @@ gem "bootsnap", require: false
 gem "simple_form"
 gem "reform"
 # gem "reform-rails"
-gem "dry-validation"
+gem "dry-validation", "1.7.0"
 gem "trailblazer-macro-contract"
 
 gem "trailblazer-cells"
