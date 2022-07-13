@@ -6,6 +6,7 @@
 - [ ] implement cell tests
 - [ ] style forms
 - [ ] style views
+- [ ] enforce unique users for game
 
 ## MVP 3
 - [ ] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
