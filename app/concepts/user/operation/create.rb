@@ -7,8 +7,8 @@ module User::Operation
       step Contract::Build(constant: User::Contract::Create)
 
       def initialize_game_id(ctx, **)
-        puts "game_id = " + ctx[:game_id].to_s
         ctx[:model].game_id = ctx[:game_id]
+        return ctx[:model].game_id || ctx[:params]["user"]["game_id"]
       end
     end
     
