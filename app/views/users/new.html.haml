@@ -1,6 +1,6 @@
 %h2 New User
 
-= simple_form_for @form, model :user, as: :user, url: users_path do |f|
+= simple_form_for @form, as: :user, url: users_path do |f|
   .row
     .col= f.error_notification
   .row
@@ -10,5 +10,5 @@
   .row
     .col= f.input :game_id, as: :hidden
   .row
-    .col= f.button :submit, class: "btn-primary"
+    .col= f.button :submit, "Create User", class: "btn-primary"
   
