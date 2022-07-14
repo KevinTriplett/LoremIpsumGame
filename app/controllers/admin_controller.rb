@@ -1,6 +1,5 @@
 class AdminController < ApplicationController
     def index
-      @games = Game.all
-      render
+      redirect_to admin_games_path
     end
 end

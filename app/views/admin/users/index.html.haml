@@ -1,0 +1,8 @@
+%h2= "Users assigned to game #{@game.name}"
+
+%ul
+  Users:
+  - @model.each do |u|
+    %li
+      %a{ href: "mailto:" + u.email }= u.name
+      %a{ href: edit_admin_game_user_url(id: u.id) } edit

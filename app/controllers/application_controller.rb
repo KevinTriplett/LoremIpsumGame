@@ -1,16 +1,16 @@
 class ApplicationController < ActionController::Base
   private
 
-  # Finds the User with the ID stored in the session with the key
-  # :current_user_id This is a common way to handle user login in
-  # a Rails application; logging in sets the session value and
-  # logging out removes it.
   def current_user
     @_current_user ||= session[:current_user_id] &&
       User.find_by(id: session[:current_user_id])
   end
 
   def current_game
-    Game.last
+    current_user ? current_user.game : Game.last
+  end
+
+  def not_found
+    render :file => "#{Rails.root}/public/404.html", :status => 404, :layout => false
   end
 end

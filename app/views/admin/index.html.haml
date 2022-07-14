@@ -1,8 +1,0 @@
-- @games.each do |game|
-  %p
-    = game.name
-    %a{ href: game_url(game.id) } Show Game
-    %a{ href: edit_game_url(game.id) } Edit Game
-    %a{ href: new_user_url(game: game.id) } Add User
-
-%a.btn.btn-secondary{ href: new_game_url } New Game

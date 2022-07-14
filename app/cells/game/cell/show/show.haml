@@ -2,21 +2,27 @@
 
 - turns.each do |t|
   %p.entry= t.entry
+- if turns.empty?
+  %p No entries yet
 
 .timestamps
-  .timestamp
+  %p.timestamp
     Game Started:
-    = game_start
-  .timestamp
+    = game_start || "Game has not started"
+    %br
     Game Ends:
-    = game_end
-  .timestamp
+    = game_end || "Game has not started"
+  %p.timestamp
     Current Turn Started:
-    = turn_start
-  .timestamp
+    = turn_start || "Game has not started"
+    %br
     Current Turn Ends:
-    = turn_end
+    = turn_end || "Game has not started"
 
 %ul
+  Users:
+  - if users.empty?
+    no users yet
   - users.each do |u|
-    %li= @u.name
+    %li
+      %a{ href: "mailto:" + u.email }= u.name

@@ -1,17 +1,6 @@
 class UsersController < ApplicationController
-  def new
-    run User::Operation::Create::Present, game_id: current_game.id do |ctx|
-      @form = ctx["contract.default"]
-      render
-    end
-  end
-
-  def create
-    _ctx = run User::Operation::Create do |ctx|
-      return redirect_to new_user_path
-    end
-  
-    @form = _ctx["contract.default"]
-    render :new
+  def show
+    session[:current_user_id] = params[:id] if params[:id]
+    redirect_to game_url(current_user.game_id)
   end
 end
