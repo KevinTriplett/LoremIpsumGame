@@ -1,0 +1,7 @@
+%h2 Editing game
+
+= simple_form_for @form, as: :game, url: admin_game_path(@model.id), method: :patch do |f|
+  .row
+    .col= f.input :name, placeholder: "Name", label: false
+  .row
+    .col= f.button :submit, "Update Game", class: "btn-primary"

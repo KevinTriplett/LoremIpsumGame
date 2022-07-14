@@ -21,16 +21,20 @@ module Admin
     end
   
     def edit
-      @form = GameForm.find(params[:game_id])
+      run Game::Operation::Update::Present do |ctx|
+        @form   = ctx["contract.default"]
+        render
+      end
     end
-
+  
     def update
       _ctx = run Game::Operation::Update do |ctx|
-        return redirect_to admin_game_path
+        flash[:notice] = "#{ctx[:model].name} has been saved"
+        return redirect_to admin_games_path
       end
     
-      @form = _ctx["result.contract.default"]
-      render :edit      
+      @form   = _ctx["contract.default"] # FIXME: redundant to #create!
+      render :edit
     end
   end
 end
