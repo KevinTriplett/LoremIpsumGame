@@ -16,3 +16,15 @@ end
 (ActiveRecord::Base.connection.tables - %w{schema_migrations}).each do |table_name|
   ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table_name};"
 end
+
+NAMES = %w(john jane eric lee harvey sam kevin hank)
+SURNAMES = %w(smith jones doe windsor johnson klaxine)
+PROVIDERS = %w(gmail domain example sample yahoo gargole)
+TLDS = %w(com it org club pl ru uk aus)
+def random_email
+  @_last_random_email = "#{ NAMES.sample }.#{ SURNAMES.sample }@#{ PROVIDERS.sample }.#{ TLDS.sample }"
+end
+
+def last_random_email
+  @_last_random_email
+end
