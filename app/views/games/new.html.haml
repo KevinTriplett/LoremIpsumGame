@@ -2,6 +2,6 @@
 
 = simple_form_for @form, as: :game, url: games_path do |f|
   .row
-    = f.input :name, placeholder: "Game Name", label: false
+    .col= f.input :name, placeholder: "Game Name", label: false
   .row
-    = f.submit "Create Game"
+    .col= f.button :submit, "Create Game", class: "btn-primary"

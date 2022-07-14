@@ -4,10 +4,12 @@ class GamesController < ApplicationController
     # TODO: handle current_user = nil
     if current_user
       @game = Game.find(current_user.game_id)
-      redirect_to new_user_path if @game && !@game.users.present?
-      redirect_to new_turns_path if @game && @game.current_player_id = current_user.id
+      return redirect_to new_game_path unless @game
+      return redirect_to new_user_path if @game && !@game.users.present?
+      return redirect_to new_turn_path if @game && @game.current_player_id = current_user.id
     else
       @game = Game.last
+      return redirect_to new_game_path unless @game
     end
   end
   

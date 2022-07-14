@@ -1,6 +1,6 @@
 %h2= name
 
-= turns.each do |t|
+- turns.each do |t|
   %p.entry= t.entry
 
 .timestamps
@@ -18,5 +18,5 @@
     = turn_end
 
 %ul
-  = users.each do |u|
+  - users.each do |u|
     %li= @u.name
