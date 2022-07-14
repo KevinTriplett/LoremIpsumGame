@@ -1,14 +1,12 @@
-%h2 New User
+%h2= "New User for #{@game.name}"
 
-= simple_form_for @form, as: :user, url: users_path do |f|
+= simple_form_for @form, as: :user, url: admin_game_users_url do |f|
   .row
     .col= f.error_notification
   .row
     .col= f.input :name, placeholder: "Name", label: false
   .row
     .col= f.input :email, placeholder: "Email", label: false
-  .row
-    .col= f.input :game_id, as: :hidden
   .row
     .col= f.button :submit, "Create User", class: "btn-primary"
   

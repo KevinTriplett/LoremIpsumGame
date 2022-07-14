@@ -28,3 +28,26 @@ end
 def last_random_email
   @_last_random_email
 end
+
+def random_user_name
+  "#{ NAMES.sample } #{ SURNAMES.sample }"
+end
+
+
+GAME_NAMES_FIRST = %w(dark lorem glad sad melancholy joyful lonesome tender lucid)
+GAME_NAMES_SECOND = %w(night ipsum song melody heart dove mercies dreams)
+def random_game_name
+  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample }"
+end
+
+def last_random_game_name
+  @_last_random_game_name
+end
+
+def create_game
+  Game.create(name: random_game_name)
+end
+
+def create_user(game_id)
+  User.create(name: random_user_name, email: random_email, game_id: game_id)
+end

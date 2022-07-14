@@ -12,8 +12,8 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Creates {Turn} model when given valid attributes" do
-        game = Game.create(name: "game")
-        user = User.create(name: "John John", email: "abc@xyz.com", game_id: game.id)
+        game = create_game
+        user = create_user(game.id)
 
         entry = valid_entry
         result = Turn::Operation::Create.wtf?(params: {turn: {
@@ -31,10 +31,10 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Updates current_player_id attribute on last game model (no rollover)" do
-        game = Game.create(name: "game")
-        user1 = User.create(name: "John John", email: "abc@xyz.com", game_id: game.id)
-        user2 = User.create(name: "Jill Jill", email: "cba@xyz.com", game_id: game.id)
-        user3 = User.create(name: "Jack Jack", email: "dbd@xyz.com", game_id: game.id)
+        game = create_game
+        user1 = create_user(game.id)
+        user2 = create_user(game.id)
+        user3 = create_user(game.id)
         
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
@@ -43,15 +43,15 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         game = Game.find(game.id)
-        assert_equal "game", game.name
+        assert_equal last_random_game_name, game.name
         assert_equal user3.id, game.current_player_id
     end
 
     it "Updates current_player_id attribute on last game model (rollover)" do
-        game = Game.create(name: "game")
-        user1 = User.create(name: "John John", email: "abc@xyz.com", game_id: game.id)
-        user2 = User.create(name: "Jill Jill", email: "cba@xyz.com", game_id: game.id)
-        user3 = User.create(name: "Jack Jack", email: "dbd@xyz.com", game_id: game.id)
+        game = create_game
+        user1 = create_user(game.id)
+        user2 = create_user(game.id)
+        user3 = create_user(game.id)
         
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
@@ -64,9 +64,9 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Initializes game start/end datetime attributes" do
-        game = Game.create(name: "game")
-        user1 = User.create(name: "John John", email: "abc@xyz.com", game_id: game.id)
-        user2 = User.create(name: "Jill Jill", email: "cba@xyz.com", game_id: game.id)
+        game = create_game
+        user1 = create_user(game.id)
+        user2 = create_user(game.id)
 
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
@@ -82,8 +82,8 @@ class TurnOperationTest < MiniTest::Spec
 
     it "Does not change game start/end datetime attributes" do
         time_start, time_end = Time.now, Time.now + Rails.configuration.game_days.days
-        game = Game.create(name: "game", game_start: time_start, game_end: time_end)
-        user = User.create(name: "John John", email: "abc@xyz.com", game_id: game.id)
+        game = Game.create(name: random_game_name, game_start: time_start, game_end: time_end)
+        user = create_user(game.id)
 
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
@@ -97,8 +97,8 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Updates turn start/end datetime attributes" do
-        game = Game.create(name: "game")
-        user = User.create(name: "John John", email: "abc@xyz.com", game_id: game.id)
+        game = create_game
+        user = create_user(game.id)
         game = Game.find(game.id)
         
         result = Turn::Operation::Create.wtf?(params: {turn: {
@@ -128,8 +128,7 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:entry=>["must be filled"]}, result["contract.default"].errors.to_h)
+        assert_equal(["entry must be filled"], result["contract.default"].errors.full_messages_for(:entry))
     end
 
     it "Fails when entry is too short" do
@@ -142,9 +141,8 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        msg = "too short, must be more than " + Rails.configuration.entry_length_min.to_s + " letters"
-        # TODO: uncomment
-        # assert_equal({:entry=>[msg]}, result["contract.default"].errors.to_h)
+        msg = "entry too short, must be more than " + Rails.configuration.entry_length_min.to_s + " letters"
+        assert_equal([msg], result["contract.default"].errors.full_messages_for(:entry))
     end
 
     it "Fails when entry is too long" do
@@ -157,9 +155,8 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        msg = "too long, must be less than " + Rails.configuration.entry_length_max.to_s + " letters"
-        # TODO: uncomment
-        # assert_equal({:entry=>[msg]}, result["contract.default"].errors.to_h)
+        msg = "entry too long, must be less than " + Rails.configuration.entry_length_max.to_s + " letters"
+        assert_equal([msg], result["contract.default"].errors.full_messages_for(:entry))
     end
 
     it "Fails with no user_id attribute" do
@@ -170,8 +167,7 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:user_id=>["must be filled"]}, result["contract.default"].errors.to_h)
+        assert_equal(["user_id must be filled"], result["contract.default"].errors.full_messages_for(:user_id))
     end
 
     it "Fails with non-integer user_id attribute" do
@@ -182,8 +178,7 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:user_id=>["must be an integer"]}, result["contract.default"].errors.to_h)
+        assert_equal(["user_id must be an integer"], result["contract.default"].errors.full_messages_for(:user_id))
     end
 
     it "Fails with no game_id attribute" do
@@ -194,8 +189,7 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:game_id=>["must be filled"]}, result["contract.default"].errors.to_h)
+        assert_equal(["game_id must be filled"], result["contract.default"].errors.full_messages_for(:game_id))
     end
 
     it "Fails with non-integer game_id attribute" do
@@ -206,7 +200,6 @@ class TurnOperationTest < MiniTest::Spec
         }})
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:game_id=>["must be an integer"]}, result["contract.default"].errors.to_h)
+        assert_equal(["game_id must be an integer"], result["contract.default"].errors.full_messages_for(:game_id))
     end
 end

@@ -2,6 +2,8 @@
 
 = simple_form_for @form, as: :user, url: admin_game_user_path(@model.id), method: :patch do |f|
   .row
+    .col= f.error_notification
+  .row
     .col= f.input :name, placeholder: "Name", label: false
   .row
     .col= f.input :email, placeholder: "Email", label: false

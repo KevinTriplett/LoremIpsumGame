@@ -3,6 +3,6 @@
     = game.name
     %a{ href: game_url(game.id) } Show Game
     %a{ href: edit_admin_game_url(game.id) } Edit Game
-    %a{ href: new_admin_game_user_url(game.id) } Add User
+    %a{ href: admin_game_users_url(game.id) } Edit Users
 
 %a.btn.btn-secondary{ href: new_admin_game_url } New Game

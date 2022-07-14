@@ -1,5 +1,5 @@
 module User::Contract
-  class Create < Reform::Form
+  class Update < Reform::Form
     include Dry
 
     property :name
@@ -13,13 +13,13 @@ module User::Contract
         required(:game_id).filled.value(:integer)
       end
   
-      rule(:email, :game_id) do
-        email, game_id = values[:email], values[:game_id]
-        unless /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match?(email)
+      rule(:email, :name) do
+        unless /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match?(values[:email])
           key.failure('has invalid format')
         end
 
-        key.failure('must be unique') if User.find_by_email_and_game_id(email, game_id)
+        user = User.find_by_email(values[:email])
+        key.failure('must be unique') if user && user.name != values[:name]
       end
     end
   end

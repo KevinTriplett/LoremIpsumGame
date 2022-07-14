@@ -8,14 +8,17 @@ class Admin::UsersController < ApplicationController
   end
 
   def new
-    run User::Operation::Create::Present, game_id: current_game.id do |ctx|
+    puts "params[:game_id] = " + params[:game_id]
+    run User::Operation::Create::Present, game_id: params[:game_id] do |ctx|
       @form = ctx["contract.default"]
+      @game = ctx[:game]
+      puts "@game = " + @game.inspect
       render
     end
   end
 
   def create
-    _ctx = run User::Operation::Create do |ctx|
+    _ctx = run User::Operation::Create, game_id: params[:game_id] do |ctx|
       return redirect_to new_user_path
     end
   
@@ -25,7 +28,7 @@ class Admin::UsersController < ApplicationController
 
   def edit
     run User::Operation::Update::Present do |ctx|
-      @form   = ctx["contract.default"]
+      @form = ctx["contract.default"]
       render
     end
   
