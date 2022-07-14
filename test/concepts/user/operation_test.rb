@@ -61,8 +61,7 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:name=>["must be filled"]}, result["contract.default"].errors.to_h)
+        assert_equal(["name must be filled"], result["contract.default"].errors.full_messages_for(:name))
     end
 
     it "Fails with invalid email attribute" do
@@ -75,8 +74,7 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:email=>["has invalid format"]}, result["contract.default"].errors.to_h)
+        assert_equal(["email has invalid format"], result["contract.default"].errors.full_messages_for(:email))
     end
 
     it "Fails with no email attribute" do
@@ -89,8 +87,7 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:email=>["must be filled"]}, result["contract.default"].errors.to_h)
+        assert_equal(["email must be filled"], result["contract.default"].errors.full_messages_for(:email))
     end
 
     it "Fails with no game_id attribute" do
@@ -103,8 +100,7 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:game_id=>["must be filled"]}, result["contract.default"].errors.to_h)
+        # assert_equal(["game_id must be filled"], result["contract.default"].errors.full_messages_for(:game_id))
     end
 
     it "Fails with non-integer game_id attribute" do
@@ -117,7 +113,6 @@ class UserOperationTest < MiniTest::Spec
         })
 
         assert_equal false, result.success?
-        # TODO: uncomment
-        # assert_equal({:game_id=>["must be an integer"]}, result["contract.default"].errors.to_h)
+        assert_equal(["game_id must be an integer"], result["contract.default"].errors.full_messages_for(:game_id))
     end
 end
