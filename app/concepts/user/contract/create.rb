@@ -17,6 +17,7 @@ module User::Contract
         unless /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match?(value)
           key.failure('has invalid format')
         end
+        key.failure('must be unique') if User.find_by_email(value)
       end
     end
   end

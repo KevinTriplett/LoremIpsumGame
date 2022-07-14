@@ -8,7 +8,6 @@ module User::Operation
 
       def initialize_game_id(ctx, **)
         ctx[:model].game_id = ctx[:game_id]
-        puts "ctx[:params] = " + ctx[:params].inspect
         return ctx[:model].game_id || (ctx[:params][:user] ? ctx[:params][:user][:game_id] : false)
       end
     end
