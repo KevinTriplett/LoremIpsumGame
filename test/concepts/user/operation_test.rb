@@ -41,8 +41,8 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
             email: random_email, 
-            game_id: game.id}
-        })
+            game_id: game.id
+        }})
 
         assert_equal 1234, game.current_player_id
     end
@@ -53,14 +53,14 @@ class UserOperationTest < MiniTest::Spec
         User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
             email: random_email, 
-            game_id: game1.id}
-        })
+            game_id: game1.id
+        }})
 
         result = User::Operation::Create.wtf?(params: {user: {
             name: "jane doe", 
             email: last_random_email, 
-            game_id: game2.id}
-        })
+            game_id: game2.id
+        }})
 
         assert_equal true, result.success?
     end
@@ -74,10 +74,11 @@ class UserOperationTest < MiniTest::Spec
     #         game_id: game.id
     #     }})
     #     user = result["contract.default"].model
+    #     # assert_equal true, result.success?
 
     #     result = User::Operation::Update.wtf?(params: {user: {
     #         id: user.id,
-    #         name: "john smith", 
+    #         name: "johnny smith", 
     #         email: last_random_email,
     #         game_id: game.id
     #     }})
@@ -99,8 +100,8 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Create.wtf?(params: {user: {
             name: "", 
             email: "abc@xyz.com", 
-            game_id: game.id}
-        })
+            game_id: game.id
+        }})
 
         assert_equal false, result.success?
         assert_equal(["name must be filled"], result["contract.default"].errors.full_messages_for(:name))
@@ -112,8 +113,8 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
             email: "hello@splat", 
-            game_id: game.id}
-        })
+            game_id: game.id
+        }})
 
         assert_equal false, result.success?
         assert_equal(["email has invalid format"], result["contract.default"].errors.full_messages_for(:email))
@@ -125,8 +126,8 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
             email: "", 
-            game_id: game.id}
-        })
+            game_id: game.id
+        }})
 
         assert_equal false, result.success?
         assert_equal(["email must be filled"], result["contract.default"].errors.full_messages_for(:email))
@@ -138,8 +139,8 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
             email: "abc@xyz.com", 
-            game_id: nil}
-        })
+            game_id: nil
+        }})
 
         assert_equal false, result.success?
         assert_equal(["game_id must be filled"], result["contract.default"].errors.full_messages_for(:game_id))
@@ -151,8 +152,8 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
             email: "abc@xyz.com", 
-            game_id: "hello"}
-        })
+            game_id: "hello"
+        }})
 
         assert_equal false, result.success?
         assert_equal(["game_id must be an integer"], result["contract.default"].errors.full_messages_for(:game_id))
@@ -162,15 +163,15 @@ class UserOperationTest < MiniTest::Spec
         game = create_game
         User::Operation::Create.wtf?(params: {user: {
             name: "john smith", 
-            email: "abc@xyz.com", 
-            game_id: game.id}
-        })
+            email: random_email, 
+            game_id: game.id
+        }})
 
         result = User::Operation::Create.wtf?(params: {user: {
             name: "jane doe", 
-            email: "abc@xyz.com", 
-            game_id: game.id}
-        })
+            email: last_random_email, 
+            game_id: game.id
+        }})
 
         assert_equal false, result.success?
         assert_equal(["email must be unique"], result["contract.default"].errors.full_messages_for(:email))
