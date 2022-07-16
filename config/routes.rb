@@ -3,8 +3,8 @@ Rails.application.routes.draw do
   resources :admin, only: [:index]
 
   namespace :admin do 
-    resources :games, only: [:index, :show, :new, :create, :edit, :update, :delete] do
-      resources :users, only: [:index, :new, :create, :edit, :update, :delete]
+    resources :games do
+      resources :users
     end
   end
 

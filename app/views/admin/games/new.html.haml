@@ -1,7 +1,10 @@
-%h2 New Game
+%h5 New Game
 
-= simple_form_for @form, as: :game, url: games_path do |f|
+= simple_form_for @form, as: :game, url: admin_games_path do |f|
   .row
     .col= f.input :name, placeholder: "Game Name", label: false
   .row
     .col= f.button :submit, "Create Game", class: "btn-primary"
+.row
+  .col= link_to "Cancel", admin_games_path
+

@@ -1,4 +1,4 @@
-%h2 Editing user
+%h5 Editing user
 
 = simple_form_for @form, as: :user, url: admin_game_user_path(@model.id), method: :patch do |f|
   .row
@@ -9,3 +9,5 @@
     .col= f.input :email, placeholder: "Email", label: false
   .row
     .col= f.button :submit, "Update User", class: "btn-primary"
+.row
+  .col= link_to "Cancel", admin_games_path
