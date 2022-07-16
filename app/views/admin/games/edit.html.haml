@@ -1,7 +1,9 @@
-%h2 Editing game
+%h5 Editing game
 
-= simple_form_for @form, as: :game, url: admin_games_path(@model.id), method: :patch do |f|
+= simple_form_for @form, as: :game, url: admin_game_path(@model.id), method: :patch do |f|
   .row
     .col= f.input :name, placeholder: "Name", label: false
   .row
     .col= f.button :submit, "Update Game", class: "btn-primary"
+.row
+  .col= link_to "Cancel", admin_games_path

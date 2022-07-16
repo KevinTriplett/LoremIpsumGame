@@ -1,8 +1,12 @@
-- @games.each do |game|
+%h5 Existing Games
+
+- @games.each do |g|
   %p
-    = game.name
-    %a{ href: game_url(game.id) } Show Game
-    %a{ href: edit_admin_game_url(game.id) } Edit Game
-    %a{ href: admin_game_users_url(game.id) } Edit Users
+    = g.name
+    %br
+    %a{ href: game_url(g.id) } show
+    %a{ href: edit_admin_game_url(g.id) } edit
+    %a{ href: admin_game_users_url(g.id) } users
+    = link_to "delete", admin_game_url(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }
 
 %a.btn.btn-secondary{ href: new_admin_game_url } New Game

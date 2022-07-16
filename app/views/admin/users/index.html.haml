@@ -1,9 +1,12 @@
-%h2= "Users assigned to game #{@game.name}"
+%h5= "Users assigned to game #{@game.name}"
 
 %ul
-  Users:
   - @model.each do |u|
     %li
       %a{ href: "mailto:" + u.email }= u.name
+      %br
       %a{ href: edit_admin_game_user_url(id: u.id) } edit
+      = link_to "delete", admin_game_user_url(id: u.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{u.name}?" }
 %a.btn.btn-primary{ href: new_admin_game_user_path } Add User
+.row
+  .col= link_to "Back", admin_games_path

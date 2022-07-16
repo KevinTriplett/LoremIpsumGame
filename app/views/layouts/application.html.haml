@@ -2,7 +2,7 @@
 !!!
 %html
   %head
-    %title Lorem Ipsum Game
+    %title Lorem Ipsum
     %meta{ name: "viewport", content: "width=device-width,initial-scale=1" }
     = csrf_meta_tags
     = csp_meta_tag
@@ -19,7 +19,7 @@
             .row.alert.alert-info
               .col= msg
       .row
-        .col-sm
-          %h1 Lorem Ipsum Game
+        .col-sm-8
+          %h1 Lorem Ipsum
           = yield
-        .col-sm
+        .col-sm-4
