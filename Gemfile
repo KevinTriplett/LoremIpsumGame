@@ -64,8 +64,8 @@ gem "cells-rails"
 gem "haml"
 
 gem "trailblazer", ">= 2.1.0"
-# gem "trailblazer-rails"
-gem "trailblazer-rails", "2.4.0"
+gem "trailblazer-rails"
+# gem "trailblazer-rails", "2.4.0"
 gem "trailblazer-developer" #, path: "../trailblazer-developer"
 
 group :development, :test do
