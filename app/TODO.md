@@ -17,3 +17,10 @@
 ## MVP 3
 - [ ] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
 - [ ] add version control (change requests)
+
+EtherPad-Lite implementation:
+- [ ] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
+- [ ] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
+- [ ] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
+- [ ] create game entry page with EtherPad-Lite embedded with "End Turn" button
+- [ ] "End Turn" action saves the entire text as the entry and sends notification
