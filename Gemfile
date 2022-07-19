@@ -52,6 +52,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # lorem ipsum
+gem 'etherpad-lite'
 gem "simple_form"
 gem "reform"
 # gem "reform-rails"
