@@ -2,7 +2,6 @@
 
 ## MVP 2
 - [ ] implement integration smoke tests
-- [ ] implement cell tests
 - [ ] show game with entries
 - [ ] allow entry to be added
 - [ ] remove Reform#full_messages_for monkey patch
@@ -19,7 +18,7 @@
 - [ ] add version control (change requests)
 
 EtherPad-Lite implementation:
-- [ ] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
+- [X] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
 - [ ] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
 - [ ] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
 - [ ] create game entry page with EtherPad-Lite embedded with "End Turn" button
