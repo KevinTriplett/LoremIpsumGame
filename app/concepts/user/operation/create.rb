@@ -3,12 +3,7 @@ module User::Operation
 
     class Present < Trailblazer::Operation
       step Model(User, :new)
-      step :initialize_game
       step Contract::Build(constant: User::Contract::Create)
-
-      def initialize_game(ctx, **)
-        ctx[:model].game_id = ctx[:game_id]
-      end
     end
     
     step Subprocess(Present)

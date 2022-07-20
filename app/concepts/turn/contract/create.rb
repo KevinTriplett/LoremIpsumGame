@@ -4,13 +4,11 @@ module Turn::Contract
 
     property :entry
     property :user_id
-    property :game_id
 
     validation do
       params do
         required(:entry).filled
         required(:user_id).filled.value(:integer)
-        required(:game_id).filled.value(:integer)
       end
   
       rule(:entry) do

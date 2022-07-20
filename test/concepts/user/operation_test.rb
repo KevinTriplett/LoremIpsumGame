@@ -14,7 +14,6 @@ class UserOperationTest < MiniTest::Spec
         }})
 
         assert_equal true, result.success?
-
         user = result[:model]
         assert_equal "john smith", user.name
         assert_equal last_random_email, user.email
@@ -29,6 +28,7 @@ class UserOperationTest < MiniTest::Spec
             game_id: game.id
         }})
 
+        assert_equal true, result.success?
         user = result[:model]
         game = Game.find(game.id)
         assert user.id
@@ -44,6 +44,7 @@ class UserOperationTest < MiniTest::Spec
             game_id: game.id
         }})
 
+        assert_equal true, result.success?
         assert_equal 1234, game.current_player_id
     end
 

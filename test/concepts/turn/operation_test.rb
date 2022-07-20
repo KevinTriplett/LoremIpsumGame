@@ -18,8 +18,7 @@ class TurnOperationTest < MiniTest::Spec
         entry = valid_entry
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: user.id, 
-            game_id: game.id
+            user_id: user.id
         }})
 
         assert_equal true, result.success?
@@ -27,7 +26,6 @@ class TurnOperationTest < MiniTest::Spec
         turn = result[:model]
         assert_equal valid_entry, turn.entry
         assert_equal user.id, turn.user_id
-        assert_equal game.id, turn.game_id
     end
 
     it "Updates current_player_id attribute on last game model (no rollover)" do
@@ -38,8 +36,7 @@ class TurnOperationTest < MiniTest::Spec
         
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: user2.id, 
-            game_id: game.id
+            user_id: user2.id
         }})
 
         game = Game.find(game.id)
@@ -55,8 +52,7 @@ class TurnOperationTest < MiniTest::Spec
         
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: user3.id, 
-            game_id: game.id
+            user_id: user3.id
         }})
 
         game = Game.find(game.id)
@@ -70,8 +66,7 @@ class TurnOperationTest < MiniTest::Spec
 
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: user1.id, 
-            game_id: game.id
+            user_id: user1.id
         }})
 
         game = Game.find(game.id)
@@ -87,8 +82,7 @@ class TurnOperationTest < MiniTest::Spec
 
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: user.id, 
-            game_id: game.id
+            user_id: user.id
         }})
 
         game = Game.find(game.id)
@@ -103,8 +97,7 @@ class TurnOperationTest < MiniTest::Spec
         
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: user.id, 
-            game_id: game.id
+            user_id: user.id
         }})
 
         game = Game.find(game.id)
@@ -123,8 +116,7 @@ class TurnOperationTest < MiniTest::Spec
     it "Fails with empty entry attribute" do
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: "", 
-            user_id: 1234, 
-            game_id: 5678
+            user_id: 1234
         }})
 
         assert_equal false, result.success?
@@ -136,8 +128,7 @@ class TurnOperationTest < MiniTest::Spec
         (Rails.configuration.entry_length_min - 1).times { invalid_entry += "x" }
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: invalid_entry, 
-            user_id: 1234, 
-            game_id: 5678
+            user_id: 1234
         }})
 
         assert_equal false, result.success?
@@ -150,8 +141,7 @@ class TurnOperationTest < MiniTest::Spec
         (Rails.configuration.entry_length_max + 1).times { invalid_entry += "x" }
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: invalid_entry, 
-            user_id: 1234, 
-            game_id: 5678
+            user_id: 1234
         }})
 
         assert_equal false, result.success?
@@ -162,8 +152,7 @@ class TurnOperationTest < MiniTest::Spec
     it "Fails with no user_id attribute" do
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: nil, 
-            game_id: 5678
+            user_id: nil
         }})
 
         assert_equal false, result.success?
@@ -173,33 +162,10 @@ class TurnOperationTest < MiniTest::Spec
     it "Fails with non-integer user_id attribute" do
         result = Turn::Operation::Create.wtf?(params: {turn: {
             entry: valid_entry, 
-            user_id: "hello", 
-            game_id: 5678
+            user_id: "hello"
         }})
 
         assert_equal false, result.success?
         assert_equal(["user_id must be an integer"], result["contract.default"].errors.full_messages_for(:user_id))
-    end
-
-    it "Fails with no game_id attribute" do
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
-            user_id: 1234, 
-            game_id: nil
-        }})
-
-        assert_equal false, result.success?
-        assert_equal(["game_id must be filled"], result["contract.default"].errors.full_messages_for(:game_id))
-    end
-
-    it "Fails with non-integer game_id attribute" do
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
-            user_id: 1234, 
-            game_id: "hello"
-        }})
-
-        assert_equal false, result.success?
-        assert_equal(["game_id must be an integer"], result["contract.default"].errors.full_messages_for(:game_id))
     end
 end
