@@ -3,10 +3,10 @@ module User::Operation
 
     class Present < Trailblazer::Operation
       step Model(User, :new)
-      step :initialize_game
+      step :initialize_game_id
       step Contract::Build(constant: User::Contract::Create)
 
-      def initialize_game(ctx, **)
+      def initialize_game_id(ctx, **)
         ctx[:model].game_id = ctx[:game_id]
       end
     end
@@ -26,7 +26,7 @@ module User::Operation
 
     def notify(ctx, **)
       user = ctx[:model]
-      UserMailer.with(params: user).welcome
+      UserMailer.with(user: user).welcome_email.deliver_now
     end
   end
 end

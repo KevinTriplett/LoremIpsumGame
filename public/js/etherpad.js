@@ -2,7 +2,7 @@
 
   $.fn.pad = function( options ) {
     var settings = {
-      'host'              : 'http://beta.etherpad.org',
+      'host'              : 'http://loremipsum.com',
       'baseUrl'           : '/p/',
       'showControls'      : false,
       'showChat'          : false,

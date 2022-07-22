@@ -7,7 +7,7 @@ ruby "3.1.2"
 gem "rails", "~> 7.0.3"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem "sprockets-rails"
+gem "sprockets-rails", :require => 'sprockets/railtie'
 
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
@@ -46,7 +46,7 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 gem "bootsnap", require: false
 
 # Use Sass to process CSS
-# gem "sassc-rails"
+gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -55,6 +55,8 @@ gem "bootsnap", require: false
 gem 'etherpad-lite'
 gem "simple_form"
 gem "reform"
+gem "jquery-rails"
+gem 'jquery-ui-rails'
 # gem "reform-rails"
 gem "dry-validation", "1.7.0"
 gem "trailblazer-macro-contract"

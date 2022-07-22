@@ -1,12 +1,12 @@
-%h5 Existing Games
+%h5= (@games.empty? ? "No " : "") + "Existing Games"
 
 - @games.each do |g|
   %p
     = g.name
     %br
-    %a{ href: game_url(g.id) } show
-    %a{ href: edit_admin_game_url(g.id) } edit
-    %a{ href: admin_game_users_url(g.id) } users
+    -# = link_to "show", game_url(g.id)
+    = link_to "edit", edit_admin_game_url(g.id)
+    = link_to "users", admin_game_users_url(g.id)
     = link_to "delete", admin_game_url(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }
 
-%a.btn.btn-secondary{ href: new_admin_game_url } New Game
+= link_to "New Game", new_admin_game_url, class: "btn btn-secondary"

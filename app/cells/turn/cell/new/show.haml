@@ -1,25 +1,27 @@
-%h5= name
-
-.row
-  .col= yield
-
-%hr
+%h5= game.name
 
 .row
   .col 
     .timestamps
       %p.timestamp
         Game Started:
-        = game_start || "Game has not started"
+        = game.game_start || "Game has not started"
         %br
         Game Ends:
-        = game_end || "Game has not started"
+        = game.game_end || "Game has not started"
       %p.timestamp
         Current Turn Started:
-        = turn_start || "First turn has not started"
+        = game.turn_start || "First turn has not started"
         %br
         Current Turn Ends:
-        = turn_end || "First turn not started"
+        = game.turn_end || "First turn not started"
+
+%hr
+
+.row
+  .col
+    #ep
+%script= "$(document).ready( $('#ep').pad(#{etherpad_settings}) );"
 
 %hr
 
@@ -27,7 +29,7 @@
   .col 
     Users:
     %ul
-      - if users.empty?
+      - if game.users.empty?
         no users yet
       - game.users.each do |u|
         %li{ class: u.id == game.current_player_id ? "current-player" : nil }

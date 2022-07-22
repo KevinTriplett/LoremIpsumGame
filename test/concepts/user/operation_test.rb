@@ -7,11 +7,13 @@ class UserOperationTest < MiniTest::Spec
     it "Creates {User} model when given valid attributes" do
         game = create_game
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: random_email, 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: random_email
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal true, result.success?
         user = result[:model]
@@ -22,11 +24,13 @@ class UserOperationTest < MiniTest::Spec
     it "Initializes game.current_player_id" do
         game = create_game
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: random_email, 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: random_email
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal true, result.success?
         user = result[:model]
@@ -38,11 +42,13 @@ class UserOperationTest < MiniTest::Spec
     it "Does not update initialized game.current_player_id" do
         game = Game.create(name: random_game_name, current_player_id: "1234")
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: random_email, 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: random_email
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal true, result.success?
         assert_equal 1234, game.current_player_id
@@ -51,38 +57,47 @@ class UserOperationTest < MiniTest::Spec
     it "Allows non-unique email address for different games" do
         game1 = create_game
         game2 = create_game
-        User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: random_email, 
+        User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: random_email
+            }},
             game_id: game1.id
-        }})
+        )
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "jane doe", 
-            email: last_random_email, 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "jane doe", 
+                email: last_random_email
+            }},
             game_id: game2.id
-        }})
+        )
 
+        puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx game1, game2 = " + game1.id.to_s + "  " + game2.id.to_s
         assert_equal true, result.success?
     end
 
     # TODO: create validation for this one
     # it "Allows non-unique email address for same user" do
     #     game = create_game
-    #     result = User::Operation::Create.wtf?(params: {user: {
-    #         name: "john smith", 
-    #         email: random_email, 
+    #     result = User::Operation::Create.wtf?(params: {
+    #         user: {
+    #             name: "john smith", 
+    #             email: random_email
+    #         },
     #         game_id: game.id
-    #     }})
+    #    })
     #     user = result["contract.default"].model
     #     # assert_equal true, result.success?
 
-    #     result = User::Operation::Update.wtf?(params: {user: {
-    #         id: user.id,
-    #         name: "johnny smith", 
-    #         email: last_random_email,
+    #     result = User::Operation::Update.wtf?(params: {
+    #    user: {
+    #             id: user.id,
+    #             name: "johnny smith"
+    #             email: last_random_email,
+    #         },
     #         game_id: game.id
-    #     }})
+    #     })
 
     #     assert_equal true, result.success?
     # end
@@ -98,11 +113,13 @@ class UserOperationTest < MiniTest::Spec
     it "Fails with no name attribute" do
         game = create_game
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "", 
-            email: "abc@xyz.com", 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "", 
+                email: "abc@xyz.com"
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal false, result.success?
         assert_equal(["name must be filled"], result["contract.default"].errors.full_messages_for(:name))
@@ -111,11 +128,13 @@ class UserOperationTest < MiniTest::Spec
     it "Fails with invalid email attribute" do
         game = create_game
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: "hello@splat", 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: "hello@splat"
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal false, result.success?
         assert_equal(["email has invalid format"], result["contract.default"].errors.full_messages_for(:email))
@@ -124,11 +143,13 @@ class UserOperationTest < MiniTest::Spec
     it "Fails with no email attribute" do
         game = create_game
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: "", 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: ""
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal false, result.success?
         assert_equal(["email must be filled"], result["contract.default"].errors.full_messages_for(:email))
@@ -137,42 +158,34 @@ class UserOperationTest < MiniTest::Spec
     it "Fails with no game_id attribute" do
         game = create_game
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: "abc@xyz.com", 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: "abc@xyz.com"
+            }},
             game_id: nil
-        }})
+        )
 
         assert_equal false, result.success?
-        assert_equal(["game_id must be filled"], result["contract.default"].errors.full_messages_for(:game_id))
-    end
-
-    it "Fails with non-integer game_id attribute" do
-        game = create_game
-
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: "abc@xyz.com", 
-            game_id: "hello"
-        }})
-
-        assert_equal false, result.success?
-        assert_equal(["game_id must be an integer"], result["contract.default"].errors.full_messages_for(:game_id))
     end
 
     it "Fails with non-unique email address on same game" do
         game = create_game
-        User::Operation::Create.wtf?(params: {user: {
-            name: "john smith", 
-            email: random_email, 
+        User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: random_email
+            }},
             game_id: game.id
-        }})
+        )
 
-        result = User::Operation::Create.wtf?(params: {user: {
-            name: "jane doe", 
-            email: last_random_email, 
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "jane doe", 
+                email: last_random_email
+            }},
             game_id: game.id
-        }})
+        )
 
         assert_equal false, result.success?
         assert_equal(["email must be unique"], result["contract.default"].errors.full_messages_for(:email))

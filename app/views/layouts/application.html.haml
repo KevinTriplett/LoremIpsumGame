@@ -7,7 +7,9 @@
     = csrf_meta_tags
     = csp_meta_tag
 
-    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = stylesheet_link_tag "application.bootstrap", "data-turbo-track": "reload"
+    %script{ src: "/js/jquery-3.6.0.js" }
+    %script{ src: "/js/etherpad.js" }
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
     = turbo_include_tags
 

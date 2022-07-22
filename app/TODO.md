@@ -21,5 +21,10 @@ EtherPad-Lite implementation:
 - [X] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
 - [ ] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
 - [ ] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
-- [ ] create game entry page with EtherPad-Lite embedded with "End Turn" button
+- [ ] show current game without ability to edit (for players whose turn it is not)
+- [ ] allow entry with EtherPad-Lite embedded with "End Turn" button (for players whose turn it is)
 - [ ] "End Turn" action saves the entire text as the entry and sends notification
+- [ ] allow branching of document
+- [ ] allow change requests to be issued
+- [ ] show diffs [diffy](https://github.com/samg/diffy)
+- [ ] allow voting on change requests

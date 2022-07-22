@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   def show
-    session[:current_user_id] = params[:id] if params[:id]
-    redirect_to game_url(current_user.game_id)
+    return not_found unless current_user && current_game
+    user_token = { user_token: params[:token] }
+    redirect_to current_user_turn? ? new_user_turn_path(user_token) : redirect_to user_turns_path(user_token)
   end
 end

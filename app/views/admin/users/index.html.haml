@@ -3,10 +3,11 @@
 %ul
   - @model.each do |u|
     %li
-      %a{ href: "mailto:" + u.email }= u.name
+      = link_to u.name, "mailto:#{u.email}"
       %br
-      %a{ href: edit_admin_game_user_url(id: u.id) } edit
+      = link_to "play", new_user_turn_url(user_token: u.token)
+      = link_to "edit", edit_admin_game_user_url(id: u.id)
       = link_to "delete", admin_game_user_url(id: u.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{u.name}?" }
-%a.btn.btn-primary{ href: new_admin_game_user_path } Add User
+= link_to "Add User", new_admin_game_user_path, class: "btn btn-primary"
 .row
   .col= link_to "Back", admin_games_path

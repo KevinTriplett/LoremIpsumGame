@@ -8,12 +8,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users, only: [:show]
-
-  resources :games, only: [:show] do
-    namespace :users do
-      resources :turns, only: [:new, :create]
-    end
+  resources :users, param: :token, only: [:show] do
+    resources :turns, only: [:new, :create]
   end
 
   # Defines the root path route ("/")
