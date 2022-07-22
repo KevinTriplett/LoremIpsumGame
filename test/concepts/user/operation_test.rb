@@ -73,7 +73,6 @@ class UserOperationTest < MiniTest::Spec
             game_id: game2.id
         )
 
-        puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx game1, game2 = " + game1.id.to_s + "  " + game2.id.to_s
         assert_equal true, result.success?
     end
 

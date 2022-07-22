@@ -16,10 +16,12 @@ class TurnOperationTest < MiniTest::Spec
         user = create_user(game.id)
 
         entry = valid_entry
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: valid_entry, 
+            }},
             user_id: user.id
-        }})
+        )
 
         assert_equal true, result.success?
 
@@ -34,10 +36,12 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_user(game.id)
         user3 = create_user(game.id)
         
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: valid_entry, 
+            }},
             user_id: user2.id
-        }})
+        )
 
         game = Game.find(game.id)
         assert_equal last_random_game_name, game.name
@@ -50,10 +54,12 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_user(game.id)
         user3 = create_user(game.id)
         
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: valid_entry, 
+            }},
             user_id: user3.id
-        }})
+        )
 
         game = Game.find(game.id)
         assert_equal user1.id, game.current_player_id
@@ -64,10 +70,12 @@ class TurnOperationTest < MiniTest::Spec
         user1 = create_user(game.id)
         user2 = create_user(game.id)
 
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: valid_entry, 
+            }},
             user_id: user1.id
-        }})
+        )
 
         game = Game.find(game.id)
         assert_equal true, game.game_start.present?
@@ -80,10 +88,12 @@ class TurnOperationTest < MiniTest::Spec
         game = Game.create(name: random_game_name, game_start: time_start, game_end: time_end)
         user = create_user(game.id)
 
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: valid_entry, 
+            }},
             user_id: user.id
-        }})
+        )
 
         game = Game.find(game.id)
         assert_equal time_start, game.game_start
@@ -95,10 +105,12 @@ class TurnOperationTest < MiniTest::Spec
         user = create_user(game.id)
         game = Game.find(game.id)
         
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: valid_entry, 
+            }},
             user_id: user.id
-        }})
+        )
 
         game = Game.find(game.id)
         assert_equal true, game.turn_start.present?
@@ -114,10 +126,12 @@ class TurnOperationTest < MiniTest::Spec
     end
         
     it "Fails with empty entry attribute" do
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: "", 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: "", 
+            }},
             user_id: 1234
-        }})
+        )
 
         assert_equal false, result.success?
         assert_equal(["entry must be filled"], result["contract.default"].errors.full_messages_for(:entry))
@@ -126,10 +140,12 @@ class TurnOperationTest < MiniTest::Spec
     it "Fails when entry is too short" do
         invalid_entry = ""
         (Rails.configuration.entry_length_min - 1).times { invalid_entry += "x" }
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: invalid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: invalid_entry, 
+            }},
             user_id: 1234
-        }})
+        )
 
         assert_equal false, result.success?
         msg = "entry too short, must be more than " + Rails.configuration.entry_length_min.to_s + " letters"
@@ -139,33 +155,15 @@ class TurnOperationTest < MiniTest::Spec
     it "Fails when entry is too long" do
         invalid_entry = ""
         (Rails.configuration.entry_length_max + 1).times { invalid_entry += "x" }
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: invalid_entry, 
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+                entry: invalid_entry, 
+            }},
             user_id: 1234
-        }})
+        )
 
         assert_equal false, result.success?
         msg = "entry too long, must be less than " + Rails.configuration.entry_length_max.to_s + " letters"
         assert_equal([msg], result["contract.default"].errors.full_messages_for(:entry))
-    end
-
-    it "Fails with no user_id attribute" do
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
-            user_id: nil
-        }})
-
-        assert_equal false, result.success?
-        assert_equal(["user_id must be filled"], result["contract.default"].errors.full_messages_for(:user_id))
-    end
-
-    it "Fails with non-integer user_id attribute" do
-        result = Turn::Operation::Create.wtf?(params: {turn: {
-            entry: valid_entry, 
-            user_id: "hello"
-        }})
-
-        assert_equal false, result.success?
-        assert_equal(["user_id must be an integer"], result["contract.default"].errors.full_messages_for(:user_id))
     end
 end

@@ -2,7 +2,6 @@ class UserMailer < ApplicationMailer
   default from: 'notifications@loremipsumgame.com'
 
   def welcome_email
-    puts "params = " + params[:user].inspect
     @user = params[:user]
     @url  = 'http://127.0.0.1:3000/users/' + @user.token
     @game = @user.game
