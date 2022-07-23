@@ -13,15 +13,14 @@ class Turn::Operation::Create < Trailblazer::Operation
     end
 
     def initialize_entry(ctx, model:, **)
+      return true if Rails.env == "test"
       client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
       pad_name = model.game.name.gsub(/\s/, '_')
-      model.entry = Rails.env == "test" ? nil : client.getText(padID: pad_name)[:text]
-      true
+      model.entry = client.getText(padID: pad_name)[:text]
     end
   end
   
   step Subprocess(Present)
-  # step Contract::Validate(key: :turn)
   step Contract::Persist()
   step :update_game
   step :notify
