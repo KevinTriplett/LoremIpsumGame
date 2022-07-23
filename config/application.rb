@@ -18,9 +18,8 @@ module LoremIpsum
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    config.entry_length_min = 10
-    config.entry_length_max = 1024
-    config.turn_hours = 48
-    config.game_days = 30
+    config.default_turn_hours = 48
+    config.default_game_days = 30
+    config.etherpad_api_key = "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92"
   end
 end

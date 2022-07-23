@@ -4,6 +4,10 @@
   .row
     .col= f.input :name, placeholder: "Name", label: false
   .row
+    .col= f.input :name, placeholder: "Number of days for game", label: false
+  .row
+    .col= f.input :name, placeholder: "Number of hours per turn", label: false
+  .row
     .col= f.button :submit, "Update Game", class: "btn-primary"
 .row
   .col= link_to "Cancel", admin_games_path
