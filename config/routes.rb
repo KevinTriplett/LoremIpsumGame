@@ -9,9 +9,9 @@ Rails.application.routes.draw do
   end
 
   resources :users, param: :token, only: [:show] do
-    resources :turns, only: [:new, :create]
+    resources :turns, only: [:index, :new, :create]
   end
 
   # Defines the root path route ("/")
-  root to: "games#show"
+  root to: "users#show"
 end

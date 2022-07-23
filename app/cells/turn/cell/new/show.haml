@@ -1,37 +1,40 @@
-%h5= game.name
+%h5= game_name
 
 .row
   .col 
     .timestamps
       %p.timestamp
         Game Started:
-        = game.game_start || "Game has not started"
+        = game_start || "Game has not started"
         %br
         Game Ends:
-        = game.game_end || "Game has not started"
+        = game_end || "Game has not started"
       %p.timestamp
         Current Turn Started:
-        = game.turn_start || "First turn has not started"
+        = turn_start || "First turn has not started"
         %br
         Current Turn Ends:
-        = game.turn_end || "First turn not started"
+        = turn_end || "First turn not started"
 
 %hr
 
 .row
-  .col
-    #ep
+  .col= link_to "Finish Turn", user_turns_path, class: "btn btn-primary", data: { turbo_method: "post", turbo_confirm: "Confirm you are finished" }
+.row
+  .col#ep
+.row
+  .col= link_to "Finish Turn", user_turns_path, class: "btn btn-primary", data: { turbo_method: "post", turbo_confirm: "Confirm you are finished" }
 %script= "$(document).ready( $('#ep').pad(#{etherpad_settings}) );"
 
 %hr
 
 .row
   .col 
-    Users:
+    Players
     %ul
-      - if game.users.empty?
+      - if users.empty?
         no users yet
-      - game.users.each do |u|
-        %li{ class: u.id == game.current_player_id ? "current-player" : nil }
+      - users.each do |u|
+        %li{ class: u.id == current_player_id ? "current-player" : nil }
           = link_to u.name, "mailto:#{u.email}"
 

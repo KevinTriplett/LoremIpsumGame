@@ -35,19 +35,33 @@ end
 
 
 GAME_NAMES_FIRST = %w(dark lorem glad sad melancholy joyful lonesome tender lucid)
-GAME_NAMES_SECOND = %w(night ipsum song melody heart dove mercies dreams)
+GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissfully wispy wistfully)
+GAME_NAMES_THIRD = %w(night ipsum song melody heart dove mercies dreams)
 def random_game_name
-  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample }"
+  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
 end
 
 def last_random_game_name
   @_last_random_game_name
 end
 
-def create_game
-  Game.create(name: random_game_name)
+def create_game(params = {})
+  Game.create(
+    name: random_game_name,
+    game_start: params[:game_start],
+    game_end: params[:game_end],
+    turn_start: params[:turn_start],
+    turn_end: params[:turn_end],
+    game_days: (params[:game_days] || Rails.configuration.default_game_days),
+    turn_hours: (params[:turn_hours] || Rails.configuration.default_turn_hours),
+    current_player_id: params[:current_player_id]
+  )
 end
 
-def create_user(game_id)
-  User.create(name: random_user_name, email: random_email, game_id: game_id)
+def create_user(params)
+  User.create(
+    name: random_user_name,
+    email: random_email,
+    game_id: params[:game_id]
+  )
 end

@@ -40,7 +40,7 @@ class UserOperationTest < MiniTest::Spec
     end
 
     it "Does not update initialized game.current_player_id" do
-        game = Game.create(name: random_game_name, current_player_id: "1234")
+        game = create_game(name: random_game_name, current_player_id: "1234")
 
         result = User::Operation::Create.wtf?(params: {
             user: {
@@ -74,6 +74,21 @@ class UserOperationTest < MiniTest::Spec
         )
 
         assert_equal true, result.success?
+    end
+
+    it "Creates {User} model token when given valid attributes" do
+        game = create_game
+
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: "john smith", 
+                email: random_email
+            }},
+            game_id: game.id
+        )
+
+        user = result[:model]
+        assert user.token
     end
 
     # TODO: create validation for this one

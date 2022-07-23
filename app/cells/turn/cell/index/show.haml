@@ -1,9 +1,4 @@
-%h5= name
-
-.row
-  .col= yield
-
-%hr
+%h5= game_name
 
 .row
   .col 
@@ -24,12 +19,18 @@
 %hr
 
 .row
+  .col= story
+
+%hr
+
+.row
   .col 
-    Users:
+    Players
     %ul
       - if users.empty?
         no users yet
-      - game.users.each do |u|
-        %li{ class: u.id == game.current_player_id ? "current-player" : nil }
+      - users.each do |u|
+        %li
           = link_to u.name, "mailto:#{u.email}"
+          = u.id == current_player_id ? " <== current player" : ""
 

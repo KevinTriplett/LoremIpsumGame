@@ -1,4 +1,4 @@
-class Game::Cell::Show < Cell::ViewModel
+class Game::Cell::Index < Cell::ViewModel
   property :name
   property :users
   property :current_player
@@ -9,7 +9,7 @@ class Game::Cell::Show < Cell::ViewModel
   property :turn_end
 
   def show
-    render # renders app/cells/game/cell/show/show.haml
+    render # renders app/cells/game/cell/index/show.haml
   end
 
   def pad_name
