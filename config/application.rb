@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module LoremIpsum
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+    config.load_defaults 7.0
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -20,6 +20,8 @@ module LoremIpsum
     # config.eager_load_paths << Rails.root.join("extras")
     config.default_turn_hours = 48
     config.default_game_days = 30
-    config.etherpad_api_key = "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92"
+    config.etherpad_api_key = Rails.env == "development" ?
+      "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92" :
+      "get api key from server"
   end
 end
