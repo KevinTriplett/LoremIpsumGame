@@ -46,6 +46,9 @@ gem "bootsnap", require: false
 gem "sassc-rails"
 gem "sass-rails"
 
+# ref https://blog.eq8.eu/til/how-to-use-bootstrap-5-in-rails-7.html
+gem "bootstrap", "~> 5.1.3"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 

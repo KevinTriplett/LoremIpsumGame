@@ -1,0 +1,11 @@
+/* Application styles */
+/* 
+  ref https://github.com/twbs/bootstrap-rubygem/blob/main/assets/stylesheets/bootstrap/_variables.scss
+  ref https://github.com/twbs/bootstrap-rubygem/issues/210
+*/
+@import "bootstrap";
+
+.current-player {
+  background-color: yellow;
+  font-weight: 800;
+}
