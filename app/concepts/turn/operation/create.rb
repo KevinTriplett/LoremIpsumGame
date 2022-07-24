@@ -16,7 +16,7 @@ class Turn::Operation::Create < Trailblazer::Operation
       return true if Rails.env == "test"
       client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
       pad_name = model.game.name.gsub(/\s/, '_')
-      model.entry = client.getText(padID: pad_name)[:text]
+      model.entry = client.getHTML(padID: pad_name)[:html]
     end
   end
   

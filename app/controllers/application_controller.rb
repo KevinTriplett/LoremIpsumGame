@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     current_user.game
   end
 
-  def current_user_turn?
+  def current_player?
     current_user.id == current_game.current_player_id
   end
 

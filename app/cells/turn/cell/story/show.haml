@@ -1,0 +1,41 @@
+%h5= game_name
+
+.row.timestamps
+  .col-sm-5
+    %p.timestamp
+      Game Started:
+      = game_start || "Game has not started"
+      %br
+      Game Ends:
+      = game_end || "Game has not started"
+  .col-sm-7
+    %p.timestamp
+      Current Turn Started:
+      = turn_start || "First turn has not started"
+      %br
+      Current Turn Ends:
+      = turn_end || "First turn not started"
+
+%hr
+
+.row
+  .col= finish_button
+.row
+  .col#ep= story
+.row
+  .col= finish_button
+= etherpad_script
+
+%hr
+
+.row
+  .col 
+    Players
+    %ul
+      - if users.empty?
+        no users yet
+      - users.each do |u|
+        %li{ class: u.id == current_player_id ? "current-player" : nil }
+          = link_to u.name, "mailto:#{u.email}"
+          = u.id == current_player_id ? " <== current player" : ""
+
