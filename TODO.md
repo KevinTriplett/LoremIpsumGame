@@ -1,7 +1,15 @@
 # TODO
 
 ## MVP 2
+- [ ] update game/turn end datetimes when rules are updated
 - [ ] implement integration smoke tests
+- [ ] implement turn finished notification
+- [ ] implement game finished notification
+- [ ] implement indefinite first and last turns
+- [ ] implement cronjob for turn reminder notification
+- [ ] implement cronjob for turn forfeit notification
+- [ ] implement cronjob for game finished notification
+- [ ] add :status field on :turns table - finished | forfeited
 - [ ] remove Reform#full_messages_for monkey patch
 - [X] allow entry to be added
 - [X] show game with entries
@@ -16,6 +24,7 @@
 ## MVP 3
 - [X] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
 - [ ] add version control (change requests)
+- [ ] add :order field on :users table for random option (with no double-turns)
 
 EtherPad-Lite implementation (development):
 - [ ] allow branching of document
