@@ -36,6 +36,8 @@ class Turn::Operation::Create < Trailblazer::Operation
   end
 
   def notify(ctx, model:, **)
-    TurnMailer.with(turn: model).turn_notification
+    game = User.find(model.user_id).game
+    user = game.current_player
+    UserMailer.turn_notification(user).deliver_now
   end
 end

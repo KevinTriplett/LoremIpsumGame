@@ -2,6 +2,8 @@ require 'test_helper'
 require 'spec/spec_helper'
 
 class UserOperationTest < MiniTest::Spec
+    include ActionMailer::TestHelper
+    
     # ----------------
     # happy path tests
     it "Creates {User} model when given valid attributes" do
@@ -9,7 +11,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: random_email
             }},
             game_id: game.id
@@ -17,7 +19,7 @@ class UserOperationTest < MiniTest::Spec
 
         assert_equal true, result.success?
         user = result[:model]
-        assert_equal "john smith", user.name
+        assert_equal last_random_user_name, user.name
         assert_equal last_random_email, user.email
     end
 
@@ -26,7 +28,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: random_email
             }},
             game_id: game.id
@@ -44,7 +46,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: random_email
             }},
             game_id: game.id
@@ -59,7 +61,7 @@ class UserOperationTest < MiniTest::Spec
         game2 = create_game
         User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: random_email
             }},
             game_id: game1.id
@@ -81,7 +83,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: random_email
             }},
             game_id: game.id
@@ -91,12 +93,28 @@ class UserOperationTest < MiniTest::Spec
         assert user.token
     end
 
+    it "Sends an email on user creation" do
+        ActionMailer::Base.deliveries.clear
+        game = create_game
+
+        result = User::Operation::Create.wtf?(params: {
+            user: {
+                name: random_user_name, 
+                email: random_email
+            }},
+            game_id: game.id
+        )
+
+        assert_emails 1
+        ActionMailer::Base.deliveries.clear
+    end
+
     # TODO: create validation for this one
     # it "Allows non-unique email address for same user" do
     #     game = create_game
     #     result = User::Operation::Create.wtf?(params: {
     #         user: {
-    #             name: "john smith", 
+    #             name: random_user_name, 
     #             email: random_email
     #         },
     #         game_id: game.id
@@ -144,7 +162,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: "hello@splat"
             }},
             game_id: game.id
@@ -159,7 +177,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: ""
             }},
             game_id: game.id
@@ -174,7 +192,7 @@ class UserOperationTest < MiniTest::Spec
 
         result = User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: "abc@xyz.com"
             }},
             game_id: nil
@@ -187,7 +205,7 @@ class UserOperationTest < MiniTest::Spec
         game = create_game
         User::Operation::Create.wtf?(params: {
             user: {
-                name: "john smith", 
+                name: random_user_name, 
                 email: random_email
             }},
             game_id: game.id

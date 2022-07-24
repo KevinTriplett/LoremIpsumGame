@@ -2,8 +2,9 @@
 
 %ul
   - @model.each do |u|
-    %li
+    %li{ class: @game.current_player_id == u.id ? "current-player" : nil }
       = link_to u.name, "mailto:#{u.email}"
+      = @game.current_player_id == u.id ? "<== current player" : ""
       %br
       = link_to "play", new_user_turn_url(user_token: u.token)
       = link_to "edit", edit_admin_game_user_url(id: u.id)

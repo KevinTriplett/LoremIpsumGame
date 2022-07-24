@@ -30,7 +30,11 @@ def last_random_email
 end
 
 def random_user_name
-  "#{ NAMES.sample } #{ SURNAMES.sample }"
+  @last_random_user_name = "#{ NAMES.sample } #{ SURNAMES.sample }"
+end
+
+def last_random_user_name
+  @last_random_user_name
 end
 
 
@@ -39,7 +43,10 @@ GAME_NAMES_CONJUNCT = %w(and in but for yet the)
 GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissfully wispy wistfully)
 GAME_NAMES_THIRD = %w(night ipsum song melody heart dove mercies dreams)
 def random_game_name
-  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_CONJUNCT.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
+  begin
+    @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_CONJUNCT.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
+  end while Game.find_by_name(@_last_random_game_name)
+  @_last_random_game_name
 end
 
 def last_random_game_name
@@ -59,10 +66,10 @@ def create_game(params = {})
   )
 end
 
-def create_user(params)
+def create_user(params = {})
   User.create(
-    name: random_user_name,
-    email: random_email,
+    name: params[:name] || random_user_name,
+    email: params[:email] || random_email,
     game_id: params[:game_id]
   )
 end

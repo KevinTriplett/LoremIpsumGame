@@ -1,9 +1,7 @@
 # TODO
 
 ## MVP 2
-- [X] update game/turn end datetimes when rules are updated
 - [ ] implement integration smoke tests
-- [ ] implement turn finished notification
 - [ ] implement game finished notification
 - [ ] implement indefinite first and last turns
 - [ ] implement cronjob for turn reminder notification
@@ -11,6 +9,8 @@
 - [ ] implement cronjob for game finished notification
 - [ ] add :status field on :turns table - finished | forfeited
 - [ ] remove Reform#full_messages_for monkey patch
+- [X] implement turn finished notification
+- [X] update game/turn end datetimes when rules are updated
 - [X] allow entry to be added
 - [X] show game with entries
 - [X] add admin namespace to routes: game creation, editing, deleting, user creation, editing, deleting

@@ -2,6 +2,7 @@ require 'test_helper'
 require 'spec/spec_helper'
 
 class TurnOperationTest < MiniTest::Spec
+    include ActionMailer::TestHelper
 
     # happy path tests
     it "Creates {Turn} model when given valid attributes" do
@@ -101,6 +102,21 @@ class TurnOperationTest < MiniTest::Spec
         assert_equal true, game.turn_start.present?
         assert_equal true, game.turn_end.present?
         assert_equal game.turn_end, game.turn_start + Rails.configuration.default_turn_hours.hours
+    end
+
+    it "Sends an email to current_player on turn creation" do
+        ActionMailer::Base.deliveries.clear
+        game = create_game
+        user = create_user(game_id: game.id)
+
+        result = Turn::Operation::Create.wtf?(params: {
+            turn: {
+            }},
+            user_id: user.id
+        )
+
+        assert_emails 1
+        ActionMailer::Base.deliveries.clear
     end
 
     # failure tests    
