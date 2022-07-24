@@ -8,7 +8,7 @@ class TurnsController < ApplicationController
   end
 
   def new
-    return redirect_to :show unless current_user_turn?
+    return redirect_to user_turns_path unless current_user_turn?
     session[:ep_sessions] ||= {}
     user = User.find_by_token(params[:user_token])
 
