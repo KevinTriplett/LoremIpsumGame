@@ -1,7 +1,7 @@
 # TODO
 
 ## MVP 2
-- [ ] update game/turn end datetimes when rules are updated
+- [X] update game/turn end datetimes when rules are updated
 - [ ] implement integration smoke tests
 - [ ] implement turn finished notification
 - [ ] implement game finished notification

@@ -14,7 +14,7 @@ end
 
 # Destroy all models because they do not get destroyed automatically
 (ActiveRecord::Base.connection.tables - %w{schema_migrations}).each do |table_name|
-  ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table_name};"
+  ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table_name};" unless table_name == "ar_internal_metadata"
 end
 
 NAMES = %w(john jane eric lee harvey sam kevin hank)
@@ -35,10 +35,11 @@ end
 
 
 GAME_NAMES_FIRST = %w(dark lorem glad sad melancholy joyful lonesome tender lucid)
+GAME_NAMES_CONJUNCT = %w(and in but for yet the)
 GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissfully wispy wistfully)
 GAME_NAMES_THIRD = %w(night ipsum song melody heart dove mercies dreams)
 def random_game_name
-  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
+  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_CONJUNCT.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
 end
 
 def last_random_game_name
