@@ -9,7 +9,7 @@ class UserMailerTest < ActionMailer::TestCase
     ActionMailer::Base.deliveries.clear
     email = UserMailer.welcome_email(user)
     assert_emails 1 do
-      email.deliver_later
+      email.deliver_now
     end
 
     assert_equal email.to, [user.email]
@@ -25,7 +25,7 @@ class UserMailerTest < ActionMailer::TestCase
     ActionMailer::Base.deliveries.clear
     email = UserMailer.turn_notification(user)
     assert_emails 1 do
-      email.deliver_later
+      email.deliver_now
     end
 
     assert_equal email.to, [user.email]
@@ -41,7 +41,7 @@ class UserMailerTest < ActionMailer::TestCase
     ActionMailer::Base.deliveries.clear
     email = UserMailer.turn_reminder(user)
     assert_emails 1 do
-      email.deliver_later
+      email.deliver_now
     end
 
     assert_equal email.to, [user.email]
