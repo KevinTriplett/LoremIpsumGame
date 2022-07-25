@@ -2,11 +2,12 @@ class ApplicationController < ActionController::Base
   private
 
   def current_user
-    User.find_by_token(params[:user_token])
+    session[:user_token] = params[:user_token] if params[:user_token]
+    User.find_by_token( session[:user_token] )
   end
 
   def current_game
-    current_user.game
+    current_user ? current_user.game : nil
   end
 
   def current_player?
