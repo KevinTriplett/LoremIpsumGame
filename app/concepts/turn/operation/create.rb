@@ -23,6 +23,7 @@ class Turn::Operation::Create < Trailblazer::Operation
   step Subprocess(Present)
   step Contract::Persist()
   step :update_game
+  step :setup_monitor
   step :notify
 
   def update_game(ctx, model:, **)
@@ -33,6 +34,15 @@ class Turn::Operation::Create < Trailblazer::Operation
     game.turn_end = game.turn_start + game.turn_hours.hours
     game.current_player_id = User.next_user(model.user_id, game.id).id
     game.save
+  end
+
+  def setup_monitor(ctx, model:, **)
+    user = model.user
+    game = model.game
+    wait_hours = (game.turn_hours / 2).hours
+    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id)
+    wait_hours = (game.turn_hours + 2).hours
+    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id)
   end
 
   def notify(ctx, model:, **)

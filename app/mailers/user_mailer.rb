@@ -4,19 +4,28 @@ class UserMailer < ApplicationMailer
   def welcome_email(user)
     @user = user
     @game = @user.game
-    @url  = (Rails.env == 'production' ?
-      'https://loremipsumgame.com/' :
-      'http://127.0.0.1:3000/users/') +
-      @user.token + "/turns/new"
-    mail(to: @user.email, subject: '[Lorem Ipsum] Welcome to the Game')
+    @url = get_url(user)
+    mail(to: user.email, subject: '[Lorem Ipsum] Welcome to the Game')
   end
 
   def turn_notification(user)
     @user = user
-    @url = (Rails.env == 'production' ?
+    @url = get_url(user)
+    mail(to: user.email, subject: "[Lorem Ipsum] Yay! It's Your Turn!")
+  end
+
+  def turn_reminder(user)
+    @user = user
+    @url = get_url(user)
+    mail(to: user.email, subject: "[Lorem Ipsum] Reminder: It's Your Turn")
+  end
+
+  private
+
+  def get_url(user)
+    (Rails.env == 'production' ?
       'https://loremipsumgame.com/' :
       'http://127.0.0.1:3000/users/') +
-      @user.token + "/turns/new"
-    mail(to: @user.email, subject: "[Lorem Ipsum] Yay! It's Your Turn!")
+      user.token + "/turns/new"
   end
 end
