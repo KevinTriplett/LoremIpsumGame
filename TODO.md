@@ -2,13 +2,13 @@
 
 ## MVP 2
 - [ ] implement integration smoke tests
-- [ ] implement game finished notification
-- [ ] implement indefinite first and last turns
-- [ ] implement cronjob for turn reminder notification
-- [ ] implement cronjob for turn forfeit notification
+- [ ] implement indefinite last turn
 - [ ] implement cronjob for game finished notification
-- [ ] add :status field on :turns table - finished | forfeited
 - [ ] remove Reform#full_messages_for monkey patch
+- [X] implement game finished notification
+- [X] implement indefinite first turn
+- [X] implement cronjob for turn reminder notification
+- [X] implement cronjob for turn forfeit notification
 - [X] implement turn finished notification
 - [X] update game/turn end datetimes when rules are updated
 - [X] allow entry to be added
@@ -38,8 +38,8 @@ EtherPad-Lite implementation (development):
 - [X] allow entry with EtherPad-Lite embedded with "End Turn" button (for players whose turn it is)
 - [X] "End Turn" action saves the entire text as the entry and sends notification
 
-Etherpad-Lite implementation (production):
-- [ ] spin up new server for Etherpad and Lorem Ipsum
+Server implementation (production):
+- [X] spin up new server for Etherpad and Lorem Ipsum
 - [ ] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
 - [ ] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
 - [ ] create a simple deploy system
