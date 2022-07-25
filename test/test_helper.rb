@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+require 'database_cleaner/active_record'
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
@@ -8,15 +9,14 @@ class ActiveSupport::TestCase
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
-
-  # Add more helper methods to be used by all tests here...
 end
 
-# Destroy all models because they do not get destroyed automatically
-(ActiveRecord::Base.connection.tables - %w{schema_migrations}).each do |table_name|
-  ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table_name};" unless table_name == "ar_internal_metadata"
-end
+# database_cleaner strategies are :transaction and :truncation
+DatabaseCleaner.strategy = :truncation
+# DatabaseCleaner.strategy = :transaction
+DatabaseCleaner.clean_with :truncation
 
+# more helper methods used by all tests...
 NAMES = %w(john jane eric lee harvey sam kevin hank)
 SURNAMES = %w(smith jones doe windsor johnson klaxine)
 PROVIDERS = %w(gmail domain example sample yahoo gargole)
@@ -37,16 +37,11 @@ def last_random_user_name
   @last_random_user_name
 end
 
-
 GAME_NAMES_FIRST = %w(dark lorem glad sad melancholy joyful lonesome tender lucid)
-GAME_NAMES_CONJUNCT = %w(and in but for yet the)
 GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissfully wispy wistfully)
 GAME_NAMES_THIRD = %w(night ipsum song melody heart dove mercies dreams)
 def random_game_name
-  begin
-    @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_CONJUNCT.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
-  end while Game.find_by_name(@_last_random_game_name)
-  @_last_random_game_name
+  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
 end
 
 def last_random_game_name
