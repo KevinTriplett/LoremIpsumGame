@@ -5,6 +5,7 @@
 - [ ] implement indefinite last turn
 - [ ] implement cronjob for game finished notification
 - [ ] remove Reform#full_messages_for monkey patch
+- [X] deleting user reassigns current_player_id if necessary
 - [X] implement game finished notification
 - [X] implement indefinite first turn
 - [X] implement cronjob for turn reminder notification
