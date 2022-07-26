@@ -61,19 +61,19 @@ class Turn::Cell::Story < Cell::ViewModel
   end  
 
   def game_start
-    game.game_start ? game.game_start.strftime("%m %-d, %Y") : "not started yet"
+    game.game_start ? game.game_start.short_date_at_time : "not started yet"
   end
 
   def game_end
-    game.game_end ? game.game_end.strftime("%m %-d, %Y") : ""
+    game.game_end ? game.game_end.short_date_at_time : ""
   end
 
   def turn_start
-    game.turn_start ? game.turn_start.strftime("%l:%M %P (%a %-m/%-d)") : "not started yet"
+    game.turn_start ? game.turn_start.time_and_day : "not started yet"
   end
 
   def turn_end
-    game.turn_end ? game.turn_end.strftime("%l:%M %P on (%a %-m/%-d)") : ""
+    game.turn_end ? game.turn_end.time_and_day : ""
   end
 
   def html_story

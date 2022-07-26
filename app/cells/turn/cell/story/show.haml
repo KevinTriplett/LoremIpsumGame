@@ -2,18 +2,18 @@
 
 .row.timestamps
   .col-sm-5
-    %p.timestamp
+    %p.timestamp.game-start
       Game Started:
       = game_start
-      %br
+    %p.timestamp.game-end
       Game Ends:
       = game_end
   .col-sm-7
-    %p.timestamp
-      Current Turn Started:
+    %p.timestamp.turn-start
+      Turn Started:
       = turn_start
-      %br
-      Current Turn Ends:
+    %p.timestamp.turn-end
+      Turn Ends:
       = turn_end
 
 %hr
