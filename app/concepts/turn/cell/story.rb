@@ -56,7 +56,7 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def story
     current_player? ?
-      "Something went wrong: unable to access the document 😭"
+      "Something went wrong: unable to access the document 😭<br>(Note: JavaScript is required)"
       : html_story
   end  
 
