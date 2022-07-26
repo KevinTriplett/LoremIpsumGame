@@ -10,7 +10,7 @@ class GameOperationTest < MiniTest::Spec
     # happy path tests
     it "Creates {Game} model when given valid attributes" do
       DatabaseCleaner.cleaning do
-        result = Game::Operation::Create.wtf?(params: {
+        result = Game::Operation::Create.call(params: {
           game: {
             name: random_game_name,
             game_days: 3,
@@ -27,7 +27,7 @@ class GameOperationTest < MiniTest::Spec
 
     it "Initializes {Game} model rules when no attributes provided" do
       DatabaseCleaner.cleaning do
-        result = Game::Operation::Create.wtf?(params: {
+        result = Game::Operation::Create.call(params: {
           game: {
             name: random_game_name
           }
@@ -47,7 +47,7 @@ class GameOperationTest < MiniTest::Spec
         game = Game.find(game.id)
         start = game.game_start
 
-        result = Game::Operation::Update.wtf?(params: {
+        result = Game::Operation::Update.call(params: {
           game: {
             id: game.id,
             name: game.name,
@@ -69,7 +69,7 @@ class GameOperationTest < MiniTest::Spec
         game = Game.find(game.id)
         start = game.turn_start
 
-        result = Game::Operation::Update.wtf?(params: {
+        result = Game::Operation::Update.call(params: {
           game: {
             id: game.id,
             name: game.name,
@@ -88,7 +88,7 @@ class GameOperationTest < MiniTest::Spec
     # failing tests
     it "Fails with invalid parameters" do
       DatabaseCleaner.cleaning do
-        result = Game::Operation::Create.wtf?(params: {})
+        result = Game::Operation::Create.call(params: {})
 
         assert_equal false, result.success?
       end
@@ -96,13 +96,13 @@ class GameOperationTest < MiniTest::Spec
 
     it "Fails with non-unique name" do
       DatabaseCleaner.cleaning do
-        Game::Operation::Create.wtf?(params: {
+        Game::Operation::Create.call(params: {
           game: {
             name: random_game_name
           }
         })
 
-        result = Game::Operation::Create.wtf?(params: {
+        result = Game::Operation::Create.call(params: {
           game: {
             name: last_random_game_name
           }
@@ -114,7 +114,7 @@ class GameOperationTest < MiniTest::Spec
 
     it "Fails with invalid name attribute" do
       DatabaseCleaner.cleaning do
-        result = Game::Operation::Create.wtf?(params: {
+        result = Game::Operation::Create.call(params: {
           game: {
             name: ""
           }

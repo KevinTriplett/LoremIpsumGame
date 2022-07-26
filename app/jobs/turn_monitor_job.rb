@@ -9,7 +9,7 @@ class TurnMonitorJob < ApplicationJob
         UserMailer.turn_reminder(user).deliver_now
       elsif !game.last_turn? # last turn is indefinite
         # auto-finish turn
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },

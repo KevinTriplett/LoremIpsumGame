@@ -13,7 +13,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -34,7 +34,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -56,7 +56,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game(name: random_game_name, current_player_id: "1234")
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -75,7 +75,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game1 = create_game
         game2 = create_game
-        User::Operation::Create.wtf?(
+        User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -85,7 +85,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game1.id
         )
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: "jane doe", 
@@ -112,7 +112,7 @@ class UserOperationTest < MiniTest::Spec
         ActionMailer::Base.deliveries.clear
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -135,7 +135,7 @@ class UserOperationTest < MiniTest::Spec
         game = Game.find(game.id)
         assert_equal user1.id, game.current_player_id
 
-        User::Operation::Delete.wtf?(
+        User::Operation::Delete.call(
           params: {
             game_id: game.id,
             id: user1.id
@@ -150,7 +150,7 @@ class UserOperationTest < MiniTest::Spec
     # it "Allows non-unique email address for same user" do
     #   DatabaseCleaner.cleaning do
     #     game = create_game
-    #     result = User::Operation::Create.wtf?(
+    #     result = User::Operation::Create.call(
     #       params: {
     #         user: {
     #           name: random_user_name, 
@@ -162,7 +162,7 @@ class UserOperationTest < MiniTest::Spec
     #     user = result["contract.default"].model
     #     assert_equal true, result.success?
         
-    #     result = User::Operation::Update.wtf?(
+    #     result = User::Operation::Update.call(
     #       params: {
     #         user: {
     #           id: user.id,
@@ -181,7 +181,7 @@ class UserOperationTest < MiniTest::Spec
     # failing tests
     it "Fails with invalid parameters" do
       DatabaseCleaner.cleaning do
-        result = User::Operation::Create.wtf?(params: {})
+        result = User::Operation::Create.call(params: {})
 
         assert_equal false, result.success?
       end
@@ -191,7 +191,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: "", 
@@ -210,7 +210,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -229,7 +229,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -248,7 +248,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -265,7 +265,7 @@ class UserOperationTest < MiniTest::Spec
     it "Fails with non-unique email address on same game" do
       DatabaseCleaner.cleaning do
         game = create_game
-        User::Operation::Create.wtf?(
+        User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -275,7 +275,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game.id
         )
 
-        result = User::Operation::Create.wtf?(
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: "jane doe", 

@@ -25,7 +25,7 @@ class TurnOperationTest < MiniTest::Spec
         game = create_game
         user = create_game_user(game.id)
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -46,7 +46,7 @@ class TurnOperationTest < MiniTest::Spec
         game = Game.find(game.id)
         assert_equal user.id, game.current_player_id
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -65,7 +65,7 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_game_user(game.id)
         user3 = create_game_user(game.id)
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -85,7 +85,7 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_game_user(game.id)
         user3 = create_game_user(game.id)
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -105,7 +105,7 @@ class TurnOperationTest < MiniTest::Spec
         assert_equal false, game.game_start.present?
         assert_equal false, game.game_end.present?
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -125,7 +125,7 @@ class TurnOperationTest < MiniTest::Spec
         game = create_game(name: random_game_name, game_start: time_start, game_end: time_end)
         user = create_game_user(game.id)
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -146,7 +146,7 @@ class TurnOperationTest < MiniTest::Spec
         assert_equal false, game.turn_start.present?
         assert_equal false, game.turn_end.present?
 
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -166,7 +166,7 @@ class TurnOperationTest < MiniTest::Spec
         user = create_game_user(game.id)
 
         ActionMailer::Base.deliveries.clear
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -196,7 +196,7 @@ class TurnOperationTest < MiniTest::Spec
         user3 = create_game_user(game.id)
     
         ActionMailer::Base.deliveries.clear
-        result = Turn::Operation::Create.wtf?(
+        result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
@@ -216,7 +216,7 @@ class TurnOperationTest < MiniTest::Spec
     # failure tests    
     it "Fails with invalid parameters" do
       DatabaseCleaner.cleaning do
-        result = Turn::Operation::Create.wtf?(params: {})
+        result = Turn::Operation::Create.call(params: {})
 
         assert_equal false, result.success?
         assert_nil(result["result.contract.default"])
