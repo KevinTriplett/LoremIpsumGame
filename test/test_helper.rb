@@ -78,7 +78,7 @@ def create_game(params = {})
   )
 end
 
-def create_user(params = {})
+def create_user(params)
   User.create(
     name: params[:name] || random_user_name,
     email: params[:email] || random_email,
@@ -87,7 +87,8 @@ def create_user(params = {})
 end
 
 def create_game_user(game_id)
-  User::Operation::Create.wtf?(
+  raise "game_id must be an integer or string, not a Hash" if game_id.is_a? Hash
+  User::Operation::Create.call(
     params: {
       user: {
         name: random_user_name, 

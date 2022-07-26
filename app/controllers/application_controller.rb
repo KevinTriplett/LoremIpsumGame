@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_game
-    current_user ? current_user.game : nil
+    current_user.game
   end
 
   def current_player?

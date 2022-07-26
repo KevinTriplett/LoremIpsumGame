@@ -1,13 +1,13 @@
 class TurnsController < ApplicationController
   def index
-    get_user
+    @user = get_user
     render
   end
 
   def new
     return redirect_to user_turns_path unless current_player?
     session[:ep_sessions] ||= {}
-    get_user
+    @user = get_user
 
     run Turn::Operation::Create::Present, user_id: @user.id do |ctx|
       return render
@@ -19,7 +19,7 @@ class TurnsController < ApplicationController
   def create
     return redirect_to user_turns_path unless current_player?
     session[:ep_sessions] ||= {}
-    get_user
+    @user = get_user
 
     run Turn::Operation::Create, user_id: @user.id do |ctx|
       flash[:notice] = "Turn has been completed and saved - thank you!"
@@ -32,6 +32,6 @@ class TurnsController < ApplicationController
   private
 
   def get_user
-    @user = User.find_by_token(params[:user_token])
+    User.find_by_token(params[:user_token])
   end
 end
