@@ -50,4 +50,20 @@ class UserMailerTest < ActionMailer::TestCase
     assert_match /Here's your magic link/, email.body.encoded
     ActionMailer::Base.deliveries.clear
   end
+
+  test 'game_ended' do
+    game = create_game
+    user = create_user(game_id: game.id)
+    ActionMailer::Base.deliveries.clear
+    email = UserMailer.game_ended(user)
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal email.to, [user.email]
+    assert_equal email.from, ['notifications@loremipsumgame.com']
+    assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate!"
+    assert_match /Here's your magic link/, email.body.encoded
+    ActionMailer::Base.deliveries.clear
+  end
 end

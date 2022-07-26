@@ -20,6 +20,12 @@ class UserMailer < ApplicationMailer
     mail(to: user.email, subject: "[Lorem Ipsum] Reminder: It's Your Turn")
   end
 
+  def game_ended(user)
+    @user = user
+    @url = get_url(user)
+    mail(to: user.email, subject: "[Lorem Ipsum] It's Done! Time to Celebrate!")
+  end
+
   private
 
   def get_url(user)

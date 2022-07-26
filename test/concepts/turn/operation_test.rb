@@ -167,6 +167,38 @@ class TurnOperationTest < MiniTest::Spec
       ActionMailer::Base.deliveries.clear
     end
 
+    it "Sends an email to all players on last turn finished" do
+      game_start = Time.now - 1.days
+      turn_start = Time.now - 4.hours
+      turn_end = turn_start + 4.hours
+      game_end = turn_end - 1.minute
+      game = create_game({
+        game_start: game_start,
+        game_end: game_end,
+        turn_start: turn_start,
+        turn_end: turn_end,
+        turn_hours: 4
+      })
+      user1 = create_game_user(game.id)
+      user2 = create_game_user(game.id)
+      user3 = create_game_user(game.id)
+  
+      ActionMailer::Base.deliveries.clear
+      result = Turn::Operation::Create.wtf?(
+        params: {
+          turn: {}
+        },
+        user_id: user1.id
+      )
+
+      assert_emails 3
+      ActionMailer::Base.deliveries.clear
+
+      game = Game.find(game.id)
+      assert turn_start, game.turn_start
+      assert turn_end, game.turn_end
+    end
+
     # ------------------
     # failure tests    
     it "Fails with invalid parameters" do
