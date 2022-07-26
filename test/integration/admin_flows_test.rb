@@ -3,6 +3,7 @@ require "test_helper"
 class AdminFlowsTest < ActionDispatch::IntegrationTest
     
   test "admin page with no games" do
+    DatabaseCleaner.clean
     DatabaseCleaner.start
     get admin_games_path
     assert_select "h1", "Lorem Ipsum"

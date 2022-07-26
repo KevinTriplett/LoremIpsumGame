@@ -13,7 +13,6 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       turn_end: turn_end,
       turn_hours: 2
     })
-
     user1 = create_game_user(game.id)
     user2 = create_game_user(game.id)
 
@@ -43,7 +42,6 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       turn_end: turn_end,
       turn_hours: 2
     })
-
     user1 = create_game_user(game.id)
     user2 = create_game_user(game.id)
 
@@ -73,7 +71,6 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       turn_end: turn_end,
       turn_hours: 4
     })
-
     user1 = create_game_user(game.id)
     user2 = create_game_user(game.id)
 
