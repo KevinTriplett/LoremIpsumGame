@@ -7,7 +7,7 @@ class TurnMonitorJob < ApplicationJob
     if game.current_player_id == user.id
       if game.turn_end > Time.now
         UserMailer.turn_reminder(user).deliver_now
-      else
+      elsif game.turn_end < game.game_end # last turn is indefinite, so don't end the turn
         result = Turn::Operation::Create.wtf?(
           params: {
             turn: {}

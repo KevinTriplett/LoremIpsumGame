@@ -14,6 +14,15 @@ class TurnOperationTest < MiniTest::Spec
       DatabaseCleaner.clean
     end
 
+    it "Starts with an indefinite turn duration" do
+      game = create_game
+      user = create_game_user(game.id)
+
+      game = Game.find(game.id)
+      assert_nil game.turn_start
+      assert_nil game.turn_end
+    end
+
     # ------------------
     # happy path tests
     it "Creates {Turn} model when given valid attributes" do
