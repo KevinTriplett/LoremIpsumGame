@@ -5,27 +5,27 @@ class Turn::Operation::Create < Trailblazer::Operation
   class Present < Trailblazer::Operation
     step Model(Turn, :new)
     step :initialize_user
-    step :initialize_entry
     step Contract::Build(constant: Turn::Contract::Create)
 
     def initialize_user(ctx, model:, **)
       model.user_id = ctx[:user_id]
     end
-
-    def initialize_entry(ctx, model:, **)
-      return true if Rails.env == "test"
-      client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
-      pad_name = model.game.name.gsub(/\s/, '_')
-      model.entry = client.getHTML(padID: pad_name)[:html]
-    end
   end
   
   step Subprocess(Present)
+  step :initialize_entry
   step Contract::Persist()
   # TODO: exit with success if game.last_turn?
   step :update_game
   step :setup_monitor
   step :notify
+
+  def initialize_entry(ctx, model:, **)
+    return true if Rails.env == "test"
+    client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
+    pad_name = model.game.name.gsub(/\s/, '_')
+    model.entry = client.getHTML(padID: pad_name)[:html]
+  end
 
   def update_game(ctx, model:, **)
     game = User.find(model.user_id).game
