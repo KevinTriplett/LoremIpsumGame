@@ -100,22 +100,11 @@ class UserOperationTest < MiniTest::Spec
 
     it "Creates {User} model token when given valid attributes" do
       game = create_game
-
-      result = User::Operation::Create.wtf?(
-        params: {
-          user: {
-            name: random_user_name, 
-            email: random_email
-          }
-        },
-        game_id: game.id
-      )
-
-      user = result[:model]
+      user = create_game_user(game.id)
       assert user.token
       end
 
-      it "Sends an email on user creation" do
+    it "Sends an email on user creation" do
       ActionMailer::Base.deliveries.clear
       game = create_game
 
@@ -131,6 +120,23 @@ class UserOperationTest < MiniTest::Spec
 
       assert_emails 1
       ActionMailer::Base.deliveries.clear
+    end
+
+    it "reassigns current_player_id to next player when user is deleted" do
+      game = create_game
+      user1 = create_game_user(game.id)
+      user2 = create_game_user(game.id)
+      game = Game.find(game.id)
+      assert_equal user1.id, game.current_player_id
+
+      User::Operation::Delete.wtf?(
+        params: {
+          game_id: game.id,
+          id: user1.id
+        }
+      )
+      game = Game.find(game.id)
+      assert_equal user2.id, game.current_player_id
     end
 
     # TODO: create validation for this one

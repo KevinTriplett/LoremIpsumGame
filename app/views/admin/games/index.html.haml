@@ -2,7 +2,7 @@
 
 - @games.each do |g|
   %p
-    = g.name
+    %span.game-name= g.name
     %br
     -# = link_to "show", game_url(g.id)
     = link_to "edit", edit_admin_game_url(g.id)

@@ -18,7 +18,7 @@ class TurnOperationTest < MiniTest::Spec
     # happy path tests
     it "Creates {Turn} model when given valid attributes" do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game.id)
 
       result = Turn::Operation::Create.wtf?(
         params: {
@@ -33,11 +33,28 @@ class TurnOperationTest < MiniTest::Spec
       assert_equal user.id, turn.user_id
     end
 
-    it "Updates current_player_id attribute on last game model (no rollover)" do
+    it "Does not update current_player_id attribute when turn finished and only one player" do
       game = create_game
-      user1 = create_user(game_id: game.id)
-      user2 = create_user(game_id: game.id)
-      user3 = create_user(game_id: game.id)
+      user = create_game_user(game.id)
+      game = Game.find(game.id)
+      assert_equal user.id, game.current_player_id
+
+      result = Turn::Operation::Create.wtf?(
+        params: {
+          turn: {}
+        },
+        user_id: user.id
+      )
+
+      game = Game.find(game.id)
+      assert_equal user.id, game.current_player_id
+    end
+
+    it "Updates current_player_id attribute when turn finished (no rollover)" do
+      game = create_game
+      user1 = create_game_user(game.id)
+      user2 = create_game_user(game.id)
+      user3 = create_game_user(game.id)
 
       result = Turn::Operation::Create.wtf?(
         params: {
@@ -51,11 +68,11 @@ class TurnOperationTest < MiniTest::Spec
       assert_equal user3.id, game.current_player_id
     end
 
-    it "Updates current_player_id attribute on last game model (rollover)" do
+    it "Updates current_player_id attribute when turn finished (rollover)" do
       game = create_game
-      user1 = create_user(game_id: game.id)
-      user2 = create_user(game_id: game.id)
-      user3 = create_user(game_id: game.id)
+      user1 = create_game_user(game.id)
+      user2 = create_game_user(game.id)
+      user3 = create_game_user(game.id)
 
       result = Turn::Operation::Create.wtf?(
         params: {
@@ -70,8 +87,10 @@ class TurnOperationTest < MiniTest::Spec
 
     it "Initializes game start/end datetime attributes" do
       game = create_game
-      user1 = create_user(game_id: game.id)
-      user2 = create_user(game_id: game.id)
+      user1 = create_game_user(game.id)
+      user2 = create_game_user(game.id)
+      assert_equal false, game.game_start.present?
+      assert_equal false, game.game_end.present?
 
       result = Turn::Operation::Create.wtf?(
         params: {
@@ -89,7 +108,7 @@ class TurnOperationTest < MiniTest::Spec
     it "Does not change game start/end datetime attributes" do
       time_start, time_end = Time.now - 2.days, Time.now + 2.days
       game = create_game(name: random_game_name, game_start: time_start, game_end: time_end)
-      user = create_user(game_id: game.id)
+      user = create_game_user(game.id)
 
       result = Turn::Operation::Create.wtf?(
         params: {
@@ -105,8 +124,10 @@ class TurnOperationTest < MiniTest::Spec
 
     it "Updates turn start/end datetime attributes" do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game.id)
       game = Game.find(game.id)
+      assert_equal false, game.turn_start.present?
+      assert_equal false, game.turn_end.present?
 
       result = Turn::Operation::Create.wtf?(
         params: {
@@ -122,10 +143,10 @@ class TurnOperationTest < MiniTest::Spec
     end
 
     it "Sends an email to current_player on turn creation" do
-      ActionMailer::Base.deliveries.clear
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game.id)
 
+      ActionMailer::Base.deliveries.clear
       result = Turn::Operation::Create.wtf?(
         params: {
           turn: {}

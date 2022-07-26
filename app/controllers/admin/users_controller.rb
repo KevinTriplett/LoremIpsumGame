@@ -20,7 +20,6 @@ class Admin::UsersController < ApplicationController
       return redirect_to new_admin_game_user_path
     end
   
-    puts "result = " + _ctx.inspect
     @form = _ctx["contract.default"]
     @game = Game.find(params[:game_id])
     render :new, status: :unprocessable_entity

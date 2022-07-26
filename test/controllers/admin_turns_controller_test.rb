@@ -6,17 +6,8 @@ class TurnsControllerTest < ActionDispatch::IntegrationTest
     ActionMailer::Base.deliveries.clear
 
     game = create_game
-    result = User::Operation::Create.wtf?(
-      params: {
-        user: {
-          name: random_user_name, 
-          email: random_email
-        }
-      },
-      game_id: game.id
-    )
-    user1 = result[:model]
-    user2 = create_user(game_id: game.id)
+    user1 = create_game_user(game.id)
+    user2 = create_game_user(game.id)
 
     assert_emails 1 do
       post user_turns_url(user_token: user1.token), params: {

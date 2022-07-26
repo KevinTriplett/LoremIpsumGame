@@ -1,7 +1,15 @@
 ENV["RAILS_ENV"] ||= "test"
+
 require_relative "../config/environment"
 require "rails/test_help"
+
 require 'database_cleaner/active_record'
+DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.clean_with :truncation
+
+# require 'capybara/poltergeist'
+# Capybara.javascript_driver = :poltergeist
+# Capybara.default_driver = :poltergeist
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
@@ -11,18 +19,16 @@ class ActiveSupport::TestCase
   fixtures :all
 end
 
-# database_cleaner strategies are :transaction and :truncation
-DatabaseCleaner.strategy = :truncation
-# DatabaseCleaner.strategy = :transaction
-DatabaseCleaner.clean_with :truncation
-
 # more helper methods used by all tests...
 NAMES = %w(john jane eric lee harvey sam kevin hank)
 SURNAMES = %w(smith jones doe windsor johnson klaxine)
 PROVIDERS = %w(gmail domain example sample yahoo gargole)
 TLDS = %w(com it org club pl ru uk aus)
 def random_email
-  @_last_random_email = "#{ NAMES.sample }.#{ SURNAMES.sample }@#{ PROVIDERS.sample }.#{ TLDS.sample }"
+  begin
+    @_last_random_email = "#{ NAMES.sample }.#{ SURNAMES.sample }@#{ PROVIDERS.sample }.#{ TLDS.sample }"
+  end while User.find_by_email(last_random_email)
+  @_last_random_email
 end
 
 def last_random_email
@@ -30,18 +36,21 @@ def last_random_email
 end
 
 def random_user_name
-  @last_random_user_name = "#{ NAMES.sample } #{ SURNAMES.sample }"
+  @_last_random_user_name = "#{ NAMES.sample } #{ SURNAMES.sample }"
 end
 
 def last_random_user_name
-  @last_random_user_name
+  @_last_random_user_name
 end
 
 GAME_NAMES_FIRST = %w(dark lorem glad sad melancholy joyful lonesome tender lucid)
 GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissfully wispy wistfully)
 GAME_NAMES_THIRD = %w(night ipsum song melody heart dove mercies dreams)
 def random_game_name
-  @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
+  begin
+    @_last_random_game_name = "#{ GAME_NAMES_FIRST.sample } #{ GAME_NAMES_SECOND.sample } #{ GAME_NAMES_THIRD.sample }"
+  end while Game.find_by_name(last_random_game_name)
+  @_last_random_game_name
 end
 
 def last_random_game_name
@@ -67,4 +76,16 @@ def create_user(params = {})
     email: params[:email] || random_email,
     game_id: params[:game_id]
   )
+end
+
+def create_game_user(game_id)
+  User::Operation::Create.wtf?(
+    params: {
+      user: {
+        name: random_user_name, 
+        email: random_email
+      }
+    },
+    game_id: game_id
+  )[:model]
 end

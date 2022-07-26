@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   has_secure_token
   
-  scope :next_user, ->(user_id, game_id) { 
+  scope :next_player, ->(user_id, game_id) { 
     where("id > ?", user_id).first ||
     where("game_id = ?", game_id).first
   }
