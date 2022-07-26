@@ -13,6 +13,7 @@ class UserMailerTest < ActionMailer::TestCase
     end
 
     assert_equal email.to, [user.email]
+    assert_equal email.bcc, ["kt@kevintriplett.com"]
     assert_equal email.from, ['notifications@loremipsumgame.com']
     assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game'
     assert_match /here's your magic link/, email.body.encoded
@@ -29,6 +30,7 @@ class UserMailerTest < ActionMailer::TestCase
     end
 
     assert_equal email.to, [user.email]
+    assert_equal email.bcc, ["kt@kevintriplett.com"]
     assert_equal email.from, ['notifications@loremipsumgame.com']
     assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn!"
     assert_match /Here's your magic link/, email.body.encoded
@@ -45,6 +47,7 @@ class UserMailerTest < ActionMailer::TestCase
     end
 
     assert_equal email.to, [user.email]
+    assert_equal email.bcc, ["kt@kevintriplett.com"]
     assert_equal email.from, ['notifications@loremipsumgame.com']
     assert_equal email.subject, "[Lorem Ipsum] Reminder: It's Your Turn"
     assert_match /Here's your magic link/, email.body.encoded
@@ -61,6 +64,7 @@ class UserMailerTest < ActionMailer::TestCase
     end
 
     assert_equal email.to, [user.email]
+    assert_equal email.bcc, ["kt@kevintriplett.com"]
     assert_equal email.from, ['notifications@loremipsumgame.com']
     assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate!"
     assert_match /Here's your magic link/, email.body.encoded
