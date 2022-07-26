@@ -46,8 +46,8 @@ class TurnMonitorJobTest < ActiveJob::TestCase
     user2 = create_game_user(game.id)
 
     game = Game.find(game.id)
+    assert !game.last_turn?
     assert_equal user1.id, game.current_player_id
-
     ActionMailer::Base.deliveries.clear
     TurnMonitorJob.perform_now(user1.id)
 
@@ -75,6 +75,7 @@ class TurnMonitorJobTest < ActiveJob::TestCase
     user2 = create_game_user(game.id)
 
     game = Game.find(game.id)
+    assert game.last_turn?
     assert_equal user1.id, game.current_player_id
     assert_not_nil game.game_start
     assert_not_nil game.game_end

@@ -22,18 +22,20 @@ class Turn::Operation::Create < Trailblazer::Operation
   
   step Subprocess(Present)
   step Contract::Persist()
+  # TODO: exit with success if game.last_turn?
   step :update_game
   step :setup_monitor
   step :notify
 
   def update_game(ctx, model:, **)
     game = User.find(model.user_id).game
+    return false if game.last_turn? # TODO: exit operation with success if game.last_turn?
     game.game_start ||= Time.now
     game.game_end ||= game.game_start + game.game_days.days
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
     game.current_player_id = User.next_player(model.user_id, game.id).id
-    game.save
+    game.save!
   end
 
   def setup_monitor(ctx, model:, **)

@@ -21,7 +21,7 @@ module User::Operation
       user = ctx[:model]
       game = Game.find(user.game_id)
       game.current_player_id ||= user.id
-      game.save
+      game.save!
     end
 
     def notify(ctx, **)
