@@ -16,7 +16,7 @@ end
 ############################
 # database cleaner
 require 'database_cleaner/active_record'
-DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.strategy = :transaction
 DatabaseCleaner.clean_with :truncation
 
 ############################
