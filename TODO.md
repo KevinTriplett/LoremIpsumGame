@@ -1,10 +1,14 @@
 # TODO
 
 ## MVP 2
-- [ ] implement integration smoke tests
-- [ ] implement indefinite last turn
-- [ ] implement cronjob for game finished notification
 - [ ] remove Reform#full_messages_for monkey patch
+- [ ] display times in browser in user's timezone
+- [ ] implement integration system tests
+- [X] convert to databasecleaner transactions
+- [X] send email bcc to kt@kevintriplett.com
+- [X] send game finished notification
+- [X] implement indefinite last turn
+- [X] implement integration smoke tests
 - [X] deleting user reassigns current_player_id if necessary
 - [X] implement game finished notification
 - [X] implement indefinite first turn
