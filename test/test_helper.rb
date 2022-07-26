@@ -3,14 +3,8 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
-require 'database_cleaner/active_record'
-DatabaseCleaner.strategy = :truncation
-DatabaseCleaner.clean_with :truncation
-
-# require 'capybara/poltergeist'
-# Capybara.javascript_driver = :poltergeist
-# Capybara.default_driver = :poltergeist
-
+############################
+#
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
@@ -19,7 +13,21 @@ class ActiveSupport::TestCase
   fixtures :all
 end
 
-# more helper methods used by all tests...
+############################
+# database cleaner
+require 'database_cleaner/active_record'
+DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.clean_with :truncation
+
+############################
+# SystemTestCase testing - needed?
+# require 'capybara/rails'
+# require 'capybara/minitest'
+# Capybara.server = :puma, { Silent: true }
+
+############################
+# app-specific test helpers
+
 NAMES = %w(john jane eric lee harvey sam kevin hank)
 SURNAMES = %w(smith jones doe windsor johnson klaxine)
 PROVIDERS = %w(gmail domain example sample yahoo gargole)
