@@ -30,7 +30,8 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def current_player_name
-    game.current_player.name
+    # refresh to pick up new current player
+    User.find(game.current_player_id).name
   end
 
   def current_player?
