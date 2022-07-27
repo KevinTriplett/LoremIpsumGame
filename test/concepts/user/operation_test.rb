@@ -146,6 +146,22 @@ class UserOperationTest < MiniTest::Spec
       end
     end
 
+    it "nils game.current_player_id when all users deleted" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user = create_game_user(game.id)
+
+        User::Operation::Delete.call(
+          params: {
+            game_id: game.id,
+            id: user.id
+          }
+        )
+        game = Game.find(game.id)
+        assert_nil game.current_player_id
+      end
+    end
+
     # TODO: create validation for this one
     # it "Allows non-unique email address for same user" do
     #   DatabaseCleaner.cleaning do
