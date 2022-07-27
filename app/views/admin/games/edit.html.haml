@@ -2,11 +2,13 @@
 
 = simple_form_for @form, as: :game, url: admin_game_path(@model.id), method: :patch do |f|
   .row
+    .col= f.error_notification
+  .row
     .col= f.input :name, placeholder: "Name", label: false
   .row
-    .col= f.input :game_days, placeholder: "Number of days for game", label: false
+    .col= f.input :game_days, placeholder: "Number of days for game (#{@default_game_days})", label: false
   .row
-    .col= f.input :turn_hours, placeholder: "Number of hours per turn", label: false
+    .col= f.input :turn_hours, placeholder: "Number of hours per turn (#{@default_turn_hours})", label: false
   .row
     .col= f.button :submit, "Update Game", class: "btn-primary"
 .row

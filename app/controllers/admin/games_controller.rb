@@ -7,6 +7,7 @@ module Admin
     def new
       run Game::Operation::Create::Present do |ctx|
         @form = ctx["contract.default"]
+        get_defaults
         render
       end
     end
@@ -17,12 +18,14 @@ module Admin
       end
     
       @form = _ctx["contract.default"]
+      get_defaults
       render :new, status: :unprocessable_entity
     end
   
     def edit
       run Game::Operation::Update::Present do |ctx|
         @form = ctx["contract.default"]
+        get_defaults
         render
       end
     end
@@ -34,6 +37,7 @@ module Admin
       end
     
       @form = _ctx["contract.default"] # FIXME: redundant to #create!
+      get_defaults
       render :edit, status: :unprocessable_entity
     end
 
@@ -44,6 +48,13 @@ module Admin
       end
 
       flash[:notice] = "Unable to delete Game"
+    end
+
+    private
+
+    def get_defaults
+      @default_game_days = Rails.configuration.default_game_days
+      @default_turn_hours = Rails.configuration.default_turn_hours
     end
   end
 end

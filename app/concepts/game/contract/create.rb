@@ -11,8 +11,6 @@ module Game::Contract
       params do
         required(:id)
         required(:name).filled.value(:string)
-        required(:game_days).filled.value(:integer)
-        required(:turn_hours).filled.value(:integer)
       end
 
       rule(:name, :id) do
