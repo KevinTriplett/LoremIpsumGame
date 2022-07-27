@@ -21,6 +21,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_select "p.game-end", "Game Ends:\n#{game.game_end.short_date_at_time}"
       assert_select "p.turn-start", "Turn Started:\n#{game.turn_start.time_and_day}"
       assert_select "p.turn-end", "Turn Ends:\n#{game.turn_end.time_and_day}"
+      assert_select "p.time-left", "Time Left:\n3 hours, 59 minutes"
+      assert_select "p.current-player-name", "Current Player:\n#{user1.name}"
       assert_select "#ep", "Something went wrong: unable to access the document 😭(Note: JavaScript is required)"
       assert_select "li.current-player", "#{user1.name}\n <== current player"
 
