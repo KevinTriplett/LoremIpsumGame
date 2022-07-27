@@ -18,7 +18,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def pad_name
-    game_name.gsub(/\s/, '_')
+    game.pad_name
   end
 
   def users

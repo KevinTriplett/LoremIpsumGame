@@ -1,5 +1,6 @@
 class Game::Cell::Show < Cell::ViewModel
   property :name
+  property :pad_name
   property :users
   property :current_player
   property :current_player_id
@@ -10,9 +11,5 @@ class Game::Cell::Show < Cell::ViewModel
 
   def show
     render # renders app/cells/game/cell/show/show.haml
-  end
-
-  def pad_name
-    name.gsub(/\s/, '_')
   end
 end

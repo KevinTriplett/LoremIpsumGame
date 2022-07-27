@@ -17,9 +17,11 @@ class GameOperationTest < MiniTest::Spec
             turn_hours: 2
           }
         })
+        pad_name = last_random_game_name.gsub(/\s/, '_')
 
         assert_equal true, result.success?
         assert_equal last_random_game_name, result[:model].name
+        assert_equal pad_name, result[:model].pad_name
         assert_equal 3, result[:model].game_days
         assert_equal 2, result[:model].turn_hours
       end
@@ -37,6 +39,30 @@ class GameOperationTest < MiniTest::Spec
         assert_equal last_random_game_name, result[:model].name
         assert_equal Rails.configuration.default_game_days, result[:model].game_days
         assert_equal Rails.configuration.default_turn_hours, result[:model].turn_hours
+      end
+    end
+
+    it "does not change pad_name when game name changes" do
+      DatabaseCleaner.cleaning do
+        start = Time.now
+        game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
+        game = Game.find(game.id)
+        start = game.game_start
+        old_pad_name = game.pad_name
+
+        result = Game::Operation::Update.call(params: {
+          game: {
+            id: game.id,
+            name: random_game_name,
+            game_days: game.game_days,
+            turn_hours: game.turn_hours
+          },
+          id: game.id
+        })
+
+        game = Game.find(game.id)
+        assert_equal old_pad_name, game.pad_name
+        assert_equal last_random_game_name, game.name
       end
     end
 
