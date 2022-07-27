@@ -29,6 +29,10 @@ class Turn::Cell::Story < Cell::ViewModel
     game.current_player_id
   end
 
+  def current_player_name
+    game.current_player.name
+  end
+
   def current_player?
     user.id == current_player_id
   end
@@ -74,6 +78,12 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def turn_end
     game.turn_end ? game.turn_end.time_and_day : ""
+  end
+
+  def turn_time_remaining
+    hours = (game.turn_end - Time.now).to_i/60/60.floor
+    minutes = ((game.turn_end - Time.now).to_f/60 % 60).floor
+    "#{hours} hours, #{minutes} minutes"
   end
 
   def html_story
