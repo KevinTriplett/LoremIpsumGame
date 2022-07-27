@@ -15,7 +15,7 @@ module Game::Operation
     def update_game_end(ctx, **)
       game_days, model = ctx[:params][:game][:game_days], ctx[:model]
       model.game_end = model.game_start && game_days ?
-        model.game_start + game_days.days :
+        model.game_start + game_days.to_i.days :
         model.game_end
       true
     end
@@ -23,7 +23,7 @@ module Game::Operation
     def update_turn_end(ctx, **)
       turn_hours, model = ctx[:params][:game][:turn_hours], ctx[:model]
       model.turn_end = model.turn_start ?
-        model.turn_start + turn_hours.hours :
+        model.turn_start + turn_hours.to_i.hours :
         model.turn_end
       true
     end

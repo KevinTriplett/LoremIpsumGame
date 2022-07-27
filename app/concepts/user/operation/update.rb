@@ -18,7 +18,7 @@ module User::Operation
 
     def notify(ctx, **)
       user = ctx[:model]
-      UserMailer.with(params: user).welcome
+      UserMailer.with(params: user).welcome_email
     end
   end
 end
