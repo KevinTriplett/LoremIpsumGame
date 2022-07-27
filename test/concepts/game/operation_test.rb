@@ -20,10 +20,11 @@ class GameOperationTest < MiniTest::Spec
         pad_name = last_random_game_name.gsub(/\s/, '_')
 
         assert_equal true, result.success?
-        assert_equal last_random_game_name, result[:model].name
-        assert_equal pad_name, result[:model].pad_name
-        assert_equal 3, result[:model].game_days
-        assert_equal 2, result[:model].turn_hours
+        game = result[:model]
+        assert_equal last_random_game_name, game.name
+        assert_equal pad_name, game.pad_name
+        assert_equal 3, game.game_days
+        assert_equal 2, game.turn_hours
       end
     end
 
@@ -36,9 +37,9 @@ class GameOperationTest < MiniTest::Spec
         })
 
         assert_equal true, result.success?
-        assert_equal last_random_game_name, result[:model].name
-        assert_equal Rails.configuration.default_game_days, result[:model].game_days
-        assert_equal Rails.configuration.default_turn_hours, result[:model].turn_hours
+        game = result[:model]
+        assert_equal Rails.configuration.default_game_days, game.game_days
+        assert_equal Rails.configuration.default_turn_hours, game.turn_hours
       end
     end
 
