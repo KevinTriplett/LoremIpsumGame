@@ -38,7 +38,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def finish_button
-    current_player? && html_story ?
+    current_player? ?
       link_to("Finish Turn", user_turns_path, class: "btn btn-primary", data: { turbo_method: "post", turbo_confirm: "Click OK if you are finished with your turn" })
       : nil
   end
