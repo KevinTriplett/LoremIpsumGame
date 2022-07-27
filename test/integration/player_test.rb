@@ -28,6 +28,20 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
 
       get user_turns_path(user_token: user2.token)
       assert_select "li.current-player", "#{user1.name}\n <== current player"
+
+      Turn::Operation::Create.call(
+        params: {
+          turn: {}
+        },
+        user_id: user1.id
+      )
+
+      game = Game.find(game.id)
+      get user_turns_path(user_token: user2.token)
+      assert_select "p.turn-start", "Turn Started:\n#{game.turn_start.time_and_day}"
+      assert_select "p.turn-end", "Turn Ends:\n#{game.turn_end.time_and_day}"
+      assert_select "p.current-player-name", "Current Player:\n#{user2.name}"
+      assert_select "li.current-player", "#{user2.name}\n <== current player"
     end
   end
 end
