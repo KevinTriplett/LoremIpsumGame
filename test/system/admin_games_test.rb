@@ -20,7 +20,6 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_equal "Game 1", game.name
       assert_equal 33, game.game_days
       assert_equal 7, game.turn_hours
-      assert_equal "Game_1", game.pad_name
 
       assert_current_path new_admin_game_user_path(game_id: game.id)
       assert "h5", "New User for #{game.name}"

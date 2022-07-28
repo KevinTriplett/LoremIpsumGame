@@ -8,9 +8,9 @@ module Game::Operation
     
     step Subprocess(Present)
     step :initialize_rules
-    step :pad_name
     step Contract::Validate(key: :game)
     step Contract::Persist()
+    step :create_pad
 
     def initialize_rules(ctx, **)
       return true unless ctx[:params][:game]
@@ -18,9 +18,15 @@ module Game::Operation
       ctx[:params][:game][:turn_hours] ||= Rails.configuration.default_turn_hours
     end
 
-    def pad_name(ctx, **)
-      return true unless ctx[:params][:game]
-      ctx[:params][:game][:pad_name] = ctx[:params][:game][:name].gsub(/\s/, '_')
+    def create_pad(ctx, model:, **)
+      begin
+        game = Game.find(model.id)
+        client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
+        nil == client.createPad(padID: game.token)
+      rescue
+        puts "ERROR: pad '#{game.token}' could not be created"
+        true
+      end
     end
   end
 end

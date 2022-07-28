@@ -17,12 +17,10 @@ class GameOperationTest < MiniTest::Spec
             turn_hours: 2
           }
         })
-        pad_name = last_random_game_name.gsub(/\s/, '_')
 
         assert_equal true, result.success?
         game = result[:model]
         assert_equal last_random_game_name, game.name
-        assert_equal pad_name, game.pad_name
         assert_equal 3, game.game_days
         assert_equal 2, game.turn_hours
       end
@@ -49,7 +47,7 @@ class GameOperationTest < MiniTest::Spec
         game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
         game = Game.find(game.id)
         start = game.game_start
-        old_pad_name = game.pad_name
+        old_pad_name = game.token
 
         result = Game::Operation::Update.call(params: {
           game: {
@@ -62,7 +60,7 @@ class GameOperationTest < MiniTest::Spec
         })
 
         game = Game.find(game.id)
-        assert_equal old_pad_name, game.pad_name
+        assert_equal old_pad_name, game.token
         assert_equal last_random_game_name, game.name
       end
     end

@@ -24,7 +24,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     return true if Rails.env == "test"
     game = model.game
     client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
-    model.entry = client.getHTML(padID: game.pad_name)[:html]
+    model.entry = client.getHTML(padID: game.token)[:html]
   end
 
   def update_game(ctx, model:, **)

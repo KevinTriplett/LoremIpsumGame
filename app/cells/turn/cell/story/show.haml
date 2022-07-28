@@ -2,25 +2,25 @@
 
 .row.timestamps
   .col-sm-5
-    %p.timestamp.game-start
+    %p.timestamp
       Game Started:
-      %span.utc-time= game_start
-    %p.timestamp.game-end
+      %span.utc-time.game-start= game_start
+    %p.timestamp
       Game Ends:
-      %span.utc-time= game_end
-    %p.timestamp.current-player-name
+      %span.utc-time.game-end= game_end
+    %p.timestamp
       Current Player:
-      %span= current_player_name
+      %span.current-player-name= current_player_name
   .col-sm-7
-    %p.timestamp.turn-start
+    %p.timestamp
       Turn Started:
-      %span.utc-time= turn_start
-    %p.timestamp.turn-end
+      %span.utc-time.turn-start= turn_start
+    %p.timestamp
       Turn Ends:
-      %span.utc-time= turn_end
-    %p.timestamp.time-left
+      %span.utc-time.turn-end= turn_end
+    %p.timestamp
       Time Left:
-      %span= turn_time_remaining
+      %span.time-left= turn_time_remaining
 
 %hr
 

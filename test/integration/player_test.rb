@@ -17,12 +17,12 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       get new_user_turn_path(user_token: user1.token)
       assert_select "h1", "Lorem Ipsum"
       assert_select "h5", game.name
-      assert_select "p.game-start", "Game Started:\n#{game.game_start.short_date_at_time}"
-      assert_select "p.game-end", "Game Ends:\n#{game.game_end.short_date_at_time}"
-      assert_select "p.turn-start", "Turn Started:\n#{game.turn_start.time_and_day}"
-      assert_select "p.turn-end", "Turn Ends:\n#{game.turn_end.time_and_day}"
-      assert_select "p.time-left", "Time Left:\n3 hours, 59 minutes"
-      assert_select "p.current-player-name", "Current Player:\n#{user1.name}"
+      assert_select ".game-start", game.game_start.iso8601
+      assert_select ".game-end", game.game_end.iso8601
+      assert_select ".turn-start", game.turn_start.iso8601
+      assert_select ".turn-end", game.turn_end.iso8601
+      assert_select ".time-left", "3 hours, 59 minutes"
+      assert_select ".current-player-name", user1.name
       assert_select "#ep", "Something went wrong: unable to access the document 😭(Note: JavaScript is required)"
       assert_select "li.current-player", "#{user1.name}\n <== current player"
 
@@ -38,9 +38,9 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
 
       game = Game.find(game.id)
       get user_turns_path(user_token: user2.token)
-      assert_select "p.turn-start", "Turn Started:\n#{game.turn_start.time_and_day}"
-      assert_select "p.turn-end", "Turn Ends:\n#{game.turn_end.time_and_day}"
-      assert_select "p.current-player-name", "Current Player:\n#{user2.name}"
+      assert_select ".turn-start", game.turn_start.iso8601
+      assert_select ".turn-end", game.turn_end.iso8601
+      assert_select ".current-player-name", user2.name
       assert_select "li.current-player", "#{user2.name}\n <== current player"
     end
   end

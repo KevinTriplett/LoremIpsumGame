@@ -4,7 +4,7 @@ module Game::Contract
 
     property :id
     property :name
-    property :pad_name
+    property :token
     property :game_days
     property :turn_hours
 

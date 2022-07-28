@@ -18,7 +18,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def pad_name
-    game.pad_name
+    game.token
   end
 
   def users
@@ -66,19 +66,19 @@ class Turn::Cell::Story < Cell::ViewModel
   end  
 
   def game_start
-    game.game_start ? game.game_start.short_date_at_time : "not started yet"
+    game.game_start ? game.game_start.iso8601 : nil
   end
 
   def game_end
-    game.game_end ? game.game_end.short_date_at_time : ""
+    game.game_end ? game.game_end.iso8601 : nil
   end
 
   def turn_start
-    game.turn_start ? game.turn_start.time_and_day : "not started yet"
+    game.turn_start ? game.turn_start.iso8601 : nil
   end
 
   def turn_end
-    game.turn_end ? game.turn_end.time_and_day : ""
+    game.turn_end ? game.turn_end.iso8601 : nil
   end
 
   def turn_time_remaining
