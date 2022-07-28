@@ -2,8 +2,11 @@
 
 ## MVP 2
 - [ ] remove Reform#full_messages_for monkey patch
-- [ ] display times in browser in user's timezone
-- [ ] implement integration system tests
+- [X] display times in browser in user's timezone
+- [X] add token to game and use for pad ID
+- [X] create pad on game creation and delete on deletion
+- [X] make pad_name static (can change game name and not change pad name)
+- [X] implement integration system tests
 - [X] convert to databasecleaner transactions
 - [X] send email bcc to kt@kevintriplett.com
 - [X] send game finished notification
@@ -34,7 +37,7 @@
 EtherPad-Lite implementation (development):
 - [ ] allow branching of document
 - [ ] allow change requests to be issued
-- [ ] show diffs using [diffy](https://github.com/samg/diffy)
+- [ ] show diffs using EtherPad diffs or [diffy](https://github.com/samg/diffy)
 - [ ] allow voting on change requests
 - [X] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
 - [X] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
