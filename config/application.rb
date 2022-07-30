@@ -22,6 +22,6 @@ module LoremIpsum
     config.default_game_days = 30
     config.etherpad_api_key = Rails.env == "development" ?
       "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92" :
-      "get api key from server"
+      ENV["ETHERPAD_API_KEY"]
   end
 end
