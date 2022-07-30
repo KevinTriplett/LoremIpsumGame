@@ -87,6 +87,7 @@ group :development do
   # Deploy with Capistrano
   gem 'capistrano'
   gem 'capistrano-rails'
+  gem 'capistrano-bundler'
   gem 'capistrano-passenger'
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor'
