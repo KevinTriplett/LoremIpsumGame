@@ -31,7 +31,7 @@
 
 ## MVP 3
 - [X] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
-- [ ] add version control (change requests)
+- [ ] add voting and change blocks (see design below)
 - [ ] add :order field on :users table for random option (with no double-turns)
 
 EtherPad-Lite implementation (development):
@@ -51,3 +51,17 @@ Server implementation (production):
 - [ ] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
 - [ ] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
 - [ ] create a simple deploy system
+
+EtherPad plugins worth looking at:
+comments (https://www.npmjs.com/package/ep_comments_page)
+voting wip (https://github.com/citizenos/ep_inline_voting)
+who did what blame (https://www.npmjs.com/package/ep_who_did_what)
+what have I missed (https://www.npmjs.com/package/ep_what_have_i_missed)
+timeslider diff (https://www.npmjs.com/package/ep_timesliderdiff)
+headings (https://www.npmjs.com/package/ep_headings2)
+
+Voting and Change Blocks (feature request from David):
+- [ ] show all changes made since player's last turn
+- [ ] navigate to prev/next change
+- [ ] provide up/down voting buttons (emojis that can be clicked with array of author ids)
+- [ ] create this outside of Etherpad
