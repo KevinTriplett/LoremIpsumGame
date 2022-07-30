@@ -1,6 +1,7 @@
 # TODO
 
 ## MVP 2
+- [ ] enable eager_loading in production (causes issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [X] display times in browser in user's timezone
 - [X] add token to game and use for pad ID
