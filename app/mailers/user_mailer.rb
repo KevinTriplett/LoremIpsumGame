@@ -30,7 +30,7 @@ class UserMailer < ApplicationMailer
 
   def get_url(user)
     (Rails.env == 'production' ?
-      'https://loremipsumgame.com/' :
+      'https://loremipsumgame.com/users' :
       'http://127.0.0.1:3000/users/') +
       user.token + "/turns/new"
   end
