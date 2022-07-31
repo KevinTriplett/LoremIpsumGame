@@ -53,7 +53,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     if @last_turn
       game.users.each { |u| UserMailer.game_ended(u).deliver_now }
     else
-      user = game.current_player
+      user = Game.find(game.id).current_player
       UserMailer.turn_notification(user).deliver_now
     end
   end
