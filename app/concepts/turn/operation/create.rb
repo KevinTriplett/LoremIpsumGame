@@ -34,7 +34,8 @@ class Turn::Operation::Create < Trailblazer::Operation
     game.game_end ||= game.game_start + game.game_days.days
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
-    game.current_player_id = User.next_player(model.user_id, game.id).id
+    @next_player = User.next_player(model.user_id, game.id)
+    game.current_player_id = @next_player.id
     game.save!
   end
 
@@ -53,8 +54,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     if @last_turn
       game.users.each { |u| UserMailer.game_ended(u).deliver_now }
     else
-      user = Game.find(game.id).current_player
-      UserMailer.turn_notification(user).deliver_now
+      UserMailer.turn_notification(@next_player).deliver_now
     end
   end
 end

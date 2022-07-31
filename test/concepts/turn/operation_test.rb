@@ -69,6 +69,12 @@ class TurnOperationTest < MiniTest::Spec
           params: {
             turn: {}
           },
+          user_id: user1.id
+        )
+        result = Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
           user_id: user2.id
         )
 
@@ -85,6 +91,18 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_game_user(game.id)
         user3 = create_game_user(game.id)
 
+        result = Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user1.id
+        )
+        result = Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id
+        )
         result = Turn::Operation::Create.call(
           params: {
             turn: {}
