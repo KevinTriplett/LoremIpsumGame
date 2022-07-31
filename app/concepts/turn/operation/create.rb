@@ -23,7 +23,7 @@ class Turn::Operation::Create < Trailblazer::Operation
   def initialize_entry(ctx, model:, **)
     return true if Rails.env == "test"
     game = model.game
-    client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
+    client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     model.entry = client.getHTML(padID: game.token)[:html]
   end
 

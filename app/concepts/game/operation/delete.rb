@@ -10,7 +10,7 @@ module Game::Operation
 
     def delete_pad(ctx, model:, **)
       begin
-        client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
+        client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
         nil == client.deletePad(padID: model.token)
       rescue
         puts "Pad #{model.token} not found"

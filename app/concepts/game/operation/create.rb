@@ -21,7 +21,7 @@ module Game::Operation
     def create_pad(ctx, model:, **)
       begin
         game = Game.find(model.id)
-        client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
+        client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
         nil == client.createPad(padID: game.token)
       rescue
         puts "ERROR: pad '#{game.token}' could not be created"

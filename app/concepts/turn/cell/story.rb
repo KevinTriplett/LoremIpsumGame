@@ -54,7 +54,7 @@ class Turn::Cell::Story < Cell::ViewModel
     {
       padId: pad_name,
       username: user.name,
-      host: getEtherpadUrl,
+      host: Rails.configuration.etherpad_url,
       height: 750
     }.to_json
   end
@@ -90,19 +90,12 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def html_story
     # see https://github.com/ether/etherpad-lite/issues/3750
-    client = EtherpadLite.client(9001, Rails.configuration.etherpad_api_key)
+    client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     pad_id = Rails.env == "test" ? "test_story" : pad_name
     begin
       client.getHTML(padID: pad_id)[:html]
     rescue
       nil
     end
-  end
-
-  def getEtherpadUrl
-    (Rails.env == 'production' ?
-      'https://loremipsumgame.com' :
-      'http://127.0.0.1') +
-      ":9001"
   end
 end

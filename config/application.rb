@@ -23,5 +23,9 @@ module LoremIpsum
     config.etherpad_api_key = Rails.env == "development" ?
       "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92" :
       ENV["ETHERPAD_API_KEY"]
+    config.etherpad_url = (Rails.env == 'production' ?
+      'https://loremipsumgame.com' :
+      'http://127.0.0.1') +
+      ":9001"
   end
 end
