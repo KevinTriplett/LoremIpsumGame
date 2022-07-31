@@ -4,11 +4,10 @@ class AdminGameTest < ActionDispatch::IntegrationTest
   DatabaseCleaner.clean
 
   test "Admin page with no games" do
-    DatabaseCleaner.cleaning do
-      get admin_games_path
-      assert_select "h1", "Lorem Ipsum"
-      assert_select "h5", "No Existing Games"
-    end
+    get admin_games_path
+  
+    assert_select "h1", "Lorem Ipsum"
+    assert_select "h5", "No Existing Games"
   end
 
   test "Admin page with games and no users" do
