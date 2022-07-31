@@ -22,7 +22,7 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       assert_equal user1.id, game.current_player_id
 
       ActionMailer::Base.deliveries.clear
-      TurnMonitorJob.perform_now(user1.id)
+      TurnMonitorJob.perform_now(user1.id, user1.turns.count)
 
       game = Game.find(game.id)
       assert_equal user1.id, game.current_player_id
@@ -51,7 +51,7 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       assert !game.last_turn?
       assert_equal user1.id, game.current_player_id
       ActionMailer::Base.deliveries.clear
-      TurnMonitorJob.perform_now(user1.id)
+      TurnMonitorJob.perform_now(user1.id, user1.turns.count)
 
       game = Game.find(game.id)
       assert_equal user2.id, game.current_player_id
@@ -83,10 +83,34 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       assert_not_nil game.game_end
 
       ActionMailer::Base.deliveries.clear
-      TurnMonitorJob.perform_now(user1.id)
+      TurnMonitorJob.perform_now(user1.id, user1.turns.count)
 
       game = Game.find(game.id)
       assert_equal user1.id, game.current_player_id
+      assert_emails 0
+      ActionMailer::Base.deliveries.clear
+    end
+  end
+
+  test "that TurnMonitorJob does nothing if user takes a turn" do
+    DatabaseCleaner.cleaning do
+      game_start = Time.now - 1.days
+      turn_start = Time.now - 6.hours - 1.minute
+      turn_end = turn_start + 4.hours
+      game_end = turn_end + 4.days
+      game = create_game({
+        game_start: game_start,
+        game_end: game_end,
+        turn_start: turn_start,
+        turn_end: turn_end,
+        turn_hours: 4
+      })
+      user1 = create_game_user(game.id)
+      user2 = create_game_user(game.id)
+      Turn.create(user_id: user1.id)
+
+      ActionMailer::Base.deliveries.clear
+      TurnMonitorJob.perform_now(user1.id, 0)
       assert_emails 0
       ActionMailer::Base.deliveries.clear
     end

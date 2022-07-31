@@ -1,8 +1,9 @@
 class TurnMonitorJob < ApplicationJob
   @queue = :default
 
-  def perform(user_id)
+  def perform(user_id, turns_count)
     user = User.find(user_id)
+    return if user.turns.count != turns_count
     game = user.game
     if game.current_player_id == user.id
       if game.turn_end > Time.now

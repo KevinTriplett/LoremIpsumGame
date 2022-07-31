@@ -43,9 +43,9 @@ class Turn::Operation::Create < Trailblazer::Operation
     user = model.user
     game = model.game
     wait_hours = (game.turn_hours / 2).hours
-    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id)
+    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id, user.turns.count)
     wait_hours = (game.turn_hours + 2).hours
-    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id)
+    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id, user.turns.count)
   end
 
   def notify(ctx, model:, **)
