@@ -1,5 +1,7 @@
 module Admin
   class GamesController < ApplicationController
+    http_basic_authenticate_with name: Rails.configuration.admin_name, password: Rails.configuration.admin_password
+  
     def index
       @games = Game.all
     end

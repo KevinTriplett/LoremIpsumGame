@@ -1,4 +1,6 @@
 class Admin::UsersController < ApplicationController
+  http_basic_authenticate_with name: Rails.configuration.admin_name, password: Rails.configuration.admin_password
+
   def index
     run User::Operation::Index do |ctx|
       @model = ctx[:model]
