@@ -13,12 +13,6 @@ class ActiveSupport::TestCase
   fixtures :all
 end
 
-def http_login
-  username = Rails.configuration.admin_name
-  password = Rails.configuration.admin_password
-  {HTTP_AUTHORIZATION: ActionController::HttpAuthentication::Basic.encode_credentials(username,password)}
-end
-
 ############################
 # database cleaner
 require 'database_cleaner/active_record'
