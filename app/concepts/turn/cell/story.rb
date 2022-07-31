@@ -54,7 +54,7 @@ class Turn::Cell::Story < Cell::ViewModel
     {
       padId: pad_name,
       username: user.name,
-      host: "http://127.0.0.1:9001",
+      host: getEtherpadUrl,
       height: 750
     }.to_json
   end
@@ -97,5 +97,12 @@ class Turn::Cell::Story < Cell::ViewModel
     rescue
       nil
     end
+  end
+
+  def getEtherpadUrl
+    (Rails.env == 'production' ?
+      'https://loremipsumgame.com' :
+      'http://127.0.0.1') +
+      ":9001"
   end
 end
