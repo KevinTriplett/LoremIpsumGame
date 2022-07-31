@@ -27,5 +27,9 @@ module LoremIpsum
       'https://loremipsumgame.com' :
       'http://127.0.0.1') +
       ":9001"
+    config.admin_name = (Rails.env == 'production' ?
+      ENV["ADMIN_NAME"] : "admin")
+    config.admin_password = (Rails.env == 'production' ?
+      ENV["ADMIN_PASSWORD"] : "password")
   end
 end
