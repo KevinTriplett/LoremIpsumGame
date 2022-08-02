@@ -50,7 +50,7 @@ class Turn::Cell::Story < Cell::ViewModel
     return {} unless current_player?
     {
       data: {
-        pad_i_d: pad_name,
+        pad_id: pad_name,
         username: user.name,
         host: Rails.configuration.etherpad_url,
         height: 600

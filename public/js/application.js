@@ -55,7 +55,7 @@ function convertUTC() {
 
 function loadEtherpad() {
   var dom = $('#ep');
-  if (!dom.data("padID")) return;
+  if (!dom.data("padId")) return;
   dom.pad(dom.data());
 }
 
