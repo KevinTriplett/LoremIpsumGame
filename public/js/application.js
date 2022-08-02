@@ -53,4 +53,11 @@ function convertUTC() {
   })
 };
 
+function loadEtherpad() {
+  var dom = $('#ep');
+  if (!dom.data("padID")) return;
+  dom.pad(dom.data());
+}
+
 $(document).ready( convertUTC );
+$(document).ready( loadEtherpad );

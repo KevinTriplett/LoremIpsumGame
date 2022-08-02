@@ -40,29 +40,26 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def finish_button
     current_player? ?
-      link_to("Finish Turn", user_turns_path, class: "btn btn-primary", data: { turbo_method: "post", turbo_confirm: "Click OK if you are finished with your turn" })
-      : nil
+      link_to("Finish Turn", user_turns_path, class: "btn btn-primary", data: { 
+        turbo_method: "post",
+        turbo_confirm: "Click OK if you are finished with your turn"
+      }) : nil
   end
 
-  def etherpad_script
-    current_player? ?
-      "<script>$(document).ready( $('#ep').pad(#{etherpad_settings}) );</script>"
-      : nil
-  end
-
-  def etherpad_settings
+  def dataset
+    return {} unless current_player?
     {
-      padId: pad_name,
-      username: user.name,
-      host: Rails.configuration.etherpad_url,
-      height: 750
-    }.to_json
+      data: {
+        pad_i_d: pad_name,
+        username: user.name,
+        host: Rails.configuration.etherpad_url,
+        height: 600
+      }
+    }
   end
 
   def story
-    current_player? ?
-      "Something went wrong: unable to access the document 😭<br>(Note: JavaScript is required)"
-      : html_story
+    current_player? ? js_required_text : html_story
   end  
 
   def game_start
@@ -95,7 +92,11 @@ class Turn::Cell::Story < Cell::ViewModel
     begin
       client.getHTML(padID: pad_id)[:html]
     rescue
-      nil
+      js_required_text
     end
+  end
+
+  def js_required_text
+    "Something went wrong: unable to access the document 😭<br>(Note: JavaScript is required) 🤔"
   end
 end
