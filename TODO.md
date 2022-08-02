@@ -1,8 +1,10 @@
 # TODO
 
 ## MVP 2
-- [ ] enable eager_loading in production (causes issue)
+- [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
+- [ ] fix js asset delivery
+- [X] remove player view inline script, put padID in dataset
 - [X] display times in browser in user's timezone
 - [X] add token to game and use for pad ID
 - [X] create pad on game creation and delete on deletion
