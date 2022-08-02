@@ -18,7 +18,7 @@ class GameTest < MiniTest::Spec
       })
       user = create_user(game_id: game.id)
 
-      game = Game.find(game.id)
+      game.reload
       assert !game.last_turn?
     end
   end
@@ -38,7 +38,7 @@ class GameTest < MiniTest::Spec
       })
       user = create_user(game_id: game.id)
 
-      game = Game.find(game.id)
+      game.reload
       assert game.last_turn?
     end
   end
@@ -50,7 +50,7 @@ class GameTest < MiniTest::Spec
       })
       user = create_user(game_id: game.id)
 
-      game = Game.find(game.id)
+      game.reload
       assert_equal 6.hours, game.turn_reminder_hours
     end
   end
@@ -62,7 +62,7 @@ class GameTest < MiniTest::Spec
       })
       user = create_user(game_id: game.id)
 
-      game = Game.find(game.id)
+      game.reload
       assert_equal 15.hours, game.turn_autofinish_hours
     end
   end

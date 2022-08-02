@@ -152,7 +152,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       click_link "delete"
       page.driver.browser.switch_to.alert.accept
       assert_selector ".flash", text: "User deleted"
-      game = Game.find(game.id)
+      game.reload
       assert_equal 0, game.users.count
       
       visit admin_games_path

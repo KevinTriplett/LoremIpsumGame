@@ -12,7 +12,7 @@ class TurnOperationTest < MiniTest::Spec
         game = create_game
         user = create_game_user(game.id)
 
-        game = Game.find(game.id)
+        game.reload
         assert_nil game.turn_start
         assert_nil game.turn_end
       end
@@ -43,7 +43,7 @@ class TurnOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
         user = create_game_user(game.id)
-        game = Game.find(game.id)
+        game.reload
         assert_equal user.id, game.current_player_id
 
         result = Turn::Operation::Create.call(
@@ -53,7 +53,7 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user.id
         )
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal user.id, game.current_player_id
       end
     end
@@ -78,7 +78,7 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user2.id
         )
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal last_random_game_name, game.name
         assert_equal user3.id, game.current_player_id
       end
@@ -110,7 +110,7 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user3.id
         )
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal user1.id, game.current_player_id
       end
     end
@@ -130,7 +130,7 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user1.id
         )
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal true, game.game_start.present?
         assert_equal true, game.game_end.present?
         assert_equal game.game_end, game.game_start + Rails.configuration.default_game_days.days
@@ -150,7 +150,7 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user.id
         )
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal time_start, game.game_start
         assert_equal time_end, game.game_end
       end
@@ -160,7 +160,7 @@ class TurnOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game
         user = create_game_user(game.id)
-        game = Game.find(game.id)
+        game.reload
         assert_equal false, game.turn_start.present?
         assert_equal false, game.turn_end.present?
 
@@ -171,7 +171,7 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user.id
         )
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal true, game.turn_start.present?
         assert_equal true, game.turn_end.present?
         assert_equal game.turn_end, game.turn_start + Rails.configuration.default_turn_hours.hours
@@ -224,7 +224,7 @@ class TurnOperationTest < MiniTest::Spec
         assert_emails 3
         ActionMailer::Base.deliveries.clear
 
-        game = Game.find(game.id)
+        game.reload
         assert turn_start, game.turn_start
         assert turn_end, game.turn_end
       end

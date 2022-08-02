@@ -12,13 +12,13 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       user1 = create_game_user(game.id)
       user2 = create_game_user(game.id)
 
-      game = Game.find(game.id)
+      game.reload
       assert_equal user1.id, game.current_player_id
 
       ActionMailer::Base.deliveries.clear
       TurnReminderJob.perform_now(user1.id, user1.turns.count)
 
-      game = Game.find(game.id)
+      game.reload
       assert_emails 1
       ActionMailer::Base.deliveries.clear
       assert_equal user1.id, game.current_player_id
@@ -45,13 +45,13 @@ class TurnMonitorJobTest < ActiveJob::TestCase
       user1 = create_game_user(game.id)
       user2 = create_game_user(game.id)
 
-      game = Game.find(game.id)
+      game.reload
       assert_equal user1.id, game.current_player_id
 
       ActionMailer::Base.deliveries.clear
       TurnFinishJob.perform_now(user1.id, user1.turns.count)
 
-      game = Game.find(game.id)
+      game.reload
       assert_emails 1
       ActionMailer::Base.deliveries.clear
       assert_equal user2.id, game.current_player_id

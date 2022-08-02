@@ -6,8 +6,8 @@ module User::Operation
       step :initialize_game_id
       step Contract::Build(constant: User::Contract::Create)
 
-      def initialize_game_id(ctx, **)
-        ctx[:model].game_id = ctx[:game_id]
+      def initialize_game_id(ctx, model:, **)
+        model.game_id = ctx[:game_id]
       end
     end
     
@@ -18,10 +18,9 @@ module User::Operation
     step :setup_monitor
     step :notify
 
-    def initialize_game(ctx, **)
-      user = ctx[:model]
-      game = Game.find(user.game_id)
-      game.current_player_id ||= user.id
+    def initialize_game(ctx, model:, **)
+      game = Game.find(model.game_id)
+      game.current_player_id ||= model.id
       game.save!
     end
 
@@ -31,9 +30,8 @@ module User::Operation
       TurnReminderJob.set(wait_until: game.turn_reminder_hours).perform_later(model.id, 0)
     end
 
-    def notify(ctx, **)
-      user = ctx[:model]
-      UserMailer.welcome_email(user).deliver_now
+    def notify(ctx, model:, **)
+      UserMailer.welcome_email(model).deliver_now
     end
   end
 end

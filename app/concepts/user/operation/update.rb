@@ -4,7 +4,7 @@ module User::Operation
     class Present < Trailblazer::Operation
       step Model(User, :find_by)
       step :get_game
-      step Contract::Build(constant: User::Contract::Update)
+      step Contract::Build(constant: User::Contract::Create) # reuse the validations
 
       def get_game(ctx, **args)
         ctx[:game] = ctx[:model].game

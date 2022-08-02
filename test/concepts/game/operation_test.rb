@@ -45,7 +45,7 @@ class GameOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         start = Time.now
         game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
-        game = Game.find(game.id)
+        game.reload
         start = game.game_start
         old_pad_name = game.token
 
@@ -59,7 +59,7 @@ class GameOperationTest < MiniTest::Spec
           id: game.id
         })
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal old_pad_name, game.token
         assert_equal last_random_game_name, game.name
       end
@@ -69,7 +69,7 @@ class GameOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         start = Time.now
         game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
-        game = Game.find(game.id)
+        game.reload
         start = game.game_start
 
         result = Game::Operation::Update.call(params: {
@@ -82,7 +82,7 @@ class GameOperationTest < MiniTest::Spec
           id: game.id
         })
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal (start + 4.days), game.game_end
       end
     end
@@ -91,7 +91,7 @@ class GameOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         start = Time.now
         game = create_game(turn_hours: 4, turn_start: start, turn_end: start + 4.hours)
-        game = Game.find(game.id)
+        game.reload
         start = game.turn_start
 
         result = Game::Operation::Update.call(params: {
@@ -104,7 +104,7 @@ class GameOperationTest < MiniTest::Spec
           id: game.id
         })
 
-        game = Game.find(game.id)
+        game.reload
         assert_equal (start + 2.hours), game.turn_end
       end
     end

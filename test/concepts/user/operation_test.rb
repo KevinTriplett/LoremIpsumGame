@@ -46,7 +46,7 @@ class UserOperationTest < MiniTest::Spec
 
         assert_equal true, result.success?
         user = result[:model]
-        game = Game.find(game.id)
+        game.reload
         assert user.id
         assert_equal user.id, game.current_player_id
       end
@@ -132,7 +132,7 @@ class UserOperationTest < MiniTest::Spec
         game = create_game
         user1 = create_game_user(game.id)
         user2 = create_game_user(game.id)
-        game = Game.find(game.id)
+        game.reload
         assert_equal user1.id, game.current_player_id
 
         User::Operation::Delete.call(
@@ -141,7 +141,7 @@ class UserOperationTest < MiniTest::Spec
             id: user1.id
           }
         )
-        game = Game.find(game.id)
+        game.reload
         assert_equal user2.id, game.current_player_id
       end
     end
@@ -157,7 +157,7 @@ class UserOperationTest < MiniTest::Spec
             id: user.id
           }
         )
-        game = Game.find(game.id)
+        game.reload
         assert_nil game.current_player_id
       end
     end

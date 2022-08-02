@@ -13,7 +13,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       })
       user1 = create_game_user(game.id)
       user2 = create_game_user(game.id)
-      game = Game.find(game.id)
+      game.reload
       assert_equal user1.id, game.current_player_id
       
       get new_user_turn_path(user_token: user1.token)
@@ -37,7 +37,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
         },
         user_id: user1.id
       )
-      game = Game.find(game.id)
+      game.reload
       assert_equal user2.id, game.current_player_id
 
       get user_turns_path(user_token: user2.token)
