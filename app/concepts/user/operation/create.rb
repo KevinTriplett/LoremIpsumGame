@@ -15,6 +15,7 @@ module User::Operation
     step Contract::Validate(key: :user)
     step Contract::Persist()
     step :initialize_game
+    step :setup_monitor
     step :notify
 
     def initialize_game(ctx, **)
@@ -22,6 +23,12 @@ module User::Operation
       game = Game.find(user.game_id)
       game.current_player_id ||= user.id
       game.save!
+    end
+
+    def setup_monitor(ctx, model:, **)
+      game = Game.find(model.game_id)
+      return true if game.current_player_id != model.id
+      TurnReminderJob.set(wait_until: game.turn_reminder_hours).perform_later(model.id, 0)
     end
 
     def notify(ctx, **)

@@ -98,3 +98,12 @@ def create_game_user(game_id)
     game_id: game_id
   )[:model]
 end
+
+def create_user_turn(user)
+  result = Turn::Operation::Create.call(
+    params: {
+      turn: {}
+    },
+    user_id: user.id
+  )[:model]
+end

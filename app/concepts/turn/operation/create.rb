@@ -29,32 +29,31 @@ class Turn::Operation::Create < Trailblazer::Operation
 
   def update_game(ctx, model:, **)
     game = User.find(model.user_id).game
-    @last_turn = game.last_turn?
+    @was_last_turn = game.last_turn?
     game.game_start ||= Time.now
     game.game_end ||= game.game_start + game.game_days.days
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
-    @next_player = User.next_player(model.user_id, game.id)
-    game.current_player_id = @next_player.id
+    @is_last_time = game.last_turn?
+    game.current_player_id = User.next_player(model.user_id, game.id).id
     game.save!
   end
 
   def setup_monitor(ctx, model:, **)
-    return true if @last_turn
+    return true if @was_last_turn
     user = model.user
     game = model.game
-    wait_hours = (game.turn_hours / 2).hours
-    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id, user.turns.count)
-    wait_hours = (game.turn_hours + 2).hours
-    TurnMonitorJob.set(wait_until: wait_hours).perform_later(user.id, user.turns.count)
+    TurnReminderJob.set(wait_until: game.turn_reminder_hours).perform_later(user.id, user.turns.count)
+    return true if @is_last_turn # indefinite last turn
+    TurnFinishJob.set(wait_until: game.turn_autofinish_hours).perform_later(user.id, user.turns.count)
   end
 
   def notify(ctx, model:, **)
     game = User.find(model.user_id).game
-    if @last_turn
+    if @was_last_turn
       game.users.each { |u| UserMailer.game_ended(u).deliver_now }
     else
-      UserMailer.turn_notification(@next_player).deliver_now
+      UserMailer.turn_notification(game.current_player).deliver_now
     end
   end
 end

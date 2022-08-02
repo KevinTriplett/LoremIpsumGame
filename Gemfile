@@ -55,9 +55,10 @@ gem "bootstrap", "~> 5.1.3"
 # lorem ipsum
 gem "etherpad-lite"
 gem "simple_form"
-# gem "jquery-rails"
-# gem "jquery-ui-rails"
 gem "haml"
+gem 'delayed_job'
+gem 'delayed_job_active_record'
+gem 'daemons'
 
 gem "trailblazer-macro-contract"
 gem "trailblazer", ">= 2.1.0"

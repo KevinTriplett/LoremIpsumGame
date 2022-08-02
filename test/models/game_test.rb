@@ -16,7 +16,7 @@ class GameTest < MiniTest::Spec
         turn_end: turn_end,
         turn_hours: 2
       })
-      user = create_game_user(game.id)
+      user = create_user(game_id: game.id)
 
       game = Game.find(game.id)
       assert !game.last_turn?
@@ -36,10 +36,34 @@ class GameTest < MiniTest::Spec
         turn_end: turn_end,
         turn_hours: 2
       })
-      user = create_game_user(game.id)
+      user = create_user(game_id: game.id)
 
       game = Game.find(game.id)
       assert game.last_turn?
+    end
+  end
+
+  it "returns hours for turn reminder" do
+    DatabaseCleaner.cleaning do
+      game = create_game({
+        turn_hours: 12
+      })
+      user = create_user(game_id: game.id)
+
+      game = Game.find(game.id)
+      assert_equal 6.hours, game.turn_reminder_hours
+    end
+  end
+
+  it "returns hours for turn auto finish" do
+    DatabaseCleaner.cleaning do
+      game = create_game({
+        turn_hours: 12
+      })
+      user = create_user(game_id: game.id)
+
+      game = Game.find(game.id)
+      assert_equal 15.hours, game.turn_autofinish_hours
     end
   end
 end
