@@ -4,6 +4,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [ ] create a cronjob system
 - [X] remove player view inline script, put padID in dataset
 - [X] display times in browser in user's timezone
 - [X] add token to game and use for pad ID
@@ -68,3 +69,9 @@ Voting and Change Blocks (feature request from David):
 - [ ] navigate to prev/next change
 - [ ] provide up/down voting buttons (emojis that can be clicked with array of author ids)
 - [ ] create this outside of Etherpad
+
+## TRB QUESTIONS FOR NICK
+- [ ] how to default the game_days and turn_hours attributes during create?
+- [ ] when can I use def method(ctx, **) and def method(cts, :some_param, **)?
+- [ ] is the view file for Turn::Cell::Story in the right directory?
+- [ ] why I can't use model: kwarg in User::Operation::Index?
