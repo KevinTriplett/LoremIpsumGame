@@ -55,8 +55,8 @@ gem "bootstrap", "~> 5.1.3"
 # lorem ipsum
 gem "etherpad-lite"
 gem "simple_form"
-gem "jquery-rails"
-gem "jquery-ui-rails"
+# gem "jquery-rails"
+# gem "jquery-ui-rails"
 gem "haml"
 
 gem "trailblazer-macro-contract"
