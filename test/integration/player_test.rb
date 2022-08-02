@@ -13,6 +13,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       })
       user1 = create_game_user(game.id)
       user2 = create_game_user(game.id)
+      game = Game.find(game.id)
+      assert_equal user1.id, game.current_player_id
       
       get new_user_turn_path(user_token: user1.token)
       assert_select "h1", "Lorem Ipsum"
@@ -23,7 +25,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_select ".turn-end", game.turn_end.iso8601
       assert_select ".time-left", "3 hours, 59 minutes"
       assert_select ".current-player-name", user1.name
-      assert_select "#ep", "Something went wrong: unable to access the document 😭(Note: JavaScript is required)"
+      assert_select "#ep", "Something went wrong: unable to access the document 😭(Note: JavaScript is required) 🤔"
       assert_select "li.current-player", "#{user1.name}\n <== current player"
 
       get user_turns_path(user_token: user2.token)
@@ -35,8 +37,9 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
         },
         user_id: user1.id
       )
-
       game = Game.find(game.id)
+      assert_equal user2.id, game.current_player_id
+
       get user_turns_path(user_token: user2.token)
       assert_select ".turn-start", game.turn_start.iso8601
       assert_select ".turn-end", game.turn_end.iso8601
