@@ -22,8 +22,13 @@ class Turn::Operation::Create < Trailblazer::Operation
   def initialize_entry(ctx, model:, **)
     return true if Rails.env == "test"
     game = model.game
-    client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
-    model.entry = client.getHTML(padID: game.token)[:html]
+    begin
+      client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
+      model.entry = client.getHTML(padID: game.token)[:html]
+    rescue
+      model.entry = "Unable to save pad text, may be due to auto finish turn action."
+    end
+    true
   end
 
   def update_game(ctx, model:, **)
