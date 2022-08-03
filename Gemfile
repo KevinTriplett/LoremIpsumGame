@@ -92,6 +92,7 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor'
+  gem 'capistrano3-delayed-job'
 end
 
 group :test do
