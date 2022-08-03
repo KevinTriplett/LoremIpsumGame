@@ -43,27 +43,31 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "returns hours for turn reminder" do
+  it "checks for game ended" do
     DatabaseCleaner.cleaning do
-      game = create_game({
-        turn_hours: 12
+      game_end = Time.now + 1.minute
+      game = Game.new({
+        game_end: game_end
       })
-      user = create_user(game_id: game.id)
+      assert !game.ended?
 
-      game.reload
-      assert_equal 6.hours, game.turn_reminder_hours
+      game.game_end = Time.now - 1.minute
+      assert game.ended?
     end
   end
 
-  it "returns hours for turn auto finish" do
+  it "returns if no_reminder_yet" do
     DatabaseCleaner.cleaning do
-      game = create_game({
-        turn_hours: 12
+      turn_end = Time.now + 8.hours + 1.minute
+      game = Game.new({
+        turn_end: turn_end,
+        turn_hours: 16
       })
-      user = create_user(game_id: game.id)
+      assert game.no_reminder_yet?
 
-      game.reload
-      assert_equal 15.hours, game.turn_autofinish_hours
+      game.turn_end = Time.now + 8.hours - 1.minute
+      assert !game.no_reminder_yet?
     end
   end
+
 end

@@ -56,9 +56,7 @@ gem "bootstrap", "~> 5.1.3"
 gem "etherpad-lite"
 gem "simple_form"
 gem "haml"
-gem 'delayed_job'
-gem 'delayed_job_active_record'
-gem 'daemons'
+gem "whenever", require: false
 
 gem "trailblazer-macro-contract"
 gem "trailblazer", ">= 2.1.0"
@@ -92,7 +90,6 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor'
-  gem 'capistrano3-delayed-job'
 end
 
 group :test do
