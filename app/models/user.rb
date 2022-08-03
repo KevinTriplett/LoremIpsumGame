@@ -14,7 +14,10 @@ class User < ActiveRecord::Base
       UserMailer.turn_reminder(self).deliver_now
       self.reminded = true
       save!
-    rescue
+    rescue => detail
+      print detail.backtrace.join("\n")
+      Rails.logger.error "in #remind for user #{self.inspect}"
+      Rails.logger.error detail.to_s
     end
   end
 
@@ -29,7 +32,10 @@ class User < ActiveRecord::Base
         },
         user_id: self.id
       )
-    rescue
+    rescue => detail
+      print detail.backtrace.join("\n")
+      Rails.logger.error "in #auto_finish_turn for user #{self.inspect}"
+      Rails.logger.error detail.to_s
     end
   end
 
