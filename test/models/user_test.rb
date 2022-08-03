@@ -82,7 +82,6 @@ class UserTest < MiniTest::Spec
       ActionMailer::Base.deliveries.clear
       User.remind_players
       assert_emails 0
-      ActionMailer::Base.deliveries.clear
       assert_equal 0, user1.turns.count
       assert_equal 0, user2.turns.count
       assert_equal 0, user3.turns.count
@@ -121,20 +120,18 @@ class UserTest < MiniTest::Spec
 
   it "does not auto finish turns when not time" do
     DatabaseCleaner.cleaning do
-      turn_end = Time.now + 4.hours + 1.minute
+      turn_end = Time.now + 1.minute
       game_end = Time.now + 1.day
       game1 = create_game({
         game_end: game_end,
-        turn_end: turn_end,
-        turn_hours: 8
+        turn_end: turn_end
       })
       user1 = create_game_user(game1.id)
       user2 = create_game_user(game1.id)
 
       game2 = create_game({
         game_end: game_end,
-        turn_end: turn_end,
-        turn_hours: 8
+        turn_end: turn_end
       })
       user3 = create_game_user(game2.id)
       user4 = create_game_user(game2.id)
@@ -142,7 +139,6 @@ class UserTest < MiniTest::Spec
       ActionMailer::Base.deliveries.clear
       User.auto_finish_turns
       assert_emails 0
-      ActionMailer::Base.deliveries.clear
       assert_equal 0, user1.turns.count
       assert_equal 0, user2.turns.count
       assert_equal 0, user3.turns.count
