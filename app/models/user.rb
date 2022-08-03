@@ -9,13 +9,19 @@ class User < ActiveRecord::Base
     where("game_id = ?", game_id).first
   }
 
+  def remind
+    UserMailer.turn_reminder(user).deliver_now
+    self.reminded = true
+    save!
+  end
+
   # class methods executed by cron job
   def self.remind_players
     games = Game.all
     games.each do |g|
       user = g.current_player
       next if g.ended? || g.no_reminder_yet? || user.reminded?
-      UserMailer.turn_reminder(user).deliver_now
+      user.remind
     end
   end
 
