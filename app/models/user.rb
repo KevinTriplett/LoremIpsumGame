@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   }
 
   def remind
-    UserMailer.turn_reminder(user).deliver_now
+    UserMailer.turn_reminder(self).deliver_now
     self.reminded = true
     save!
   end
