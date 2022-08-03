@@ -10,9 +10,27 @@ class User < ActiveRecord::Base
   }
 
   def remind
-    UserMailer.turn_reminder(self).deliver_now
-    self.reminded = true
-    save!
+    begin
+      UserMailer.turn_reminder(self).deliver_now
+      self.reminded = true
+      save!
+    rescue
+    end
+  end
+
+  def auto_finish_turn
+    begin
+      # auto-finish turn
+      # the create turn operation updates the current player and
+      # sends the new player their turn notification
+      Turn::Operation::Create.call(
+        params: {
+          turn: {}
+        },
+        user_id: self.id
+      )
+    rescue
+    end
   end
 
   # class methods executed by cron job
@@ -26,18 +44,9 @@ class User < ActiveRecord::Base
 
   def self.auto_finish_turns
     Game.all.each do |g|
-      user = g.current_player
       # indefinite last turns
       next if g.ended? || g.last_turn? || g.no_auto_finish_yet?
-      # auto-finish turn
-      # the create turn operation updates the current player and
-      # sends the new player their turn notification
-      result = Turn::Operation::Create.call(
-        params: {
-          turn: {}
-        },
-        user_id: user.id
-      )
+      g.current_player.auto_finish_turn
     end
   end
 end
