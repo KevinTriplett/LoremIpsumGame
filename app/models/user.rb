@@ -17,8 +17,7 @@ class User < ActiveRecord::Base
 
   # class methods executed by cron job
   def self.remind_players
-    games = Game.all
-    games.each do |g|
+    Game.all.each do |g|
       user = g.current_player
       next if g.ended? || g.no_reminder_yet? || user.reminded?
       user.remind
@@ -26,13 +25,13 @@ class User < ActiveRecord::Base
   end
 
   def self.auto_finish_turns
-    games = Game.all
-    games.each do |g|
+    Game.all.each do |g|
       user = g.current_player
       # indefinite last turns
       next if g.ended? || g.last_turn? || g.no_auto_finish_yet?
       # auto-finish turn
-      # the operation sends end of game notifications
+      # the create turn operation updates the current player and
+      # sends the new player their turn notification
       result = Turn::Operation::Create.call(
         params: {
           turn: {}
