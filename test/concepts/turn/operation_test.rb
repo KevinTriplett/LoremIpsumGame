@@ -84,6 +84,40 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
+    it "resets the reminded flag on the new current_player" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_game_user(game.id)
+        user2 = create_game_user(game.id)
+        user3 = create_game_user(game.id)
+        user1.reminded = true
+        user2.reminded = true
+        user3.reminded = true
+        user1.save!
+        user2.save!
+        user3.save!
+
+        result = Turn::Operation::Create.wtf?(
+          params: {
+            turn: {}
+          },
+          user_id: user1.id
+        )
+        result = Turn::Operation::Create.wtf?(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id
+        )
+
+        [user1,user2,user3].each(&:reload)
+        # always resets the new current_player, not the previous current_player
+        assert user1.reminded
+        assert !user2.reminded
+        assert !user3.reminded
+      end
+    end
+
     it "Updates current_player_id attribute when turn finished (rollover)" do
       DatabaseCleaner.cleaning do
         game = create_game

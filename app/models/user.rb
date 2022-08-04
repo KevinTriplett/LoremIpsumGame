@@ -3,7 +3,12 @@ class User < ActiveRecord::Base
   has_many :turns, dependent: :destroy
 
   has_secure_token
-  
+
+  def reset_reminded!
+    self.reminded = nil
+    save!
+  end
+
   def remind
     begin
       UserMailer.turn_reminder(self).deliver_now

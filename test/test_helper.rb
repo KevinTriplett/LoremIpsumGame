@@ -82,7 +82,8 @@ def create_user(params)
   User.create(
     name: params[:name] || random_user_name,
     email: params[:email] || random_email,
-    game_id: params[:game_id]
+    game_id: params[:game_id],
+    reminded: params[:reminded]
   )
 end
 

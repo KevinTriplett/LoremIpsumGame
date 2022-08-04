@@ -17,6 +17,7 @@ class Turn::Operation::Create < Trailblazer::Operation
   step Contract::Persist()
   # TODO: exit with success if game.last_turn?
   step :update_game
+  step :update_user
   step :notify
 
   def initialize_entry(ctx, model:, **)
@@ -32,7 +33,7 @@ class Turn::Operation::Create < Trailblazer::Operation
   end
 
   def update_game(ctx, model:, **)
-    game = User.find(model.user_id).game
+    game = model.game
     game.game_start ||= Time.now
     game.game_end ||= game.game_start + game.game_days.days
     game.turn_start = Time.now
@@ -41,8 +42,12 @@ class Turn::Operation::Create < Trailblazer::Operation
     game.save!
   end
 
+  def update_user(ctx, model:, **)
+    model.game.current_player.reset_reminded!
+  end
+
   def notify(ctx, model:, **)
-    game = User.find(model.user_id).game
+    game = model.game
     if game.ended?
       game.users.each { |u| UserMailer.game_ended(u).deliver_now }
     else
