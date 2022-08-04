@@ -42,9 +42,8 @@ class User < ActiveRecord::Base
   # class methods executed by cron job
   def self.remind_players
     Game.all.each do |g|
-      user = g.current_player
-      next if g.ended? || g.no_reminder_yet? || user.reminded?
-      user.remind
+      next if g.ended? || g.no_reminder_yet? || g.current_player.reminded?
+      g.current_player.remind
     end
   end
 
