@@ -25,7 +25,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_select ".turn-end", game.turn_end.iso8601
       assert_select ".time-left", "3 hours, 59 minutes"
       assert_select ".current-player-name", user1.name
-      assert_select "#ep", "Something went wrong: unable to access the document 😭(Note: JavaScript is required) 🤔"
+      assert_select "#ep", "Something went wrong: 😭Try refreshing the page 🤓(Note: JavaScript is required) 🤔"
       assert_select "li.current-player", "#{user1.name}\n <== current player"
 
       get user_turns_path(user_token: user2.token)

@@ -97,6 +97,6 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def js_required_text
-    "Something went wrong: unable to access the document 😭<br>(Note: JavaScript is required) 🤔"
+    "Something went wrong: 😭<br>Try refreshing the page 🤓<br>(Note: JavaScript is required) 🤔"
   end
 end
