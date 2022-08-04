@@ -38,4 +38,22 @@ class Game < ActiveRecord::Base
   def grace_period_hours
     turn_hours / 4
   end
+
+  def self.generate_report
+    Game.all.each do |g|
+      puts "Game: #{g.name}" + (g.ended? ? " [ended]" : "")
+      puts "  #{g.users.count} players"
+      unless g.ended?
+        puts "  current_player: #{g.current_player ? g.current_player.name : "no player yet"}"
+        puts "  turn_end: #{g.turn_end.iso8601} (#{g.turn_end.short_date_at_time})"
+        puts "  game_end: #{g.game_end.iso8601} (#{g.game_end.short_date_at_time})"
+        puts "  turn_hours: #{g.turn_hours}"
+        g.users.each_with_index do |u, i|
+          puts "  user #{i+1}:"
+          puts "    name #{u.name}"
+          puts "    turns count: #{u.turns.count}"
+        end
+      end
+    end
+  end
 end
