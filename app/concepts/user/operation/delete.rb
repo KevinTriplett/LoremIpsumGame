@@ -7,7 +7,7 @@ module User::Operation
     def update_game(ctx, model:, **)
       game = model.game
       if game.current_player_id == model.id
-        next_player = User.next_player(model.id, game.id)
+        next_player = User.next_player(model.id)
         # check for last player assigned to game being deleted
         game.current_player_id = next_player.id == model.id ? nil : next_player.id
         game.save!

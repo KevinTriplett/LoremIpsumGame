@@ -4,10 +4,11 @@ class User < ActiveRecord::Base
 
   has_secure_token
   
-  scope :next_player, ->(user_id, game_id) { 
-    where("id > ?", user_id).first ||
-    where("game_id = ?", game_id).first
-  }
+  def self.next_player(user_id)
+    game = find(user_id).game
+    # rollover if at the end of the user array
+    game.users.order(:id).where("id > ?", user_id).first || game.users.order(:id).first
+  end
 
   def remind
     begin

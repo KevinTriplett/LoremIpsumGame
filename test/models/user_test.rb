@@ -6,12 +6,17 @@ class UserTest < MiniTest::Spec
 
   it "Finds the next user (no rollover)" do
     DatabaseCleaner.cleaning do
-      game = create_game
-      user1 = create_user(game_id: game.id)
-      user2 = create_user(game_id: game.id)
-      user3 = create_user(game_id: game.id)
+      game1 = create_game
+      game2 = create_game
 
-      next_player = User.next_player(user2.id, game.id)
+      user1 = create_user(game_id: game1.id)
+      user3 = create_user(game_id: game2.id)
+      user2 = create_user(game_id: game1.id)
+      user4 = create_user(game_id: game2.id)
+      user3 = create_user(game_id: game1.id)
+      user5 = create_user(game_id: game2.id)
+
+      next_player = User.next_player(user2.id)
       assert_equal user3.id, next_player.id
     end
   end
@@ -23,7 +28,7 @@ class UserTest < MiniTest::Spec
       user2 = create_user(game_id: game.id)
       user3 = create_user(game_id: game.id)
 
-      next_player = User.next_player(user3.id, game.id)
+      next_player = User.next_player(user3.id)
       assert_equal user1.id, next_player.id
     end
   end
