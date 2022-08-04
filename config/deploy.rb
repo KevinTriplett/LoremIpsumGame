@@ -11,6 +11,9 @@ set :branch, 'main'
 set :deploy_to, "/home/deploy/#{fetch :application}"
 set :rbenv_prefix, '/usr/bin/rbenv exec' # Cf issue: https://github.com/capistrano/rbenv/issues/96
 
+# whenever crontab delimiters / namespace
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
 
