@@ -7,6 +7,11 @@ class Game < ActiveRecord::Base
     User.find(current_player_id)
   end
 
+  def next_player_id
+    # rollover if at the end of the user array
+    (users.where("id > ?", current_player_id).first || users.first).id
+  end
+
   def last_turn?
     turn_end && game_end && turn_end > game_end
   end

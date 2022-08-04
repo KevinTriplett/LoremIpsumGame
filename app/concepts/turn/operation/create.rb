@@ -37,7 +37,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     game.game_end ||= game.game_start + game.game_days.days
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
-    game.current_player_id = User.next_player(model.user_id).id
+    game.current_player_id = game.next_player_id
     game.save!
   end
 

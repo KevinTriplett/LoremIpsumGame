@@ -3,6 +3,40 @@ require 'test_helper'
 class GameTest < MiniTest::Spec
   DatabaseCleaner.clean
 
+  it "Finds the next user (no rollover)" do
+    DatabaseCleaner.cleaning do
+      game1 = create_game
+      game2 = create_game
+
+      user1 = create_user(game_id: game1.id)
+      user3 = create_user(game_id: game2.id)
+      user2 = create_user(game_id: game1.id)
+      user4 = create_user(game_id: game2.id)
+      user3 = create_user(game_id: game1.id)
+      user5 = create_user(game_id: game2.id)
+
+      game1.current_player_id = user2.id
+      assert_equal user3.id, game1.next_player_id
+    end
+  end
+
+  it "Finds the next user (rollover)" do
+    DatabaseCleaner.cleaning do
+      game1 = create_game
+      game2 = create_game
+
+      user1 = create_user(game_id: game1.id)
+      user3 = create_user(game_id: game2.id)
+      user2 = create_user(game_id: game1.id)
+      user4 = create_user(game_id: game2.id)
+      user3 = create_user(game_id: game1.id)
+      user5 = create_user(game_id: game2.id)
+
+      game1.current_player_id = user3.id
+      assert_equal user1.id, game1.next_player_id
+    end
+  end
+
   it "check for ! last turn" do
     DatabaseCleaner.cleaning do
       game_start = Time.now - 1.days

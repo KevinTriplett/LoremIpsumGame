@@ -4,35 +4,6 @@ class UserTest < MiniTest::Spec
   include ActionMailer::TestHelper
   DatabaseCleaner.clean
 
-  it "Finds the next user (no rollover)" do
-    DatabaseCleaner.cleaning do
-      game1 = create_game
-      game2 = create_game
-
-      user1 = create_user(game_id: game1.id)
-      user3 = create_user(game_id: game2.id)
-      user2 = create_user(game_id: game1.id)
-      user4 = create_user(game_id: game2.id)
-      user3 = create_user(game_id: game1.id)
-      user5 = create_user(game_id: game2.id)
-
-      next_player = User.next_player(user2.id)
-      assert_equal user3.id, next_player.id
-    end
-  end
-
-  it "Finds the next user (rollover)" do
-    DatabaseCleaner.cleaning do
-      game = create_game
-      user1 = create_user(game_id: game.id)
-      user2 = create_user(game_id: game.id)
-      user3 = create_user(game_id: game.id)
-
-      next_player = User.next_player(user3.id)
-      assert_equal user1.id, next_player.id
-    end
-  end
-
   it "reminds users of turns when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now + 4.hours - 1.minute
