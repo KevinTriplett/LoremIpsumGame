@@ -4,7 +4,8 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
-- [ ] create a cronjob system
+- [ ] move User#remind and auto_finish to rake tasks for crontab
+- [X] create a cronjob system
 - [X] remove player view inline script, put padID in dataset
 - [X] display times in browser in user's timezone
 - [X] add token to game and use for pad ID
