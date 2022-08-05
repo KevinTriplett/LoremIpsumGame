@@ -63,7 +63,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end  
 
   def time_left_classes
-    "time-left" + (game.turn_end - Time.now < 0 ? " minus" : "")
+    "time-left" + (game.turn_end && game.turn_end - Time.now < 0 ? " minus" : "")
   end
 
   def game_start
