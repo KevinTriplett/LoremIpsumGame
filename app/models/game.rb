@@ -61,6 +61,9 @@ class Game < ActiveRecord::Base
 
   def self.sim_delete_unused_pads
     delete_unused_pads(true)
+  rescue => detail
+    puts "could not get pads"
+    puts detail.to_s
   end
 
   def self.delete_unused_pads(sim = false)
