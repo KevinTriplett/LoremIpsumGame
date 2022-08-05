@@ -54,6 +54,7 @@ class Game < ActiveRecord::Base
           puts "  user #{i+1}:"
           puts "    name #{u.name}"
           puts "    turns count: #{u.turns.count}"
+          puts "    reminded: #{u.reminded? ? "yes" : "no"}"
         end
       end
     end
