@@ -13,4 +13,14 @@ namespace :lorem do
   task report: :environment do
     Game.generate_report
   end
+
+  desc "Simulates deleting unused Pads"
+  task simulate_purge_pads: :environment do
+    Game.sim_delete_unused_pads
+  end
+
+  desc "Deletes unused Pads"
+  task purge_pads: :environment do
+    Game.delete_unused_pads
+  end
 end

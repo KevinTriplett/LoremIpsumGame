@@ -39,6 +39,8 @@ class Game < ActiveRecord::Base
     turn_hours / 4
   end
 
+  # class methods
+
   def self.generate_report
     Game.all.each do |g|
       puts "Game: #{g.name}" + (g.ended? ? " [ended]" : "")
@@ -54,6 +56,28 @@ class Game < ActiveRecord::Base
           puts "    turns count: #{u.turns.count}"
         end
       end
+    end
+  end
+
+  def self.sim_delete_unused_pads
+    delete_unused_pads(true)
+  end
+
+  def self.delete_unused_pads(sim = false)
+    game_pads = Game.all.collect(&:token)
+    puts "---------------"
+    puts "active game_pads: #{game_pads.inspect}"
+    puts "---------------"
+
+    client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
+    client.listAllPads[:padIDs].each do |pad_name|
+      puts "will keep pad #{pad_name}" if sim && game_pads.include?(pad_name)
+      next if game_pads.include? pad_name
+      puts sim ? "will delete pad #{pad_name}" : "deleting pad #{pad_name}"
+      client.deletePad(padID: pad_name) unless sim
+    rescue => detail
+      puts "could not get or delete pad '#{pad_name}':"
+      puts detail.to_s
     end
   end
 end
