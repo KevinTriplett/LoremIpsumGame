@@ -62,6 +62,10 @@ class Turn::Cell::Story < Cell::ViewModel
     current_player? ? js_required_text : html_story
   end  
 
+  def time_left_classes
+    "time-left" + (game.turn_end - Time.now < 0 ? " minus" : "")
+  end
+
   def game_start
     game.game_start ? game.game_start.iso8601 : nil
   end

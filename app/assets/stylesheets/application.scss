@@ -21,5 +21,13 @@ p.timestamp {
 
   & span {
     font-weight: 400;
+
+    &.time-left {
+      color: green
+    }
+    
+    &.minus {
+      color: red
+    }
   }
 }
