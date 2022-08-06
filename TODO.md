@@ -4,6 +4,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] fix js not triggering on initial page load
 - [X] move User#remind and auto_finish to rake tasks for crontab
 - [X] create a cronjob system
 - [X] remove player view inline script, put padID in dataset
@@ -39,9 +40,9 @@
 - [ ] add voting and change blocks (see design below)
 - [ ] add :order field on :users table for random option (with no double-turns)
 
-EtherPad-Lite implementation (development):
-- [ ] allow branching of document
-- [ ] allow change requests to be issued
+EtherPad-Lite implementation:
+- [ ] allow branching
+- [ ] allow change requests (aka pull requests)
 - [ ] show diffs using EtherPad diffs or [diffy](https://github.com/samg/diffy)
 - [ ] allow voting on change requests
 - [X] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
@@ -51,11 +52,12 @@ EtherPad-Lite implementation (development):
 - [X] allow entry with EtherPad-Lite embedded with "End Turn" button (for players whose turn it is)
 - [X] "End Turn" action saves the entire text as the entry and sends notification
 
-Server implementation (production):
+DONE Server implementation (production):
 - [X] spin up new server for Etherpad and Lorem Ipsum
-- [ ] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
-- [ ] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
-- [ ] create a simple deploy system
+- [X] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
+- [X] install [etherpad-lite-jquery-plugin](https://github.com/ether/etherpad-lite-jquery-plugin)
+- [X] create a simple deploy system
+- [X] implement cron job for turn reminders and turn auto finish
 
 EtherPad plugins worth looking at:
 comments (https://www.npmjs.com/package/ep_comments_page)
