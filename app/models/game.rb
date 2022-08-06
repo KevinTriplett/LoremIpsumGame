@@ -60,14 +60,7 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def self.sim_delete_unused_pads
-    delete_unused_pads(true)
-  rescue => detail
-    puts "could not get pads"
-    puts detail.to_s
-  end
-
-  def self.delete_unused_pads(sim = false)
+  def self.delete_unused_pads(del)
     game_pads = Game.all.collect(&:token)
     puts "---------------"
     puts "active game_pads: #{game_pads.inspect}"
@@ -75,10 +68,12 @@ class Game < ActiveRecord::Base
 
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     client.listAllPads[:padIDs].each do |pad_name|
-      puts "will keep pad #{pad_name}" if sim && game_pads.include?(pad_name)
-      next if game_pads.include? pad_name
-      puts sim ? "will delete pad #{pad_name}" : "deleting pad #{pad_name}"
-      client.deletePad(padID: pad_name) unless sim
+      if game_pads.include? pad_name
+        puts (del ? "keeping" : "will keep") + " pad #{pad_name}"
+      else
+        puts (del ? "deleting" : "will delete") + " pad #{pad_name}"
+        client.deletePad(padID: pad_name) if del
+      end
     rescue => detail
       puts "could not get or delete pad '#{pad_name}':"
       puts detail.to_s

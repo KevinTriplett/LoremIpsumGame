@@ -16,11 +16,11 @@ namespace :lorem do
 
   desc "Simulates deleting unused Pads"
   task simulate_purge_pads: :environment do
-    Game.sim_delete_unused_pads
+    Game.delete_unused_pads(false)
   end
 
   desc "Deletes unused Pads"
   task purge_pads: :environment do
-    Game.delete_unused_pads
+    Game.delete_unused_pads(true)
   end
 end
