@@ -1,8 +1,6 @@
 function optShortDateAtTime(tzString) {
   return {
     timeZone: tzString,
-    // dateStyle: "full",
-    // timeStyle: "short"
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -37,7 +35,7 @@ function getFormat(className, tzString) {
 }
 
 function convertTZ(datetime, className, tzString) {
-  date = new Date((typeof datetime === "string" ? new Date(datetime) : datetime));
+  date = new Date((typeof datetime == "string" ? new Date(datetime) : datetime));
   return date.toLocaleString("en-US", getFormat(className, tzString));   
 }
 
@@ -45,7 +43,6 @@ function convertUTC() {
   var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   $(".utc-time").each( function(i, dom){
     dom = $(dom);
-    if (dom.text().length != 20) return;
     datetime = dom.text();
     className = dom.attr("class").split(" ")[1];
     datetime = convertTZ(datetime, className, timezone);
