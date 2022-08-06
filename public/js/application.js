@@ -59,5 +59,7 @@ function loadEtherpad() {
   dom.pad(dom.data());
 }
 
-$(document).ready( convertUTC );
-$(document).ready( loadEtherpad );
+document.addEventListener('turbo:load', function() {
+  convertUTC();
+  loadEtherpad();
+});
