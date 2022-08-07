@@ -20,6 +20,7 @@ class GameOperationTest < MiniTest::Spec
 
         assert_equal true, result.success?
         game = result[:model]
+        game.reload
         assert_equal last_random_game_name, game.name
         assert_equal 3, game.game_days
         assert_equal 2, game.turn_hours
@@ -36,6 +37,7 @@ class GameOperationTest < MiniTest::Spec
 
         assert_equal true, result.success?
         game = result[:model]
+        game.reload
         assert_equal Rails.configuration.default_game_days, game.game_days
         assert_equal Rails.configuration.default_turn_hours, game.turn_hours
       end
@@ -49,7 +51,7 @@ class GameOperationTest < MiniTest::Spec
         start = game.game_start
         old_pad_name = game.token
 
-        result = Game::Operation::Update.call(params: {
+        Game::Operation::Update.call(params: {
           game: {
             id: game.id,
             name: random_game_name,
@@ -70,9 +72,9 @@ class GameOperationTest < MiniTest::Spec
         start = Time.now
         game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
         game.reload
-        start = game.game_start
+        assert_equal (start + 2.days), game.game_end
 
-        result = Game::Operation::Update.call(params: {
+        Game::Operation::Update.call(params: {
           game: {
             id: game.id,
             name: game.name,
@@ -94,7 +96,7 @@ class GameOperationTest < MiniTest::Spec
         game.reload
         start = game.turn_start
 
-        result = Game::Operation::Update.call(params: {
+        Game::Operation::Update.call(params: {
           game: {
             id: game.id,
             name: game.name,

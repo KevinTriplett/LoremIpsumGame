@@ -22,7 +22,7 @@ module User::Contract
         end
 
         user = User.find_by_email_and_game_id(email, game_id)
-        key.failure('must be unique') if user && user.id != values[:id]
+        key.failure('must be unique') if !user.nil? && user.id != values[:id].to_i
       end
     end
   end

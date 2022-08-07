@@ -16,7 +16,7 @@ module Game::Contract
 
       rule(:name, :id) do
         game = Game.find_by_name(values[:name])
-        key.failure('must be unique') if game && game.id != values[:id]
+        key.failure('must be unique') if game && game.id != values[:id].to_i
       end
     end
   end

@@ -112,7 +112,7 @@ class UserOperationTest < MiniTest::Spec
         ActionMailer::Base.deliveries.clear
         game = create_game
 
-        result = User::Operation::Create.call(
+        User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -163,35 +163,35 @@ class UserOperationTest < MiniTest::Spec
     end
 
     # TODO: create validation for this one
-    # it "Allows non-unique email address for same user" do
-    #   DatabaseCleaner.cleaning do
-    #     game = create_game
-    #     result = User::Operation::Create.call(
-    #       params: {
-    #         user: {
-    #           name: random_user_name, 
-    #           email: random_email
-    #         },
-    #         game_id: game.id
-    #       }
-    #     )
-    #     user = result["contract.default"].model
-    #     assert_equal true, result.success?
+    it "Allows non-unique email address for same user" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        result = User::Operation::Create.call(
+          params: {
+            user: {
+              name: random_user_name, 
+              email: random_email
+            }
+          },
+          game_id: game.id
+        )
+        assert_equal true, result.success?
+        user = result[:model]
         
-    #     result = User::Operation::Update.call(
-    #       params: {
-    #         user: {
-    #           id: user.id,
-    #           name: "johnny smith"
-    #           email: last_random_email,
-    #         },
-    #         game_id: game.id
-    #       }
-    #     )
+        result = User::Operation::Update.wtf?(
+          params: {
+            user: {
+              id: "#{user.id}",
+              name: "jumpin jack flash yeah",
+              email: user.email
+            },
+            id: user.id
+          }
+        )
       
-    #     assert_equal true, result.success?
-    #   end
-    # end
+        assert_equal true, result.success?
+      end
+    end
 
     # ----------------
     # failing tests
