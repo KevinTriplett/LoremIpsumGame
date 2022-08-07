@@ -78,3 +78,4 @@ Voting and Change Blocks (feature request from David):
 - [ ] when can I use def method(ctx, **) and def method(cts, :some_param, **)?
 - [ ] is the view file for Turn::Cell::Story in the right directory?
 - [ ] why I can't use model: kwarg in User::Operation::Index?
+- [ ] why do I have to monkey patch the Reform@full_messages_for method?
