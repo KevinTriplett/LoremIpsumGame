@@ -105,13 +105,13 @@ class TurnOperationTest < MiniTest::Spec
         user2.save!
         user3.save!
 
-        Turn::Operation::Create.wtf?(
+        Turn::Operation::Create.call(
           params: {
             turn: {}
           },
           user_id: user1.id
         )
-        Turn::Operation::Create.wtf?(
+        Turn::Operation::Create.call(
           params: {
             turn: {}
           },

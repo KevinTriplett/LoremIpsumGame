@@ -178,7 +178,7 @@ class UserOperationTest < MiniTest::Spec
         assert_equal true, result.success?
         user = result[:model]
         
-        result = User::Operation::Update.wtf?(
+        result = User::Operation::Update.call(
           params: {
             user: {
               id: "#{user.id}",
