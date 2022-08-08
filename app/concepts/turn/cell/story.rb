@@ -74,6 +74,11 @@ class Turn::Cell::Story < Cell::ViewModel
     game.game_end ? game.game_end.iso8601 : nil
   end
 
+  def game_ends
+    days = (game.game_end - Time.now).to_i/60/60/24.floor
+    "in " + pluralize(days, "day")
+  end
+
   def turn_start
     game.turn_start ? game.turn_start.iso8601 : nil
   end

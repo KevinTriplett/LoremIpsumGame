@@ -9,6 +9,15 @@ function optShortDateAtTime(tzString) {
   };
 }
 
+function optShortDate(tzString) {
+  return {
+    timeZone: tzString,
+    weekday: "short",
+    month: "short",
+    day: "numeric"
+  };
+}
+
 function optTimeAndDay(tzString) {
   return {
     timeZone: tzString,
@@ -22,7 +31,8 @@ function getFormat(className, tzString) {
   switch(className) {
   case "game-start":
   case "game-end":
-    return optShortDateAtTime(tzString)
+    // return optShortDateAtTime(tzString)
+    return optShortDate(tzString)
   case "turn-start":
   case "turn-end":
     return optTimeAndDay(tzString)
