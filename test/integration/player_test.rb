@@ -8,8 +8,9 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       game = create_game({
         game_start: Time.now-4.days,
         game_end: Time.now+4.days,
-        turn_start: Time.now-4.hours,
-        turn_end: Time.now+4.hours
+        turn_start: Time.now-5.hours,
+        turn_end: Time.now+3.hours,
+        turn_hours: 8
       })
       user1 = create_game_user(game.id)
       user2 = create_game_user(game.id)
@@ -21,9 +22,9 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_select "h5", game.name
       assert_select ".game-start", game.game_start.iso8601
       assert_select ".game-end", game.game_end.iso8601
-      assert_select ".turn-start", game.turn_start.iso8601
+      assert_select ".game-ends", "in 3 days"
       assert_select ".turn-end", game.turn_end.iso8601
-      assert_select ".time-left", "3 hours, 59 minutes"
+      assert_select ".time-left", "2 hours, 59 minutes"
       assert_select ".current-player-name", user1.name
       assert_select "#ep", "Something went wrong: 😭Try refreshing the page 🤓(Note: JavaScript is required) 🤔"
       assert_select "li.current-player", "#{user1.name}\n <== current player"
@@ -41,8 +42,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_equal user2.id, game.current_player_id
 
       get user_turns_path(user_token: user2.token)
-      assert_select ".turn-start", game.turn_start.iso8601
       assert_select ".turn-end", game.turn_end.iso8601
+      assert_select ".time-left", "7 hours, 59 minutes"
       assert_select ".current-player-name", user2.name
       assert_select "li.current-player", "#{user2.name}\n <== current player"
     end
