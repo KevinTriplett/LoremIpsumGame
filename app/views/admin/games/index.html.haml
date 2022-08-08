@@ -4,9 +4,8 @@
   %p
     %span.game-name= g.name
     %br
-    -# = link_to "show", game_url(g.id)
-    = link_to "edit", edit_admin_game_url(g.id)
-    = link_to "users", admin_game_users_url(g.id)
-    = link_to "delete", admin_game_url(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }
+    = link_to "edit", edit_admin_game_path(g.id)
+    = link_to "users", admin_game_users_path(g.id)
+    = link_to "delete", admin_game_path(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }
 
-= link_to "New Game", new_admin_game_url, class: "btn btn-secondary"
+= link_to "New Game", new_admin_game_path, class: "btn btn-secondary"

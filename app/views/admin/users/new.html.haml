@@ -1,6 +1,6 @@
 %h5= "New User for #{@game.name}"
 
-= simple_form_for @form, as: :user, url: admin_game_users_url do |f|
+= simple_form_for @form, as: :user, url: admin_game_users_path do |f|
   .row
     .col= f.error_notification
   .row

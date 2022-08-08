@@ -5,7 +5,7 @@ class TurnsController < ApplicationController
   end
 
   def new
-    return redirect_to user_turns_path unless current_player?
+    return redirect_to user_turns_url unless current_player?
     session[:ep_sessions] ||= {}
     @user = get_user
 
@@ -13,17 +13,17 @@ class TurnsController < ApplicationController
       return render
     end
 
-    redirect_to user_turns_path
+    redirect_to user_turns_url
   end
 
   def create
-    return redirect_to user_turns_path unless current_player?
+    return redirect_to user_turns_url unless current_player?
     session[:ep_sessions] ||= {}
     @user = get_user
 
     run Turn::Operation::Create, user_id: @user.id do |ctx|
       flash[:notice] = "Turn has been completed and saved - thank you!"
-      return redirect_to user_turns_path
+      return redirect_to user_turns_url
     end
   
     render :new
