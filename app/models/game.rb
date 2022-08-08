@@ -20,12 +20,20 @@ class Game < ActiveRecord::Base
     game_end && Time.now > game_end
   end
 
-  def no_reminder_yet?
-    Time.now < (turn_end - turn_reminder_hours)
+  def time_to_remind_player?
+    turn_end && Time.now > (turn_end - turn_reminder_hours)
   end
 
-  def no_auto_finish_yet?
-    Time.now < (turn_end + grace_period_hours)
+  def time_to_finish_turn?
+    turn_end && Time.now > (turn_end + grace_period_hours)
+  end
+
+  def remind_current_player
+    current_player.remind if !ended? && time_to_remind_player?
+  end
+
+  def auto_finish_turn
+    current_player.finish_turn if !ended? && !last_turn? && time_to_finish_turn?
   end
 
   private
@@ -36,12 +44,24 @@ class Game < ActiveRecord::Base
 
   # TODO: can make this configurable on the model
   def grace_period_hours
-    turn_hours / 4
+    (turn_hours / 4).hours
   end
 
   # class methods
 
+  # class methods executed by cron job
+  def self.remind_current_players
+    all.each(&:remind_current_player)
+  end
+
+  def self.auto_finish_turns
+    all.each(&:auto_finish_turn)
+  end  
+
   def self.generate_report
+    puts "#{Game.all.count} games total"
+    puts "#{User.all.count} users total"
+    puts "#{Turn.all.count} turns total"
     Game.all.each do |g|
       puts "Game: #{g.name}" + (g.ended? ? " [ended]" : "")
       puts "  #{g.users.count} players"
@@ -67,7 +87,8 @@ class Game < ActiveRecord::Base
     puts "---------------"
 
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
-    client.listAllPads[:padIDs].each do |pad_name|
+    pads = client.listAllPads
+    pads[:padIDs].each do |pad_name|
       if game_pads.include? pad_name
         puts (del ? "keeping" : "will keep") + " pad #{pad_name}"
       else

@@ -30,18 +30,20 @@ class LoremTaskTest < ActiveSupport::TestCase
 
   test "auto finishes turns" do
     DatabaseCleaner.cleaning do
-      turn_end = Time.now - 1.minute
+      turn_end = Time.now - 1.hour - 1.minute
       game_end = Time.now + 1.day
       game1 = create_game({
         game_end: game_end,
-        turn_end: turn_end
+        turn_end: turn_end,
+        turn_hours: 4
       })
       user1 = create_game_user(game1.id)
       user2 = create_game_user(game1.id)
 
       game2 = create_game({
         game_end: game_end,
-        turn_end: turn_end
+        turn_end: turn_end,
+        turn_hours: 4
       })
       user3 = create_game_user(game2.id)
       user4 = create_game_user(game2.id)
