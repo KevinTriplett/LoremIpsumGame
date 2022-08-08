@@ -1,6 +1,8 @@
 require "application_system_test_case"
 
 class AdminGamesTest < ApplicationSystemTestCase
+  DatabaseCleaner.clean
+
   test "Admin can create a game and add a user" do
     DatabaseCleaner.cleaning do
       default_game_days = Rails.configuration.default_game_days
@@ -143,7 +145,7 @@ class AdminGamesTest < ApplicationSystemTestCase
     end
   end
 
-  test "Deleting user and game" do
+  test "Deleting user" do
     DatabaseCleaner.cleaning do
       game = create_game
       user = create_game_user(game.id)
@@ -154,12 +156,20 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_selector ".flash", text: "User deleted"
       game.reload
       assert_equal 0, game.users.count
-      
+    end
+  end
+
+  test "Deleting game" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user = create_game_user(game.id)
+
       visit admin_games_path
       click_link "delete"
       page.driver.browser.switch_to.alert.accept
       assert_selector ".flash", text: "Game deleted"
       assert_equal 0, Game.all.count
+      assert_equal 0, User.all.count
     end
   end
 

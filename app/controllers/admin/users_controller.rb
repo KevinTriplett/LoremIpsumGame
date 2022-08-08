@@ -47,10 +47,12 @@ class Admin::UsersController < ApplicationController
   end
 
   def destroy
-    run User::Operation::Delete
+    run User::Operation::Delete do
+      flash[:notice] = "User deleted"
+      return redirect_to admin_game_users_url, status: 303
+    end
   
-    flash[:notice] = "User deleted"
-    redirect_to admin_game_users_url #(game_id: params[:game_id])
+    flash[:notice] = "Unable to delete User"
   end
 
   private

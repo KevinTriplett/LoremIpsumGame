@@ -48,7 +48,7 @@ module Admin
     def destroy
       run Game::Operation::Delete do |ctx|
         flash[:notice] = "Game deleted"
-        return redirect_to admin_games_url
+        return redirect_to admin_games_url, status: 303
       end
 
       flash[:notice] = "Unable to delete Game"
