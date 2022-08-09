@@ -4,6 +4,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] install comments plugin for pads
 - [X] fix js not triggering on initial page load
 - [X] move User#remind and auto_finish to rake tasks for crontab
 - [X] create a cronjob system
