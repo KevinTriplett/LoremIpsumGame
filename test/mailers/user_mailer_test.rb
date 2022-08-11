@@ -17,9 +17,29 @@ class UserMailerTest < ActionMailer::TestCase
       assert_equal email.to, [user.email]
       assert_equal email.cc, ["kt@kevintriplett.com"]
       assert_nil email.bcc
-      assert_equal email.from, ['kt@kevintriplett.com']
+      assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
       assert_match /here's your magic link/, email.body.encoded
+      ActionMailer::Base.deliveries.clear
+    end
+  end
+
+  test 'goodbye_email' do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user = create_user(game_id: game.id)
+      ActionMailer::Base.deliveries.clear
+      email = UserMailer.goodbye_email(user)
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      assert_equal email.to, [user.email]
+      assert_equal email.cc, ["kt@kevintriplett.com"]
+      assert_nil email.bcc
+      assert_equal email.from, ['noreply@loremipsumgame.com']
+      assert_equal email.subject, '[Lorem Ipsum] Sorry to see you go 😭'
+      assert_match /we understand/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end
   end
@@ -37,7 +57,7 @@ class UserMailerTest < ActionMailer::TestCase
       assert_equal email.to, [user.email]
       assert_equal email.cc, ["kt@kevintriplett.com"]
       assert_nil email.bcc
-      assert_equal email.from, ['kt@kevintriplett.com']
+      assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
       assert_match /Here's your magic link/, email.body.encoded
       ActionMailer::Base.deliveries.clear
@@ -57,9 +77,30 @@ class UserMailerTest < ActionMailer::TestCase
       assert_equal email.to, [user.email]
       assert_equal email.cc, ["kt@kevintriplett.com"]
       assert_nil email.bcc
-      assert_equal email.from, ['kt@kevintriplett.com']
+      assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Reminder: It's Your Turn 😅"
       assert_match /Here's your magic link/, email.body.encoded
+      ActionMailer::Base.deliveries.clear
+    end
+  end
+
+  test 'turn_auto_finished' do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user = create_user(game_id: game.id)
+      ActionMailer::Base.deliveries.clear
+      email = UserMailer.turn_auto_finished(user)
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      assert_equal email.to, [user.email]
+      assert_equal email.cc, ["kt@kevintriplett.com"]
+      assert_nil email.bcc
+      assert_equal email.from, ['noreply@loremipsumgame.com']
+      assert_equal email.subject, "[Lorem Ipsum] Your turn was finished for you 🫣"
+      assert_no_match /#{user.name}/, email.body.encoded
+      assert_no_match /#{get_magic_link(user)}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end
   end
@@ -77,7 +118,7 @@ class UserMailerTest < ActionMailer::TestCase
       assert_equal email.to, [user.email]
       assert_equal email.cc, ["kt@kevintriplett.com"]
       assert_nil email.bcc
-      assert_equal email.from, ['kt@kevintriplett.com']
+      assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
       assert_match /Here's your magic link/, email.body.encoded
       ActionMailer::Base.deliveries.clear

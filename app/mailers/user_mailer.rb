@@ -8,6 +8,11 @@ class UserMailer < ApplicationMailer
     mail(to: user.email, cc: admin_email, subject: '[Lorem Ipsum] Welcome to the Game 🤗')
   end
 
+  def goodbye_email(user)
+    @user = user
+    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] Sorry to see you go 😭")
+  end
+
   def turn_notification(user)
     @user = user
     @url = get_url(user)
@@ -24,6 +29,12 @@ class UserMailer < ApplicationMailer
     @user = user
     @url = get_url(user)
     mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉")
+  end
+
+  def turn_auto_finished(user)
+    @user = user
+    @url = get_url(user)
+    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] Your turn was finished for you 🫣")
   end
 
   private

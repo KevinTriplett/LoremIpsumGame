@@ -51,7 +51,7 @@ class LoremTaskTest < ActiveSupport::TestCase
       ActionMailer::Base.deliveries.clear
       LoremIpsum::Application.load_tasks
       Rake::Task['lorem:auto_finish_turns'].invoke
-      assert_emails 2
+      assert_emails 4
       ActionMailer::Base.deliveries.clear
 
       [user1,user2,user3,user4].each(&:reload)

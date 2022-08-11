@@ -33,6 +33,7 @@ class User < ActiveRecord::Base
         },
         user_id: id
       )
+      UserMailer.turn_auto_finished(self).deliver_now
     rescue => detail
       print detail.backtrace.join("\n")
       Rails.logger.error "in #auto_finish_turn for user #{self.inspect}"

@@ -3,6 +3,7 @@ module User::Operation
     step Model(User, :find_by)
     step :update_game
     step :delete
+    step :notify
 
     def update_game(ctx, model:, **)
       game = model.game
@@ -16,6 +17,10 @@ module User::Operation
 
     def delete(ctx, model:, **)
       model.destroy
+    end
+
+    def notify(ctx, model:, **)
+      UserMailer.goodbye_email(model).deliver_now
     end
   end
 end

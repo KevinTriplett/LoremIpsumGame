@@ -112,7 +112,8 @@ class UserOperationTest < MiniTest::Spec
         ActionMailer::Base.deliveries.clear
         game = create_game
 
-        User::Operation::Create.call(
+        ActionMailer::Base.deliveries.clear
+        result = User::Operation::Create.call(
           params: {
             user: {
               name: random_user_name, 
@@ -121,8 +122,34 @@ class UserOperationTest < MiniTest::Spec
           },
           game_id: game.id
         )
+        user = result[:model]
 
         assert_emails 1
+        email = ActionMailer::Base.deliveries.last
+        assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
+        assert_match /#{last_random_user_name}/, email.body.encoded
+        assert_match /#{get_magic_link(user)}/, email.body.encoded
+        ActionMailer::Base.deliveries.clear
+      end
+    end
+
+    it "Sends an email on user deletion" do
+      DatabaseCleaner.cleaning do
+        ActionMailer::Base.deliveries.clear
+        game = create_game
+        user = create_game_user(game.id)
+
+        ActionMailer::Base.deliveries.clear
+        User::Operation::Delete.call(
+          params: {
+            id: user.id
+          }
+        )
+
+        assert_emails 1
+        email = ActionMailer::Base.deliveries.last
+        assert_equal email.subject, '[Lorem Ipsum] Sorry to see you go 😭'
+        assert_match /#{last_random_user_name}/, email.body.encoded
         ActionMailer::Base.deliveries.clear
       end
     end
@@ -162,7 +189,6 @@ class UserOperationTest < MiniTest::Spec
       end
     end
 
-    # TODO: create validation for this one
     it "Allows non-unique email address for same user" do
       DatabaseCleaner.cleaning do
         game = create_game

@@ -153,6 +153,10 @@ class GameTest < MiniTest::Spec
       ActionMailer::Base.deliveries.clear
       Game.remind_current_players
       assert_emails 2
+      email = ActionMailer::Base.deliveries.last
+      assert_equal email.subject, "[Lorem Ipsum] Reminder: It's Your Turn 😅"
+      assert_match /#{user3.name}/, email.body.encoded
+      assert_match /#{get_magic_link(user3)}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
 
       [user1,user2,user3,user4].each(&:reload)
@@ -227,7 +231,9 @@ class GameTest < MiniTest::Spec
 
       ActionMailer::Base.deliveries.clear
       Game.auto_finish_turns
-      assert_emails 2
+      assert_emails 4
+      email = ActionMailer::Base.deliveries.last
+      assert_equal email.subject, "[Lorem Ipsum] Your turn was finished for you 🫣"
       ActionMailer::Base.deliveries.clear
 
       [user1,user2,user3,user4].each(&:reload)
