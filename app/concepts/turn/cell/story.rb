@@ -91,9 +91,8 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def turn_time_remaining
     return nil unless game.turn_end
-    hours = (game.turn_end - Time.now).to_i/60/60.floor
-    minutes = ((game.turn_end - Time.now).to_f/60 % 60).floor
-    "#{hours} hours, #{minutes} minutes" + (hours < 0 ? " (in grace period)" : "")
+    time = game.turn_time_remaining
+    "#{time[:hours]} hours, #{time[:minutes]} minutes" + (time[:hours] < 0 ? " (in grace period)" : "")
   end
 
   def html_story

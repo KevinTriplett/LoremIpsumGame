@@ -36,6 +36,13 @@ class Game < ActiveRecord::Base
     current_player.finish_turn if !ended? && !last_turn? && time_to_finish_turn?
   end
 
+  def turn_time_remaining
+    {
+      hours: (turn_end - Time.now).to_i/60/60.floor,
+      minutes: ((turn_end - Time.now).to_f/60 % 60).floor
+    }
+  end
+
   private
 
   def turn_reminder_hours
@@ -66,9 +73,11 @@ class Game < ActiveRecord::Base
       puts "Game: #{g.name}" + (g.ended? ? " [ended]" : "")
       puts "  #{g.users.count} players"
       unless g.ended?
+        time = g.turn_time_remaining
         puts "  current_player: #{g.current_player ? g.current_player.name : "no player yet"}"
-        puts "  turn_end: #{g.turn_end.iso8601} (#{g.turn_end.short_date_at_time})"
         puts "  game_end: #{g.game_end.iso8601} (#{g.game_end.short_date_at_time})"
+        puts "  turn_end: #{g.turn_end.iso8601} (#{g.turn_end.short_date_at_time})"
+        puts "  remaining: #{time[:hours]} hours, #{time[:minutes]} minuutes"
         puts "  turn_hours: #{g.turn_hours}"
         g.users.each_with_index do |u, i|
           puts "  user #{i+1}:"
