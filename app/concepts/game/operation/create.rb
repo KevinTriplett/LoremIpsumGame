@@ -24,7 +24,7 @@ module Game::Operation
         client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
         nil == client.createPad(padID: game.token)
       rescue
-        puts "ERROR: pad '#{game.token}' could not be created"
+        puts "ERROR: pad '#{game.token}' could not be created" unless Rails.env == "test"
         true
       end
     end
