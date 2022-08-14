@@ -40,7 +40,7 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def finish_button
     current_player? ?
-      link_to("Finish Turn", user_turns_path, class: "btn btn-primary", data: { 
+      link_to("Finish Turn", user_turns_path, id: "finish", class: "btn btn-primary", data: { 
         turbo_method: "post",
         turbo_confirm: "Click OK if you are finished with your turn"
       }) : nil

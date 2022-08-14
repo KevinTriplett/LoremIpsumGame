@@ -3,7 +3,7 @@ require "application_system_test_case"
 class PlayerTest < ApplicationSystemTestCase
   DatabaseCleaner.clean
 
-  test "Player can access [test] pad" do
+  test "Player can access [test] pad and submit turn" do
     DatabaseCleaner.cleaning do
       game = create_game({
         game_start: Time.now.utc-4.days,
@@ -27,6 +27,18 @@ class PlayerTest < ApplicationSystemTestCase
       assert_selector ".current-player-name", text: user1.name
       assert_selector "#ep", text: ""
       assert_selector "li.current-player", text: "#{user1.name} <== current player"
+
+      # TODO: why does this fail?
+      # click_link "Finish Turn"
+      # page.driver.browser.switch_to.alert.accept
+      # assert_equal 1, Turn.all.count
+      # assert_equal user1.id, Turn.all.first.user.id
+
+      # page.go_back
+      # click_link "Finish Turn"
+      # page.driver.browser.switch_to.alert.accept
+      # assert_equal 1, Turn.all.count
+      # assert_equal user1.id, Turn.all.first.user.id
     end
   end
 end
