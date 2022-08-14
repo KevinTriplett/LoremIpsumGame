@@ -1,6 +1,8 @@
 # TODO
 
 ## MVP 2
+- [ ] defeat back button from re-applying turn
+- [ ] add button to emails and replace "magic link" with actual link
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
@@ -38,8 +40,18 @@
 
 ## MVP 3
 - [X] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
-- [ ] add voting and change blocks (see design below)
-- [ ] add :order field on :users table for random option (with no double-turns)
+- [ ] add voting and change blocks (see design below) FIRST DO THIS ON MN USING POLLS
+- [ ] allow turn-based and round-based where a round ends when all players click the finish button or time expires
+- [ ] add :order field on :users table for random option (with no double-turns) for turn-based games
+- [ ] allow game_days and num_rounds/turns for ending the game (allow game to end early when all players vote to end?)
+
+For rounds:
+Game has num_rounds
+Game has round (number)
+Game.round_hours is the maximum hours per round
+Turn has round (number)
+if Turn.where(game_id = game.id).where(round = game.round).count = game.users.count || Time.now > game.turn_end then round++
+
 
 EtherPad-Lite implementation:
 - [ ] allow branching
