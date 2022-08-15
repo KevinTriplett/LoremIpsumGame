@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   end
 
   resources :users, param: :token, only: [:show] do
-    resources :turns, only: [:index, :new, :create]
+    resources :turns, only: [:index, :new, :create, :update]
   end
 
   # Defines the root path route ("/")
