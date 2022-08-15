@@ -162,7 +162,7 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_game_user({game_id: game.id})
         user3 = create_game_user({game_id: game.id})
         game.reload
-        assert_equal [0,1,2], game.users.pluck(:play_order)
+        assert_equal [0,1,2], game.users.order(created_at: :asc).pluck(:play_order)
         assert_equal game.players.first.id, game.current_player_id
 
         game.players.pluck(:id).each do |uid|

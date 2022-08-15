@@ -35,7 +35,7 @@ class GameTest < MiniTest::Spec
 
       game1.reload
       assert_equal user1.id, game1.current_player_id
-      assert_equal [0,1,2], game1.users.pluck(:play_order)
+      assert_equal [0,1,2], game1.users.order(created_at: :asc).pluck(:play_order)
       game1.update(current_player_id: user3.id)
       assert_equal user1.id, game1.next_player_id
     end
@@ -293,7 +293,7 @@ class GameTest < MiniTest::Spec
       user4 = create_game_user({game_id: game.id})
       user5 = create_game_user({game_id: game.id})
       game.reload
-      assert_equal [0,1,2,3,4], game.users.pluck(:play_order)
+      assert_equal [0,1,2,3,4], game.users.order(created_at: :asc).pluck(:play_order)
 
       game.update(round: 2)
       game.shuffle_players
@@ -322,22 +322,22 @@ class GameTest < MiniTest::Spec
       user5 = create_game_user({game_id: game.id})
       user6 = create_game_user({game_id: game.id})
       game.reload
-      assert_equal [0,1,2,3,4,5], game.users.pluck(:play_order)
+      assert_equal [0,1,2,3,4,5], game.users.order(created_at: :asc).pluck(:play_order)
 
       game.update(round: 2)
       game.shuffle_players
       game.reload
-      assert_equal [0,3,1,4,2,5], game.users.pluck(:play_order)
+      assert_equal [0,3,1,4,2,5], game.users.order(created_at: :asc).pluck(:play_order)
 
       game.update(round: 3)
       game.shuffle_players
       game.reload
-      assert_equal [4,0,2,3,5,1], game.users.pluck(:play_order)
+      assert_equal [4,0,2,3,5,1], game.users.order(created_at: :asc).pluck(:play_order)
 
       game.update(round: 4)
       game.shuffle_players
       game.reload
-      assert_equal [4,3,0,5,2,1], game.users.pluck(:play_order)
+      assert_equal [4,3,0,5,2,1], game.users.order(created_at: :asc).pluck(:play_order)
     end
   end
 end
