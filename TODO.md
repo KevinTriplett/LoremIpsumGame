@@ -1,9 +1,17 @@
 # TODO
 
 ## MVP 2
+- [ ] allow game to end early when all players pass
+- [ ] fix user colors in Etherpad to be consistent between rounds
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] save revisions when turn (first) finished
+- [X] Game ends: this round (and remove "in")
+- [X] fix invalid date on player view
+- [X] list players on player view in play order
+- [X] change the Etherpad initial text
+- [X] make sure first user added to game gets a turn notification email
 - [X] add button to emails and replace "magic link" with actual link
 - [X] convert test helper create_user to use User::Operation::Create
 - [X] install comments plugin for pads
@@ -39,16 +47,15 @@
 - [X] enforce unique users for game
 
 ## MVP 3
-- [X] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
+- [ ] show diffs using EtherPad diffs or [diffy](https://github.com/samg/diffy)
 - [ ] add voting and change blocks (see design below) FIRST DO THIS ON MN USING POLLS
+- [X] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
 - [X] add :play_order field on :users table for random option (with no double-turns)
 - [X] remove game_days and add num_rounds for ending the game
-- [ ] allow game to end early when all players pass
 
 EtherPad-Lite implementation:
 - [ ] allow branching
 - [ ] allow change requests (aka pull requests)
-- [ ] show diffs using EtherPad diffs or [diffy](https://github.com/samg/diffy)
 - [ ] allow voting on change requests
 - [X] create node.js server for [EtherPad-Lite](https://github.com/ether/etherpad-lite)
 - [X] install [ruby-etherpad-lite](https://github.com/jhollinger/ruby-etherpad-lite)
