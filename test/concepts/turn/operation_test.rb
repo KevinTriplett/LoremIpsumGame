@@ -155,17 +155,19 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
-    it "Updates current_player_id attribute when turn finished (rollover)" do
+    it "Shuffles players and updates current_player_id when last turn finished" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
-        game.update(current_player_id: user1.id)
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
+        game.reload
+        assert_equal [0,1,2], game.users.pluck(:play_order)
+        assert_equal game.players.first.id, game.current_player_id
 
-        user_ids = game.players.pluck(:id)
-        user_ids.each_with_index do |uid, i|
+        game.players.pluck(:id).each do |uid|
           assert_equal uid, game.current_player_id
+          assert_equal 1, game.round
           Turn::Operation::Create.call(
             params: {
               turn: {}
@@ -175,7 +177,7 @@ class TurnOperationTest < MiniTest::Spec
           )
           game.reload
         end
-        game.reload
+        assert_equal 2, game.round
         assert_equal game.players.first.id, game.current_player_id
       end
     end
@@ -273,40 +275,6 @@ class TurnOperationTest < MiniTest::Spec
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
         ActionMailer::Base.deliveries.clear
-      end
-    end
-
-    it "Ignores current_player_id attribute when round-based" do
-      DatabaseCleaner.cleaning do
-        game = create_game(num_rounds: 10)
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
-
-        game.reload
-        assert_equal user1.id, game.current_player_id
-
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user1.id,
-          game_id: user1.game_id
-        )
-        game.reload
-        user_id = game.players[1].id
-        assert_equal user_id, game.current_player_id
-        user_id = game.players[2].id
-        
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user2.id,
-          game_id: user2.game_id
-        )
-        game.reload
-        assert_equal user_id, game.current_player_id
       end
     end
 

@@ -7,7 +7,10 @@ module User::Operation
       step Contract::Build(constant: User::Contract::Create)
 
       def initialize_attributes(ctx, model:, **)
-        model.game_id = ctx[:game_id]
+        return false unless ctx[:game_id]
+        game = Game.find(ctx[:game_id])
+        model.game_id = game.id
+        model.play_order = game.users.count
       end
     end
     

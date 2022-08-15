@@ -32,9 +32,11 @@ class Turn::Operation::Create < Trailblazer::Operation
     if game.players_finished?
       game.round += 1
       game.users.each(&:reset_reminded)
-      game.reorder_players
+      game.shuffle_players
+      game.current_player_id = game.players.first.id
+    else
+      game.current_player_id = game.next_player_id
     end
-    game.current_player_id = game.next_player_id
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
     game.save

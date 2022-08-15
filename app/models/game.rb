@@ -13,8 +13,10 @@ class Game < ActiveRecord::Base
   end
 
   def next_player_id
-    # rollover if at the end of the user array
-    (players.where("id > ?", current_player_id).first || players.first).id
+    user_ids = players.pluck(:id)
+    i = user_ids.index(current_player_id)
+    # rollover if at the end of the player array
+    user_ids[i+1 < user_ids.count ? i+1 : 0]
   end
 
   def last_turn?
@@ -30,9 +32,30 @@ class Game < ActiveRecord::Base
     users_finished.count == users.count
   end
 
-  def reorder_players
-    reordered_users = User.where(game_id: id).order("RANDOM()").pluck(:email)
-    users.each { |u| u.update(play_order: reordered_users.index(u.email)) }
+  # [0, 1, 2, 3, 4]
+  # [0, 3, 1, 4, 2] = in
+  # [1, 0, 4, 3, 2] = out
+  # [1, 3, 0, 2, 4] = in
+  # [0, 1, 2, 3, 4] = out
+  #
+  # [0, 1, 2, 3, 4, 5]
+  # [0, 3, 1, 4, 2, 5] = in
+  # [4, 0, 2, 3, 5, 1] = out
+  # [4, 3, 0, 5, 2, 1] = in
+  # [5, 4, 2, 3, 1, 0] = in
+  # [5, 3, 4, 1, 2, 0] = out
+  # [1, 5, 2, 3, 0, 4] = in
+  def shuffle_players
+    return unless users.count > 2
+    io = (round % 2 == 0) # alternate in/out shuffle each round
+    npo, opo = [], users.pluck(:play_order)
+    i, mid = 0, (opo.count / 2) + (io ? opo.count % 2 : 0)
+    while npo.count < opo.count
+      npo.push(io ? opo[i] : opo[mid+i])
+      npo.push(io ? opo[mid+i] : opo[i]) if npo.count < opo.count
+      i += 1
+    end
+    users.each_with_index { |u,i| u.update(play_order: npo[i]) }
   end
 
   def time_to_remind_player?

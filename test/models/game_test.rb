@@ -24,16 +24,19 @@ class GameTest < MiniTest::Spec
   it "Finds the next user (rollover)" do
     DatabaseCleaner.cleaning do
       game1 = create_game
+      user1 = create_game_user(game_id: game1.id)
+      user2 = create_game_user(game_id: game1.id)
+      user3 = create_game_user(game_id: game1.id)
+
       game2 = create_game
+      user4 = create_game_user(game_id: game2.id)
+      user5 = create_game_user(game_id: game2.id)
+      user6 = create_game_user(game_id: game2.id)
 
-      user1 = create_user(game_id: game1.id)
-      user3 = create_user(game_id: game2.id)
-      user2 = create_user(game_id: game1.id)
-      user4 = create_user(game_id: game2.id)
-      user3 = create_user(game_id: game1.id)
-      user5 = create_user(game_id: game2.id)
-
-      game1.current_player_id = user3.id
+      game1.reload
+      assert_equal user1.id, game1.current_player_id
+      assert_equal [0,1,2], game1.users.pluck(:play_order)
+      game1.update(current_player_id: user3.id)
       assert_equal user1.id, game1.next_player_id
     end
   end
@@ -269,6 +272,72 @@ class GameTest < MiniTest::Spec
       })
       assert game1.players_finished?
       assert !game2.players_finished?
+    end
+  end
+
+  it "shuffles player order for odd number of players" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+
+      game.reload
+      assert_equal [0,1], game.users.pluck(:play_order)
+      (0..10).each do
+        game.shuffle_players
+        game.reload
+        assert_equal [0,1], game.users.pluck(:play_order)
+      end
+
+      user3 = create_game_user({game_id: game.id})
+      user4 = create_game_user({game_id: game.id})
+      user5 = create_game_user({game_id: game.id})
+      game.reload
+      assert_equal [0,1,2,3,4], game.users.pluck(:play_order)
+
+      game.update(round: 2)
+      game.shuffle_players
+      game.reload
+      assert_equal [0,3,1,4,2], game.users.pluck(:play_order)
+
+      game.update(round: 3)
+      game.shuffle_players
+      game.reload
+      assert_equal [1,0,4,3,2], game.users.pluck(:play_order)
+
+      game.update(round: 4)
+      game.shuffle_players
+      game.reload
+      assert_equal [1,3,0,2,4], game.users.pluck(:play_order)
+    end
+  end
+
+  it "shuffles player order for even number of players" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+      user3 = create_game_user({game_id: game.id})
+      user4 = create_game_user({game_id: game.id})
+      user5 = create_game_user({game_id: game.id})
+      user6 = create_game_user({game_id: game.id})
+      game.reload
+      assert_equal [0,1,2,3,4,5], game.users.pluck(:play_order)
+
+      game.update(round: 2)
+      game.shuffle_players
+      game.reload
+      assert_equal [0,3,1,4,2,5], game.users.pluck(:play_order)
+
+      game.update(round: 3)
+      game.shuffle_players
+      game.reload
+      assert_equal [4,0,2,3,5,1], game.users.pluck(:play_order)
+
+      game.update(round: 4)
+      game.shuffle_players
+      game.reload
+      assert_equal [4,3,0,5,2,1], game.users.pluck(:play_order)
     end
   end
 end
