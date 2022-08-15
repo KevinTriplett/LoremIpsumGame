@@ -25,6 +25,8 @@ class Turn::Operation::Create < Trailblazer::Operation
     return true if Rails.env == "test"
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     model.entry = client.getHTML(padID: game.token)[:html]
+    client.saveRevision(padID: game.token)
+    model.revision = client.listSavedRevisions(padID: game.token)[:savedRevisions].max
   end
 
   def update_game(ctx, model:, **)
