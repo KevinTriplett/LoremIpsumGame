@@ -7,14 +7,14 @@ module User::Operation
 
     def update_game(ctx, model:, **)
       game = model.game
-      if game.current_player_id == model.id
-        # check for last player assigned to game being deleted
-        if game.current_player_id
-          game.current_player_id = (game.users.count == 1 ? nil : game.next_player_id)
-          game.save
-        end
-      end
-      true
+      # deleting current player ?
+      return true unless game.current_player_id == model.id
+      # deleting last player ?
+      next_player_id = (game.users.count == 1 ? nil : game.next_player_id)
+      game.update(current_player_id: next_player_id)
+      return true unless next_player_id
+      user = User.find(next_player_id)
+      UserMailer.turn_notification(user).deliver_now
     end
 
     def delete(ctx, model:, **)
