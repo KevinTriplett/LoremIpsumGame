@@ -38,4 +38,9 @@ class User < ActiveRecord::Base
       Rails.logger.error detail.to_s
     end
   end
+
+  def self.pick_author_color(i)
+    i = i % Rails.configuration.author_colors.count
+    Rails.configuration.author_colors[i]
+  end
 end

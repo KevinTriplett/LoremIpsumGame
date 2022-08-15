@@ -10,7 +10,9 @@ module User::Operation
         return false unless ctx[:game_id]
         game = Game.find(ctx[:game_id])
         model.game_id = game.id
-        model.play_order = game.users.count
+        i = game.users.count
+        model.play_order = i
+        model.author_color = User.pick_author_color(i)
       end
     end
     
