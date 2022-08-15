@@ -67,13 +67,13 @@ end
 
 def create_game(params = {})
   Game.create(
-    name: random_game_name,
+    name: params[:name] || random_game_name,
     turn_start: params[:turn_start],
     turn_end: params[:turn_end],
     num_rounds: params[:num_rounds] || 10,
     turn_hours: (params[:turn_hours] || 48),
-    current_player_id: params[:current_player_id],
-    round: 1
+    current_player_id: params[:current_player_id] || nil,
+    round: params[:round] || 1
   )
 end
 
@@ -84,36 +84,43 @@ def create_user(params)
     game_id: params[:game_id],
     reminded: params[:reminded]
   )
-  user.game.update(current_player_id: user.id) unless user.game.current_player_id
+  game = Game.find(params[:game_id])
+  game.update(current_player_id: user.id) unless game.current_player_id
   user
 end
 
-def create_game_user(game)
+def create_game_user(params)
   User::Operation::Create.call(
     params: {
       user: {
-        name: random_user_name, 
-        email: random_email
+        name: params[:name] || random_user_name, 
+        email: params[:email] || random_email
       }
     },
-    game_id: game.id
+    game_id: params[:game_id]
   )[:model]
 end
 
 def create_turn(params)
   game = Game.find(params[:game_id])
-  Turn.create({
+  turn = Turn.create({
     entry: params[:entry] || "test",
     user_id: params[:user_id],
     game_id: params[:game_id],
     round: params[:round] || game.round
   })
+  game.reload
+  game.round += 1 if game.players_finished?
+  turn
 end
 
-def create_user_turn(user)
-  result = Turn::Operation::Create.call(
+def create_user_turn(params)
+  user = User.find(params[:user_id])
+  Turn::Operation::Create.call(
     params: {
-      turn: {}
+      turn: {
+        entry: params[:entry] || "test"
+      }
     },
     user_id: user.id,
     game_id: user.game_id

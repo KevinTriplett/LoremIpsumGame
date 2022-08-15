@@ -27,47 +27,44 @@ class UserOperationTest < MiniTest::Spec
         user = result[:model]
         assert_equal last_random_user_name, user.name
         assert_equal last_random_email, user.email
+        assert_equal 0, user.play_order
       end
     end
 
     it "Initializes game.current_player_id" do
       DatabaseCleaner.cleaning do
         game = create_game
+        user = create_game_user(game_id: game.id)
 
-        result = User::Operation::Create.call(
-          params: {
-            user: {
-              name: random_user_name, 
-              email: random_email
-            }
-          },
-          game_id: game.id
-        )
-
-        assert_equal true, result.success?
-        user = result[:model]
         game.reload
-        assert user.id
+        assert game.current_player_id
         assert_equal user.id, game.current_player_id
+      end
+    end
+
+    it "Initializes play_order in order of user creation" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_game_user(game_id: game.id)
+        user2 = create_game_user(game_id: game.id)
+        user3 = create_game_user(game_id: game.id)
+
+        assert_equal 0, user1.play_order
+        assert_equal 1, user2.play_order
+        assert_equal 2, user3.play_order
       end
     end
 
     it "Does not update initialized game.current_player_id" do
       DatabaseCleaner.cleaning do
-        game = create_game(name: random_game_name, current_player_id: "1234")
+        game = create_game
+        user1 = create_game_user(game_id: game.id)
+        game.reload
+        assert_equal user1.id, game.current_player_id
 
-        result = User::Operation::Create.call(
-          params: {
-            user: {
-              name: random_user_name, 
-              email: random_email
-            }
-          },
-          game_id: game.id
-        )
-
-        assert_equal true, result.success?
-        assert_equal 1234, game.current_player_id
+        user2 = create_game_user(game_id: game.id)
+        game.reload
+        assert_equal user1.id, game.current_player_id
       end
     end
 
@@ -75,15 +72,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game1 = create_game
         game2 = create_game
-        User::Operation::Create.call(
-          params: {
-            user: {
-              name: random_user_name, 
-              email: random_email
-            }
-          },
-          game_id: game1.id
-        )
+        user1 = create_game_user(game_id: game1.id)
 
         result = User::Operation::Create.call(
           params: {
@@ -102,7 +91,7 @@ class UserOperationTest < MiniTest::Spec
     it "Creates {User} model token when given valid attributes" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_game_user(game)
+        user = create_game_user(game_id: game.id)
         assert user.token
       end
     end
@@ -111,110 +100,79 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         ActionMailer::Base.deliveries.clear
         game = create_game
-
-        ActionMailer::Base.deliveries.clear
-        result = User::Operation::Create.call(
-          params: {
-            user: {
-              name: random_user_name, 
-              email: random_email
-            }
-          },
-          game_id: game.id
-        )
-        user = result[:model]
+        user = create_game_user(game_id: game.id)
 
         assert_emails 1
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
-        assert_match /#{last_random_user_name}/, email.body.encoded
+        assert_match /#{user.name}/, email.body.encoded
         assert_match /#{get_magic_link(user)}/, email.body.encoded
         ActionMailer::Base.deliveries.clear
       end
     end
 
-    it "Sends an email on user deletion" do
+    it "nils game.current_player_id and sends an email on user deletion" do
       DatabaseCleaner.cleaning do
-        ActionMailer::Base.deliveries.clear
         game = create_game
-        user = create_game_user(game)
+        user = create_game_user(game_id: game.id)
 
         ActionMailer::Base.deliveries.clear
-        User::Operation::Delete.call(
+        User::Operation::Delete.call({
           params: {
             id: user.id
           }
-        )
+        })
+        game.reload
+        assert_nil game.current_player_id
 
         assert_emails 1
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, '[Lorem Ipsum] Sorry to see you go 😭'
-        assert_match /#{last_random_user_name}/, email.body.encoded
+        assert_match /#{user.name}/, email.body.encoded
         ActionMailer::Base.deliveries.clear
       end
     end
 
-    it "reassigns current_player_id to next player when user is deleted" do
+    it "Reassigns current_player_id and sends turn notification email on current user deletion" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_game_user(game)
-        user2 = create_game_user(game)
+        user1 = create_game_user(game_id: game.id)
+        user2 = create_game_user(game_id: game.id)
         game.reload
         assert_equal user1.id, game.current_player_id
 
-        User::Operation::Delete.call(
+        ActionMailer::Base.deliveries.clear
+        User::Operation::Delete.call({
           params: {
-            game_id: game.id,
             id: user1.id
           }
-        )
+        })
         game.reload
         assert_equal user2.id, game.current_player_id
+
+        assert_emails 2
+        email = ActionMailer::Base.deliveries.first
+        assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+        assert_match /#{user2.name}/, email.body.encoded
+        ActionMailer::Base.deliveries.clear
       end
     end
 
-    it "nils game.current_player_id when all users deleted" do
+    it "Update allows non-unique email address for same user" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_game_user(game)
-
-        User::Operation::Delete.call(
-          params: {
-            game_id: game.id,
-            id: user.id
-          }
-        )
-        game.reload
-        assert_nil game.current_player_id
-      end
-    end
-
-    it "Allows non-unique email address for same user" do
-      DatabaseCleaner.cleaning do
-        game = create_game
-        result = User::Operation::Create.call(
-          params: {
-            user: {
-              name: random_user_name, 
-              email: random_email
-            }
-          },
-          game_id: game.id
-        )
-        assert_equal true, result.success?
-        user = result[:model]
+        user = create_game_user(game_id: game.id)
         
         result = User::Operation::Update.call(
           params: {
             user: {
-              id: "#{user.id}",
+              id: user.id,
               name: "jumpin jack flash yeah",
               email: user.email
             },
             id: user.id
           }
         )
-      
         assert_equal true, result.success?
       end
     end
@@ -237,7 +195,7 @@ class UserOperationTest < MiniTest::Spec
           params: {
             user: {
               name: "", 
-              email: "abc@xyz.com"
+              email: random_email
             }
           },
           game_id: game.id
@@ -294,7 +252,7 @@ class UserOperationTest < MiniTest::Spec
           params: {
             user: {
               name: random_user_name, 
-              email: "abc@xyz.com"
+              email: random_email
             }
           },
           game_id: nil
@@ -307,21 +265,13 @@ class UserOperationTest < MiniTest::Spec
     it "Fails with non-unique email address on same game" do
       DatabaseCleaner.cleaning do
         game = create_game
-        User::Operation::Create.call(
-          params: {
-            user: {
-              name: random_user_name, 
-              email: random_email
-            }
-          },
-          game_id: game.id
-        )
+        user = create_game_user(game_id: game.id)
 
         result = User::Operation::Create.call(
           params: {
             user: {
-              name: "jane doe", 
-              email: last_random_email
+              name: random_user_name, 
+              email: user.email
             }
           },
           game_id: game.id
