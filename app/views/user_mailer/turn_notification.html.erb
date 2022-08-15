@@ -4,10 +4,14 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h3>Ready to add the next part to<br>the Lorem Ipsum story, <%= @user.name %>?</h3>
+    <h3>Ready to add your part to the
+      <br>
+      Lorem Ipsum story, <%= @user.name %>?
+    </h3>
     <p>
-      <a href="<%= @url %>">Here's your magic link</a><br>
+      <a class="button" href="<%= @url %>">Let's Go</a><br>
+      or use this link:<br>
+      <a href="<%= @url %>"><%= @url %></a>
     </p>
-    <p>Looking forward to your creative input!</p>
   </body>
 </html>

@@ -4,10 +4,15 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h3>Ready to bask in the finished story, <%= @user.name %>?<br>The Lorem Ipsum story is done!</h3>
+    <h3>
+      The Lorem Ipsum story is done!
+    <br>
+      Ready to bask in the finished story?
+    </h3>
     <p>
-      <a href="<%= @url %>">Here's your magic link</a><br>
+      <a class="button" href="<%= @url %>">Let's Go</a><br>
+      or use this link:<br>
+      <a href="<%= @url %>"><%= @url %></a>
     </p>
-    <p>Congratulations on your accomplishment as a group!</p>
   </body>
 </html>
