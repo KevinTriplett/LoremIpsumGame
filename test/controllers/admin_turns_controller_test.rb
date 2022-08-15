@@ -8,8 +8,8 @@ class TurnsControllerTest < ActionDispatch::IntegrationTest
       ActionMailer::Base.deliveries.clear
 
       game = create_game
-      user1 = create_game_user(game.id)
-      user2 = create_game_user(game.id)
+      user1 = create_user({game_id: game.id})
+      user2 = create_user({game_id: game.id})
 
       assert_emails 1 do
         post user_turns_url(user_token: user1.token), params: {

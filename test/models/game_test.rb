@@ -105,15 +105,15 @@ class GameTest < MiniTest::Spec
         turn_end: turn_end,
         turn_hours: 8
       })
-      user1 = create_game_user(game1.id)
-      user2 = create_game_user(game1.id)
+      user1 = create_user({game_id: game1.id})
+      user2 = create_user({game_id: game1.id})
 
       game2 = create_game({
         turn_end: turn_end,
         turn_hours: 8
       })
-      user3 = create_game_user(game2.id)
-      user4 = create_game_user(game2.id)
+      user3 = create_user({game_id: game2.id})
+      user4 = create_user({game_id: game2.id})
 
       ActionMailer::Base.deliveries.clear
       Game.remind_current_players
@@ -145,15 +145,15 @@ class GameTest < MiniTest::Spec
         turn_end: turn_end,
         turn_hours: 8
       })
-      user1 = create_game_user(game1.id)
-      user2 = create_game_user(game1.id)
+      user1 = create_user({game_id: game1.id})
+      user2 = create_user({game_id: game1.id})
 
       game2 = create_game({
         turn_end: turn_end,
         turn_hours: 8
       })
-      user3 = create_game_user(game2.id)
-      user4 = create_game_user(game2.id)
+      user3 = create_user({game_id: game2.id})
+      user4 = create_user({game_id: game2.id})
 
       ActionMailer::Base.deliveries.clear
       Game.remind_current_players
@@ -179,15 +179,15 @@ class GameTest < MiniTest::Spec
         turn_end: turn_end,
         turn_hours: 4
       })
-      user1 = create_game_user(game1.id)
-      user2 = create_game_user(game1.id)
+      user1 = create_user({game_id: game1.id})
+      user2 = create_user({game_id: game1.id})
 
       game2 = create_game({
         turn_end: turn_end,
         turn_hours: 4
       })
-      user3 = create_game_user(game2.id)
-      user4 = create_game_user(game2.id)
+      user3 = create_user({game_id: game2.id})
+      user4 = create_user({game_id: game2.id})
 
       ActionMailer::Base.deliveries.clear
       Game.auto_finish_turns
@@ -211,15 +211,15 @@ class GameTest < MiniTest::Spec
         turn_end: turn_end,
         turn_hours: 4
       })
-      user1 = create_game_user(game1.id)
-      user2 = create_game_user(game1.id)
+      user1 = create_user({game_id: game1.id})
+      user2 = create_user({game_id: game1.id})
 
       game2 = create_game({
         turn_end: turn_end,
         turn_hours: 4
       })
-      user3 = create_game_user(game2.id)
-      user4 = create_game_user(game2.id)
+      user3 = create_user({game_id: game2.id})
+      user4 = create_user({game_id: game2.id})
 
       ActionMailer::Base.deliveries.clear
       Game.auto_finish_turns
@@ -236,13 +236,13 @@ class GameTest < MiniTest::Spec
   it "checks for players finished" do
     DatabaseCleaner.cleaning do
       game1 = create_game
-      user1 = create_game_user(game1.id)
-      user2 = create_game_user(game1.id)
-      user3 = create_game_user(game1.id)
+      user1 = create_user({game_id: game1.id})
+      user2 = create_user({game_id: game1.id})
+      user3 = create_user({game_id: game1.id})
       
       game2 = create_game
-      user4 = create_game_user(game2.id)
-      user5 = create_game_user(game2.id)
+      user4 = create_user({game_id: game2.id})
+      user5 = create_user({game_id: game2.id})
 
       game1.reload
       create_turn({

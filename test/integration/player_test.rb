@@ -11,8 +11,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
         turn_end: Time.now+3.hours,
         turn_hours: 8
       })
-      user1 = create_game_user(game.id)
-      user2 = create_game_user(game.id)
+      user1 = create_user({game_id: game.id})
+      user2 = create_user({game_id: game.id})
       game.update(round: 2)
 
       game.reload
@@ -23,7 +23,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       get new_user_turn_path(user_token: user1.token)
       assert_select "h1", "Lorem Ipsum"
       assert_select "h5", game.name
-      assert_select ".game-ends", "in 8 rounds"
+      assert_select ".game-ends", "in 8 more rounds"
       assert_select ".turn-end", game.turn_end.iso8601
       assert_select ".time-left", "2 hours, 59 minutes"
       assert_select ".current-player-name", user1.name

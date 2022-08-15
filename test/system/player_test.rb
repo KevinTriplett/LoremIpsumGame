@@ -11,8 +11,8 @@ class PlayerTest < ApplicationSystemTestCase
         turn_end: Time.now.utc+3.hours,
         turn_hours: 8
       })
-      user1 = create_game_user(game.id)
-      user2 = create_game_user(game.id)
+      user1 = create_user({game_id: game.id})
+      user2 = create_user({game_id: game.id})
 
       visit new_user_turn_path(user_token: user1.token)
       assert_current_path new_user_turn_path(user_token: user1.token)

@@ -33,8 +33,8 @@ class AdminGameTest < ActionDispatch::IntegrationTest
   test "Admin page for editing game and editing user" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user1 = create_game_user(game.id)
-      user2 = create_game_user(game.id)
+      user1 = create_user({game_id: game.id})
+      user2 = create_user({game_id: game.id})
 
       get edit_admin_game_path(id: game.id)
       assert_select "h1", "Lorem Ipsum"

@@ -144,7 +144,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Deleting user" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_game_user(game.id)
+      user = create_user({game_id: game.id})
 
       visit admin_game_users_path(game_id: game.id)
       click_link "delete"
@@ -158,7 +158,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Deleting game" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_game_user(game.id)
+      user = create_user({game_id: game.id})
 
       visit admin_games_path
       click_link "delete"
@@ -172,7 +172,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Play user as admin" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_game_user(game.id)
+      user = create_user({game_id: game.id})
 
       visit admin_game_users_path(game_id: game.id)
       click_link "play"

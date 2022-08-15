@@ -102,7 +102,7 @@ class UserOperationTest < MiniTest::Spec
     it "Creates {User} model token when given valid attributes" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_game_user(game.id)
+        user = create_game_user(game)
         assert user.token
       end
     end
@@ -137,7 +137,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         ActionMailer::Base.deliveries.clear
         game = create_game
-        user = create_game_user(game.id)
+        user = create_game_user(game)
 
         ActionMailer::Base.deliveries.clear
         User::Operation::Delete.call(
@@ -157,8 +157,8 @@ class UserOperationTest < MiniTest::Spec
     it "reassigns current_player_id to next player when user is deleted" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_game_user(game.id)
-        user2 = create_game_user(game.id)
+        user1 = create_game_user(game)
+        user2 = create_game_user(game)
         game.reload
         assert_equal user1.id, game.current_player_id
 
@@ -176,7 +176,7 @@ class UserOperationTest < MiniTest::Spec
     it "nils game.current_player_id when all users deleted" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_game_user(game.id)
+        user = create_game_user(game)
 
         User::Operation::Delete.call(
           params: {

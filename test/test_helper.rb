@@ -84,12 +84,11 @@ def create_user(params)
     game_id: params[:game_id],
     reminded: params[:reminded]
   )
-  user.game.current_player_id ||= user.id
+  user.game.update(current_player_id: user.id) unless user.game.current_player_id
   user
 end
 
-def create_game_user(game_id)
-  raise "game_id must be an integer or string, not a Hash" if game_id.is_a? Hash
+def create_game_user(game)
   User::Operation::Create.call(
     params: {
       user: {
@@ -97,7 +96,7 @@ def create_game_user(game_id)
         email: random_email
       }
     },
-    game_id: game_id
+    game_id: game.id
   )[:model]
 end
 
