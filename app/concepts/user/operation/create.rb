@@ -17,17 +17,18 @@ module User::Operation
     step Subprocess(Present)
     step Contract::Validate(key: :user)
     step Contract::Persist()
-    step :update_game
     step :notify
+    step :update_game
+
+    def notify(ctx, model:, **)
+      UserMailer.with(user: model).welcome_email.deliver_now
+    end
 
     def update_game(ctx, model:, **)
       game = Game.find(model.game_id)
       return true if game.current_player_id
       game.update(current_player_id: model.id)
-    end
-
-    def notify(ctx, model:, **)
-      UserMailer.with(user: model).welcome_email.deliver_now
+      UserMailer.with(user: model).turn_notification.deliver_now
     end
   end
 end

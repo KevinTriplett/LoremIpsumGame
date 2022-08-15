@@ -102,9 +102,13 @@ class UserOperationTest < MiniTest::Spec
         game = create_game
         user = create_game_user(game_id: game.id)
 
-        assert_emails 1
-        email = ActionMailer::Base.deliveries.last
+        assert_emails 2
+        email = ActionMailer::Base.deliveries.first
         assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
+        assert_match /#{user.name}/, email.body.encoded
+
+        email = ActionMailer::Base.deliveries.last
+        assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
         assert_match /#{user.name}/, email.body.encoded
         assert_match /#{get_magic_link(user)}/, email.body.encoded
         ActionMailer::Base.deliveries.clear
