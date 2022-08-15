@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   def remind
     return if reminded?
     begin
-      UserMailer.turn_reminder(self).deliver_now
+      UserMailer.with(user: self).turn_reminder.deliver_now
       update(reminded: true)
     rescue => detail
       print detail.backtrace.join("\n")
@@ -31,7 +31,7 @@ class User < ActiveRecord::Base
         user_id: id,
         game_id: game_id
       )
-      UserMailer.turn_auto_finished(self).deliver_now
+      UserMailer.with(user: self).turn_auto_finished.deliver_now
     rescue => detail
       print detail.backtrace.join("\n")
       Rails.logger.error "in #auto_finish_turn for user #{self.inspect}"

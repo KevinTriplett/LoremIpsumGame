@@ -1,40 +1,39 @@
 class UserMailer < ApplicationMailer
-  default from: "noreply@loremipsumgame.com"
 
-  def welcome_email(user)
-    @user = user
+  def welcome_email
+    @user = params[:user]
     @game = @user.game
-    @url = get_url(user)
-    mail(to: user.email, cc: admin_email, subject: '[Lorem Ipsum] Welcome to the Game 🤗')
+    @url = get_url(@user)
+    mail(to: @user.email, subject: '[Lorem Ipsum] Welcome to the Game 🤗')
   end
 
-  def goodbye_email(user)
-    @user = user
-    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] Sorry to see you go 😭")
+  def goodbye_email
+    @user = params[:user]
+    mail(to: @user.email, subject: "[Lorem Ipsum] Sorry to see you go 😭")
   end
 
-  def turn_notification(user)
-    @user = user
-    @url = get_url(user)
-    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] Yay! It's Your Turn! 🥳")
+  def turn_notification
+    @user = params[:user]
+    @url = get_url(@user)
+    mail(to: @user.email, subject: "[Lorem Ipsum] Yay! It's Your Turn! 🥳")
   end
 
-  def turn_reminder(user)
-    @user = user
-    @url = get_url(user)
-    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] Reminder: It's Your Turn 😅")
+  def turn_reminder
+    @user = params[:user]
+    @url = get_url(@user)
+    mail(to: @user.email, subject: "[Lorem Ipsum] Reminder: It's Your Turn 😅")
   end
 
-  def game_ended(user)
-    @user = user
-    @url = get_url(user)
-    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉")
+  def game_ended
+    @user = params[:user]
+    @url = get_url(@user)
+    mail(to: @user.email, subject: "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉")
   end
 
-  def turn_auto_finished(user)
-    @user = user
-    @url = get_url(user)
-    mail(to: user.email, cc: admin_email, subject: "[Lorem Ipsum] Your turn was finished for you 🫣")
+  def turn_auto_finished
+    @user = params[:user]
+    @url = get_url(@user)
+    mail(to: @user.email, subject: "[Lorem Ipsum] Your turn was finished for you 🫣")
   end
 
   private
@@ -44,9 +43,5 @@ class UserMailer < ApplicationMailer
       'https://loremipsumgame.com/users/' :
       'http://127.0.0.1:3000/users/') +
       user.token + "/turns/new"
-  end
-
-  def admin_email
-    "kt@kevintriplett.com"
   end
 end

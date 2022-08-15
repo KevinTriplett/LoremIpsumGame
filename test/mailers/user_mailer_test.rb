@@ -9,7 +9,7 @@ class UserMailerTest < ActionMailer::TestCase
       game = create_game
       user = create_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
-      email = UserMailer.welcome_email(user)
+      email = UserMailer.with(user: user).welcome_email
       assert_emails 1 do
         email.deliver_now
       end
@@ -29,7 +29,7 @@ class UserMailerTest < ActionMailer::TestCase
       game = create_game
       user = create_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
-      email = UserMailer.goodbye_email(user)
+      email = UserMailer.with(user: user).goodbye_email
       assert_emails 1 do
         email.deliver_now
       end
@@ -49,7 +49,7 @@ class UserMailerTest < ActionMailer::TestCase
       game = create_game
       user = create_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
-      email = UserMailer.turn_notification(user)
+      email = UserMailer.with(user: user).turn_notification
       assert_emails 1 do
         email.deliver_now
       end
@@ -69,7 +69,7 @@ class UserMailerTest < ActionMailer::TestCase
       game = create_game
       user = create_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
-      email = UserMailer.turn_reminder(user)
+      email = UserMailer.with(user: user).turn_reminder
       assert_emails 1 do
         email.deliver_now
       end
@@ -89,7 +89,7 @@ class UserMailerTest < ActionMailer::TestCase
       game = create_game
       user = create_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
-      email = UserMailer.turn_auto_finished(user)
+      email = UserMailer.with(user: user).turn_auto_finished
       assert_emails 1 do
         email.deliver_now
       end
@@ -110,7 +110,7 @@ class UserMailerTest < ActionMailer::TestCase
       game = create_game
       user = create_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
-      email = UserMailer.game_ended(user)
+      email = UserMailer.with(user: user).game_ended
       assert_emails 1 do
         email.deliver_now
       end

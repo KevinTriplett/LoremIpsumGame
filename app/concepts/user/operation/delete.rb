@@ -14,7 +14,7 @@ module User::Operation
       game.update(current_player_id: next_player_id)
       return true unless next_player_id
       user = User.find(next_player_id)
-      UserMailer.turn_notification(user).deliver_now
+      UserMailer.with(user: user).turn_notification.deliver_now
     end
 
     def delete(ctx, model:, **)
@@ -22,7 +22,7 @@ module User::Operation
     end
 
     def notify(ctx, model:, **)
-      UserMailer.goodbye_email(model).deliver_now
+      UserMailer.with(user: model).goodbye_email.deliver_now
     end
   end
 end

@@ -45,10 +45,10 @@ class Turn::Operation::Create < Trailblazer::Operation
   def notify(ctx, model:, **)
     game = model.game
     if game.game_ended?
-      game.users.each { |u| UserMailer.game_ended(u).deliver_now }
+      game.users.each { |u| UserMailer.with(user: u).game_ended.deliver_now }
     else
       user = game.current_player
-      UserMailer.turn_notification(user).deliver_now
+      UserMailer.with(user: user).turn_notification.deliver_now
     end
   end
 end
