@@ -56,6 +56,7 @@ function convertUTC() {
     datetime = dom.text();
     className = dom.attr("class").split(" ")[1];
     datetime = convertTZ(datetime, className, timezone);
+    if (datetime === "Invalid Date") return;
     dom.text(datetime);
   })
 };

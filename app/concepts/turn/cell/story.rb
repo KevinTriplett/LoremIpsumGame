@@ -68,8 +68,8 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def game_ends
-    rounds = game.num_rounds - game.round
-    "in " + pluralize(rounds, "more round")
+    rounds = game.num_rounds - game.round + 1
+    rounds == 1 ? "this round" : "in " + pluralize(rounds, "round")
   end
 
   def turn_start
@@ -77,11 +77,11 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def turn_end
-    game.turn_end ? game.turn_end.iso8601 : nil
+    game.turn_end ? game.turn_end.iso8601 : "Indefinite"
   end
 
   def turn_time_remaining
-    return nil unless game.turn_end
+    return "Indefinite" if game.turn_end.nil?
     time = game.turn_time_remaining
     "#{time[:hours]} hours, #{time[:minutes]} minutes" + (time[:hours] < 0 ? " (in grace period)" : "")
   end
