@@ -1,7 +1,12 @@
 class Game < ActiveRecord::Base
   has_many :users, dependent: :destroy
+  has_many :turns, dependent: :destroy
 
   has_secure_token
+
+  def players
+    users.order(play_order: :asc)
+  end
 
   def current_player
     User.find(current_player_id)
@@ -9,15 +14,25 @@ class Game < ActiveRecord::Base
 
   def next_player_id
     # rollover if at the end of the user array
-    (users.where("id > ?", current_player_id).first || users.first).id
+    (players.where("id > ?", current_player_id).first || players.first).id
   end
 
   def last_turn?
-    turn_end && game_end && turn_end > game_end
+    round == num_rounds
   end
 
-  def ended?
-    game_end && Time.now > game_end
+  def game_ended?
+    round > num_rounds
+  end
+
+  def players_finished?
+    users_finished = Turn.where(game_id: id).where(round: round)
+    users_finished.count == users.count
+  end
+
+  def reorder_players
+    reordered_users = User.where(game_id: id).order("RANDOM()").pluck(:email)
+    users.each { |u| u.update(play_order: reordered_users.index(u.email)) }
   end
 
   def time_to_remind_player?
@@ -29,11 +44,13 @@ class Game < ActiveRecord::Base
   end
 
   def remind_current_player
-    current_player.remind if !ended? && time_to_remind_player?
+    return if game_ended? || !time_to_remind_player?
+    current_player.remind
   end
 
   def auto_finish_turn
-    current_player.finish_turn if !ended? && !last_turn? && time_to_finish_turn?
+    return if game_ended? || last_turn? || !time_to_finish_turn?
+    current_player.finish_turn
   end
 
   def turn_time_remaining
@@ -70,19 +87,22 @@ class Game < ActiveRecord::Base
     puts "#{User.all.count} users total"
     puts "#{Turn.all.count} turns total"
     Game.all.each do |g|
-      puts "Game: #{g.name}" + (g.ended? ? " [ended]" : "")
+      puts "Game: #{g.name}" + (g.game_ended? ? " [ended]" : "")
       puts "  #{g.users.count} players"
-      unless g.ended?
+      unless g.game_ended?
         time = g.turn_time_remaining
+        rounds = game.num_rounds - game.round
         puts "  current_player: #{g.current_player ? g.current_player.name : "no player yet"}"
-        puts "  game_end: #{g.game_end.iso8601} (#{g.game_end.short_date_at_time})"
+        puts "  current round: #{game.round}"
+        puts "  game_ends: in #{ pluralize(rounds, "round") }"
         puts "  turn_end: #{g.turn_end.iso8601} (#{g.turn_end.short_date_at_time})"
         puts "  remaining: #{time[:hours]} hours, #{time[:minutes]} minuutes"
         puts "  turn_hours: #{g.turn_hours}"
-        g.users.each_with_index do |u, i|
-          puts "  user #{i+1}:"
+        g.players.each do |u|
+          puts "  user #{user.play_order}:"
           puts "    name #{u.name}"
           puts "    turns count: #{u.turns.count}"
+          puts "    last round played: #{u.turns.last.round}"
           puts "    reminded: #{u.reminded? ? "yes" : "no"}"
         end
       end

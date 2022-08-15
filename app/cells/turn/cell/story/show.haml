@@ -3,18 +3,12 @@
 .row.timestamps
   .col-sm-5
     %p.timestamp
-      Game Started:
-      %span.utc-time.game-start= game_start
-    %p.timestamp
-      Game Ends:
-      %span.utc-time.game-end= game_end
-    %p.timestamp
       Game ends:
       %span.game-ends= game_ends
-  .col-sm-7
     %p.timestamp
       Current Player:
       %span.current-player-name= current_player_name
+  .col-sm-7
     %p.timestamp
       Turn Ends:
       %span.utc-time.turn-end= turn_end
@@ -39,6 +33,6 @@
         no users yet
       - users.each do |u|
         %li{ class: u.id == current_player_id ? "current-player" : nil }
-          = link_to u.name, "mailto:#{u.email}"
+          = u.name
           = u.id == current_player_id ? " <== current player" : ""
 

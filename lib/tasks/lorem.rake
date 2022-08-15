@@ -1,12 +1,13 @@
 namespace :lorem do
   desc "Remind players whose turns are half over"
   task remind_players: :environment do
-    Game.remind_current_players
+    Game.all.each(&:remind_current_player)
   end
   
   desc "Auto finish turns that expired"
   task auto_finish_turns: :environment do
-    Game.auto_finish_turns
+    Game.all.each(&:auto_finish_turn)
+
   end
 
   desc "Create a cli report for all games"

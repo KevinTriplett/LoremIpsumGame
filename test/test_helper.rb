@@ -68,23 +68,24 @@ end
 def create_game(params = {})
   Game.create(
     name: random_game_name,
-    game_start: params[:game_start],
-    game_end: params[:game_end],
     turn_start: params[:turn_start],
     turn_end: params[:turn_end],
-    game_days: (params[:game_days] || Rails.configuration.default_game_days),
-    turn_hours: (params[:turn_hours] || Rails.configuration.default_turn_hours),
-    current_player_id: params[:current_player_id]
+    num_rounds: params[:num_rounds] || 10,
+    turn_hours: (params[:turn_hours] || 48),
+    current_player_id: params[:current_player_id],
+    round: 1
   )
 end
 
 def create_user(params)
-  User.create(
+  user = User.create(
     name: params[:name] || random_user_name,
     email: params[:email] || random_email,
     game_id: params[:game_id],
     reminded: params[:reminded]
   )
+  user.game.current_player_id ||= user.id
+  user
 end
 
 def create_game_user(game_id)
@@ -100,12 +101,23 @@ def create_game_user(game_id)
   )[:model]
 end
 
+def create_turn(params)
+  game = Game.find(params[:game_id])
+  Turn.create({
+    entry: params[:entry] || "test",
+    user_id: params[:user_id],
+    game_id: params[:game_id],
+    round: params[:round] || game.round
+  })
+end
+
 def create_user_turn(user)
   result = Turn::Operation::Create.call(
     params: {
       turn: {}
     },
-    user_id: user.id
+    user_id: user.id,
+    game_id: user.game_id
   )[:model]
 end
 

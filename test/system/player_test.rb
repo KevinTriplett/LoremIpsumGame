@@ -3,11 +3,10 @@ require "application_system_test_case"
 class PlayerTest < ApplicationSystemTestCase
   DatabaseCleaner.clean
 
-  test "Player can access [test] pad and submit turn" do
+  test "Player can access pad and submit turn" do
     DatabaseCleaner.cleaning do
       game = create_game({
-        game_start: Time.now.utc-4.days,
-        game_end: Time.now.utc+4.days,
+        num_rounds: 10,
         turn_start: Time.now.utc-5.hours,
         turn_end: Time.now.utc+3.hours,
         turn_hours: 8
@@ -20,8 +19,7 @@ class PlayerTest < ApplicationSystemTestCase
 
       assert_selector "h1", text: "Lorem Ipsum"
       assert_selector "h5", text: game.name
-      assert_selector ".game-end", text: game.game_end.dow_short_date
-      assert_selector ".game-ends", text: "in 3 days"
+      assert_selector ".game-ends", text: "in 9 more rounds"
       assert_selector ".turn-end", text: game.turn_end.dow_time
       assert_selector ".time-left", text: "2 hours, 59 minutes"
       assert_selector ".current-player-name", text: user1.name
@@ -29,11 +27,13 @@ class PlayerTest < ApplicationSystemTestCase
       assert_selector "li.current-player", text: "#{user1.name} <== current player"
 
       # TODO: why does this fail?
-      # click_link "Finish Turn"
-      # page.driver.browser.switch_to.alert.accept
-      # assert_equal 1, Turn.all.count
-      # assert_equal user1.id, Turn.all.first.user.id
+      click_link "Finish Turn"
+      page.driver.browser.switch_to.alert.accept
+      assert_equal 1, Turn.all.count
+      assert_equal user1.id, Turn.all.first.user.id
+      assert_current_path user_turns_path(user_token: user1.token)
 
+      # TODO: why does this fail?
       # page.go_back
       # click_link "Finish Turn"
       # page.driver.browser.switch_to.alert.accept

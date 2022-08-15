@@ -66,19 +66,9 @@ class Turn::Cell::Story < Cell::ViewModel
     "time-left" + (game.turn_end && game.turn_end - Time.now < 0 ? " minus" : "")
   end
 
-  def game_start
-    game.game_start ? game.game_start.iso8601 : nil
-  end
-
-  def game_end
-    game.game_end ? game.game_end.iso8601 : nil
-  end
-
   def game_ends
-    days = game.game_end ?
-      (game.game_end - Time.now).to_i/60/60/24.round :
-      game.game_days
-    "in " + pluralize(days, "day")
+    rounds = game.num_rounds - game.round
+    "in " + pluralize(rounds, "more round")
   end
 
   def turn_start

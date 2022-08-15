@@ -40,7 +40,7 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "h1", "Lorem Ipsum"
       assert_select "h5", "Editing game"
       assert_select "input#game_name[value='#{game.name}']", nil
-      assert_select "input#game_game_days[value='#{game.game_days}']", nil
+      assert_select "input#game_num_rounds[value='#{game.num_rounds}']", nil
       assert_select "input#game_turn_hours[value='#{game.turn_hours}']", nil
       assert_select "a", "Cancel"
 

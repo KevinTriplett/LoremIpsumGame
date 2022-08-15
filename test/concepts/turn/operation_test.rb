@@ -7,12 +7,14 @@ class TurnOperationTest < MiniTest::Spec
   describe "TurnOperation" do
     DatabaseCleaner.clean
 
-    it "Starts with an indefinite turn duration" do
+    # ------------------
+    # happy path tests
+    it "Game starts with an indefinite turn duration" do
       DatabaseCleaner.cleaning do
         result = Game::Operation::Create.call(params: {
           game: {
             name: random_game_name,
-            game_days: 3,
+            num_rounds: 3,
             turn_hours: 2
           }
         })
@@ -25,8 +27,6 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
-    # ------------------
-    # happy path tests
     it "Creates {Turn} model when given valid attributes" do
       DatabaseCleaner.cleaning do
         game = create_game
@@ -36,7 +36,8 @@ class TurnOperationTest < MiniTest::Spec
           params: {
             turn: {}
           },
-          user_id: user.id
+          user_id: user.id,
+          game_id: user.game_id
         )
 
         assert_equal true, result.success?
@@ -47,7 +48,7 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
-    it "Does not update current_player_id attribute when turn finished and only one player" do
+    it "Does not change current_player_id attribute when turn finished and only one player" do
       DatabaseCleaner.cleaning do
         game = create_game
         user = create_game_user(game.id)
@@ -58,7 +59,8 @@ class TurnOperationTest < MiniTest::Spec
           params: {
             turn: {}
           },
-          user_id: user.id
+          user_id: user.id,
+          game_id: user.game_id
         )
 
         game.reload
@@ -72,18 +74,21 @@ class TurnOperationTest < MiniTest::Spec
         user1 = create_game_user(game.id)
         user2 = create_game_user(game.id)
         user3 = create_game_user(game.id)
+        game.update(current_player_id: user1.id)
 
         Turn::Operation::Create.call(
           params: {
             turn: {}
           },
-          user_id: user1.id
+          user_id: user1.id,
+          game_id: user1.game_id
         )
         Turn::Operation::Create.call(
           params: {
             turn: {}
           },
-          user_id: user2.id
+          user_id: user2.id,
+          game_id: user2.game_id
         )
 
         game.reload
@@ -98,29 +103,53 @@ class TurnOperationTest < MiniTest::Spec
         user1 = create_game_user(game.id)
         user2 = create_game_user(game.id)
         user3 = create_game_user(game.id)
-        user1.reminded = true
-        user2.reminded = true
-        user3.reminded = true
-        user1.save!
-        user2.save!
-        user3.save!
+        game.update(current_player_id: user1.id)
 
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user1.id
-        )
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user2.id
-        )
-
+        user1.update(reminded: true)
+        user2.update(reminded: true)
+        user3.update(reminded: true)
         [user1,user2,user3].each(&:reload)
         # always resets the new current_player, not the previous current_player
         assert user1.reminded
+        assert user2.reminded
+        assert user3.reminded
+
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user1.id,
+          game_id: user1.game_id
+        )
+        [user1,user2,user3].each(&:reload)
+        # always resets the new current_player, not the previous current_player
+        assert user1.reminded
+        assert user2.reminded
+        assert user3.reminded
+        
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id,
+          game_id: user2.game_id
+        )
+        [user1,user2,user3].each(&:reload)
+        # always resets the new current_player, not the previous current_player
+        assert user1.reminded
+        assert user2.reminded
+        assert user3.reminded
+
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id,
+          game_id: user2.game_id
+        )
+        [user1,user2,user3].each(&:reload)
+        # always resets the new current_player, not the previous current_player
+        assert !user1.reminded
         assert !user2.reminded
         assert !user3.reminded
       end
@@ -132,69 +161,22 @@ class TurnOperationTest < MiniTest::Spec
         user1 = create_game_user(game.id)
         user2 = create_game_user(game.id)
         user3 = create_game_user(game.id)
+        game.update(current_player_id: user1.id)
 
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user1.id
-        )
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user2.id
-        )
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user3.id
-        )
-
+        user_ids = game.players.pluck(:id)
+        user_ids.each_with_index do |uid, i|
+          assert_equal uid, game.current_player_id
+          Turn::Operation::Create.call(
+            params: {
+              turn: {}
+            },
+            user_id: uid,
+            game_id: game.id
+          )
+          game.reload
+        end
         game.reload
-        assert_equal user1.id, game.current_player_id
-      end
-    end
-
-    it "Initializes game start/end datetime attributes" do
-      DatabaseCleaner.cleaning do
-        game = create_game
-        user1 = create_game_user(game.id)
-        user2 = create_game_user(game.id)
-        assert_equal false, game.game_start.present?
-        assert_equal false, game.game_end.present?
-
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user1.id
-        )
-
-        game.reload
-        assert_equal true, game.game_start.present?
-        assert_equal true, game.game_end.present?
-        assert_equal game.game_end, game.game_start + Rails.configuration.default_game_days.days
-      end
-    end
-
-    it "Does not change game start/end datetime attributes" do
-      DatabaseCleaner.cleaning do
-        time_start, time_end = Time.now - 2.days, Time.now + 2.days
-        game = create_game(name: random_game_name, game_start: time_start, game_end: time_end)
-        user = create_game_user(game.id)
-
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user.id
-        )
-
-        game.reload
-        assert_equal time_start, game.game_start
-        assert_equal time_end, game.game_end
+        assert_equal game.players.first.id, game.current_player_id
       end
     end
 
@@ -210,13 +192,14 @@ class TurnOperationTest < MiniTest::Spec
           params: {
             turn: {}
           },
-          user_id: user.id
+          user_id: user.id,
+          game_id: user.game_id
         )
 
         game.reload
         assert_equal true, game.turn_start.present?
         assert_equal true, game.turn_end.present?
-        assert_equal game.turn_end, game.turn_start + Rails.configuration.default_turn_hours.hours
+        assert_equal game.turn_end, game.turn_start + game.turn_hours.hours
       end
     end
 
@@ -230,7 +213,8 @@ class TurnOperationTest < MiniTest::Spec
           params: {
             turn: {}
           },
-          user_id: user.id
+          user_id: user.id,
+          game_id: user.game_id
         )
         user = result[:model].user
 
@@ -245,13 +229,10 @@ class TurnOperationTest < MiniTest::Spec
 
     it "Sends an email to all players on last turn finished" do
       DatabaseCleaner.cleaning do
-        game_start = Time.now - 1.days
         turn_start = Time.now - 4.hours
         turn_end = turn_start + 4.hours
-        game_end = turn_end - 1.minute
         game = create_game({
-          game_start: game_start,
-          game_end: game_end,
+          num_rounds: 1,
           turn_start: turn_start,
           turn_end: turn_end,
           turn_hours: 4
@@ -265,19 +246,107 @@ class TurnOperationTest < MiniTest::Spec
           params: {
             turn: {}
           },
-          user_id: user1.id
+          user_id: user1.id,
+          game_id: user1.game_id
         )
+        assert_emails 1
 
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id,
+          game_id: user2.game_id
+        )
+        assert_emails 2
+        
+        ActionMailer::Base.deliveries.clear
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user3.id,
+          game_id: user3.game_id
+        )
         assert_emails 3
+
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
-        assert_match /#{user3.name}/, email.body.encoded
-        assert_match /#{get_magic_link(user3)}/, email.body.encoded
         ActionMailer::Base.deliveries.clear
+      end
+    end
+
+    it "Ignores current_player_id attribute when round-based" do
+      DatabaseCleaner.cleaning do
+        game = create_game(num_rounds: 10)
+        user1 = create_game_user(game.id)
+        user2 = create_game_user(game.id)
+        user3 = create_game_user(game.id)
 
         game.reload
-        assert turn_start, game.turn_start
-        assert turn_end, game.turn_end
+        assert_equal user1.id, game.current_player_id
+
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user1.id,
+          game_id: user1.game_id
+        )
+        game.reload
+        user_id = game.players[1].id
+        assert_equal user_id, game.current_player_id
+        user_id = game.players[2].id
+        
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id,
+          game_id: user2.game_id
+        )
+        game.reload
+        assert_equal user_id, game.current_player_id
+      end
+    end
+
+    it "Updates round number only when all turns finished" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_game_user(game.id)
+        user2 = create_game_user(game.id)
+        user3 = create_game_user(game.id)
+
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user1.id,
+          game_id: user1.game_id
+        )
+        game.reload
+        assert_equal 1, game.round
+
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user2.id,
+          game_id: user2.game_id
+        )
+        game.reload
+        assert_equal 1, game.round
+        
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user3.id,
+          game_id: user3.game_id
+        )
+
+        game.reload
+        assert_equal 2, game.round
       end
     end
 

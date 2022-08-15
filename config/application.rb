@@ -18,8 +18,6 @@ module LoremIpsum
     #
     config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    config.default_turn_hours = 48
-    config.default_game_days = 30
     config.etherpad_api_key = Rails.env == "development" ?
       "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92" :
       ENV["ETHERPAD_API_KEY"]

@@ -9,8 +9,10 @@ module User::Operation
       game = model.game
       if game.current_player_id == model.id
         # check for last player assigned to game being deleted
-        game.current_player_id = (game.users.count == 1 ? nil : game.next_player_id)
-        game.save!
+        if game.current_player_id
+          game.current_player_id = (game.users.count == 1 ? nil : game.next_player_id)
+          game.save
+        end
       end
       true
     end

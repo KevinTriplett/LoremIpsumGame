@@ -13,7 +13,7 @@ class GameOperationTest < MiniTest::Spec
         result = Game::Operation::Create.call(params: {
           game: {
             name: random_game_name,
-            game_days: 3,
+            num_rounds: 3,
             turn_hours: 2
           }
         })
@@ -21,71 +21,13 @@ class GameOperationTest < MiniTest::Spec
         assert_equal true, result.success?
         game = result[:model]
         game.reload
+        
+        assert game.current_player_id.nil?
         assert_equal last_random_game_name, game.name
-        assert_equal 3, game.game_days
+        assert_equal 3, game.num_rounds
         assert_equal 2, game.turn_hours
-      end
-    end
-
-    it "Initializes {Game} model rules when no attributes provided" do
-      DatabaseCleaner.cleaning do
-        result = Game::Operation::Create.call(params: {
-          game: {
-            name: random_game_name
-          }
-        })
-
-        assert_equal true, result.success?
-        game = result[:model]
-        game.reload
-        assert_equal Rails.configuration.default_game_days, game.game_days
-        assert_equal Rails.configuration.default_turn_hours, game.turn_hours
-      end
-    end
-
-    it "does not change pad_name when game name changes" do
-      DatabaseCleaner.cleaning do
-        start = Time.now
-        game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
-        game.reload
-        start = game.game_start
-        old_pad_name = game.token
-
-        Game::Operation::Update.call(params: {
-          game: {
-            id: game.id,
-            name: random_game_name,
-            game_days: game.game_days,
-            turn_hours: game.turn_hours
-          },
-          id: game.id
-        })
-
-        game.reload
-        assert_equal old_pad_name, game.token
-        assert_equal last_random_game_name, game.name
-      end
-    end
-
-    it "Updates game end when game_days rule changes" do
-      DatabaseCleaner.cleaning do
-        start = Time.now
-        game = create_game(game_days: 2, game_start: start, game_end: start + 2.days)
-        game.reload
-        assert_equal (start + 2.days), game.game_end
-
-        Game::Operation::Update.call(params: {
-          game: {
-            id: game.id,
-            name: game.name,
-            game_days: 4,
-            turn_hours: game.turn_hours
-          },
-          id: game.id
-        })
-
-        game.reload
-        assert_equal (start + 4.days), game.game_end
+        assert_equal 1, game.round
+        assert !game.game_ended?
       end
     end
 
@@ -100,7 +42,7 @@ class GameOperationTest < MiniTest::Spec
           game: {
             id: game.id,
             name: game.name,
-            game_days: game.game_days,
+            num_rounds: game.num_rounds,
             turn_hours: 2
           },
           id: game.id
@@ -121,21 +63,55 @@ class GameOperationTest < MiniTest::Spec
       end
     end
 
-    it "Fails with non-unique name" do
+    it "Fails with missing turn_hours" do
       DatabaseCleaner.cleaning do
-        Game::Operation::Create.call(params: {
-          game: {
-            name: random_game_name
-          }
-        })
-
         result = Game::Operation::Create.call(params: {
           game: {
-            name: last_random_game_name
+            name: random_game_name,
+            num_rounds: 30
           }
         })
 
         assert_equal false, result.success?
+        assert_equal(["turn_hours must be filled"], result["contract.default"].errors.full_messages_for(:turn_hours))
+      end
+    end
+
+    it "Fails with missing num_rounds" do
+      DatabaseCleaner.cleaning do
+        result = Game::Operation::Create.call(params: {
+          game: {
+            name: random_game_name,
+            turn_hours: 48
+          }
+        })
+
+        assert_equal false, result.success?
+        assert_equal(["num_rounds must be filled"], result["contract.default"].errors.full_messages_for(:num_rounds))
+      end
+    end
+
+    it "Fails with non-unique name" do
+      DatabaseCleaner.cleaning do
+        result = Game::Operation::Create.call(params: {
+          game: {
+            name: random_game_name,
+            num_rounds: 30,
+            turn_hours: 48
+          }
+        })
+        game = result[:model]
+
+        result = Game::Operation::Create.call(params: {
+          game: {
+            name: last_random_game_name,
+            num_rounds: game.num_rounds,
+            turn_hours: game.turn_hours
+          }
+        })
+
+        assert_equal false, result.success?
+        assert_equal(["name must be unique"], result["contract.default"].errors.full_messages_for(:name))
       end
     end
 
@@ -143,7 +119,9 @@ class GameOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         result = Game::Operation::Create.call(params: {
           game: {
-            name: ""
+            name: "",
+            num_rounds: 20,
+            turn_hours: 24
           }
         })
 

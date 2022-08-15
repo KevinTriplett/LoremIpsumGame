@@ -6,23 +6,24 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
   test "User turn page with javascript warning" do
     DatabaseCleaner.cleaning do
       game = create_game({
-        game_start: Time.now-4.days,
-        game_end: Time.now+4.days,
+        num_rounds: 10,
         turn_start: Time.now-5.hours,
         turn_end: Time.now+3.hours,
         turn_hours: 8
       })
       user1 = create_game_user(game.id)
       user2 = create_game_user(game.id)
+      game.update(round: 2)
+
       game.reload
+      assert_equal 10, game.num_rounds
+      assert_equal 2, game.round
       assert_equal user1.id, game.current_player_id
       
       get new_user_turn_path(user_token: user1.token)
       assert_select "h1", "Lorem Ipsum"
       assert_select "h5", game.name
-      assert_select ".game-start", game.game_start.iso8601
-      assert_select ".game-end", game.game_end.iso8601
-      assert_select ".game-ends", "in 3 days"
+      assert_select ".game-ends", "in 8 rounds"
       assert_select ".turn-end", game.turn_end.iso8601
       assert_select ".time-left", "2 hours, 59 minutes"
       assert_select ".current-player-name", user1.name
@@ -36,7 +37,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
         params: {
           turn: {}
         },
-        user_id: user1.id
+        user_id: user1.id,
+        game_id: user1.game_id
       )
       game.reload
       assert_equal user2.id, game.current_player_id

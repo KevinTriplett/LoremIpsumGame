@@ -4,11 +4,11 @@
   .row
     .col= f.error_notification
   .row
-    .col= f.input :name, placeholder: "Game Name", label: false
+    .col= f.input :name, placeholder: "Name", label: false
   .row
-    .col= f.input :game_days, placeholder: "Number of days for game (#{@default_game_days})", label: false
+    .col= f.input :num_rounds, placeholder: "Number of Rounds", label: false
   .row
-    .col= f.input :turn_hours, placeholder: "Number of hours per turn (#{@default_turn_hours})", label: false
+    .col= f.input :turn_hours, placeholder: "Hours per Turn", label: false
   .row
     .col= f.button :submit, "Create Game", class: "btn-primary"
 .row

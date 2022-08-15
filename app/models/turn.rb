@@ -1,4 +1,8 @@
 class Turn < ActiveRecord::Base
   belongs_to :user
-  has_one :game, through: :user #, autosave: false (see https://stackoverflow.com/a/15649020/1204064)
+  belongs_to :game
+
+  def self.round_count(game_id, round)
+    where(game_id: game_id).where(round: round).count
+  end
 end

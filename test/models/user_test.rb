@@ -11,7 +11,7 @@ class UserTest < MiniTest::Spec
       user.reload
       assert user.reminded?
 
-      user.reset_reminded!
+      user.reset_reminded
       user.reload
       assert !user.reminded?
     end

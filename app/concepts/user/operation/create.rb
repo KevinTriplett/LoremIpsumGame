@@ -3,10 +3,10 @@ module User::Operation
 
     class Present < Trailblazer::Operation
       step Model(User, :new)
-      step :initialize_game_id
+      step :initialize_attributes
       step Contract::Build(constant: User::Contract::Create)
 
-      def initialize_game_id(ctx, model:, **)
+      def initialize_attributes(ctx, model:, **)
         model.game_id = ctx[:game_id]
       end
     end
@@ -14,13 +14,13 @@ module User::Operation
     step Subprocess(Present)
     step Contract::Validate(key: :user)
     step Contract::Persist()
-    step :initialize_game
+    step :update_game
     step :notify
 
-    def initialize_game(ctx, model:, **)
+    def update_game(ctx, model:, **)
       game = Game.find(model.game_id)
-      game.current_player_id ||= model.id
-      game.save!
+      return true if game.current_player_id
+      game.update(current_player_id: model.id)
     end
 
     def notify(ctx, model:, **)

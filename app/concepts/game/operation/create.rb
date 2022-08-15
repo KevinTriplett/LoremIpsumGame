@@ -3,20 +3,18 @@ module Game::Operation
     
     class Present < Trailblazer::Operation
       step Model(Game, :new)
+      step :initialize_attributes
       step Contract::Build(constant: Game::Contract::Create)
+
+      def initialize_attributes(ctx, **)
+        ctx[:model].round = 1
+      end
     end
     
     step Subprocess(Present)
-    step :initialize_rules
     step Contract::Validate(key: :game)
     step Contract::Persist()
     step :create_pad
-
-    def initialize_rules(ctx, **)
-      return true unless ctx[:params][:game]
-      ctx[:params][:game][:game_days] ||= Rails.configuration.default_game_days
-      ctx[:params][:game][:turn_hours] ||= Rails.configuration.default_turn_hours
-    end
 
     def create_pad(ctx, model:, **)
       begin

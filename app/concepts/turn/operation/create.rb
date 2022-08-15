@@ -4,51 +4,45 @@ class Turn::Operation::Create < Trailblazer::Operation
 
   class Present < Trailblazer::Operation
     step Model(Turn, :new)
-    step :initialize_user
+    step :initialize_attributes
     step Contract::Build(constant: Turn::Contract::Create)
 
-    def initialize_user(ctx, model:, **)
+    def initialize_attributes(ctx, model:, **)
       model.user_id = ctx[:user_id]
+      model.game_id = ctx[:game_id]
     end
   end
   
   step Subprocess(Present)
-  step :initialize_entry
+  step :initialize_attributes
   step Contract::Persist()
-  # TODO: exit with success if game.last_turn?
   step :update_game
-  step :update_user
   step :notify
 
-  def initialize_entry(ctx, model:, **)
-    return true if Rails.env == "test"
+  def initialize_attributes(ctx, model:, **)
     game = model.game
-    begin
-      client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
-      model.entry = client.getHTML(padID: game.token)[:html]
-    rescue
-      model.entry = "Unable to save pad text, may be due to auto finish turn action."
-    end
-    true
+    model.round = game.round
+    return true if Rails.env == "test"
+    client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
+    model.entry = client.getHTML(padID: game.token)[:html]
   end
 
   def update_game(ctx, model:, **)
     game = model.game
-    game.game_start ||= Time.now
-    game.game_end ||= game.game_start + game.game_days.days
+    if game.players_finished?
+      game.round += 1
+      game.users.each(&:reset_reminded)
+      game.reorder_players
+    end
+    game.current_player_id = game.next_player_id
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
-    game.current_player_id = game.next_player_id
-    game.save!
-  end
-
-  def update_user(ctx, model:, **)
-    model.game.current_player.reset_reminded!
+    game.save
   end
 
   def notify(ctx, model:, **)
     game = model.game
-    if game.ended?
+    if game.game_ended?
       game.users.each { |u| UserMailer.game_ended(u).deliver_now }
     else
       user = game.current_player

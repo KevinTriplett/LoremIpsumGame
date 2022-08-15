@@ -5,22 +5,19 @@ class AdminGamesTest < ApplicationSystemTestCase
 
   test "Admin can create a game and add a user" do
     DatabaseCleaner.cleaning do
-      default_game_days = Rails.configuration.default_game_days
-      default_turn_hours = Rails.configuration.default_turn_hours
-
       visit admin_games_path
       assert "a.btn", "New Game"
       click_link "New Game"
 
       assert_current_path new_admin_game_path
-      fill_in "Game Name", with: "Game 1"
-      fill_in "Number of days for game (#{default_game_days})", with: "33"
-      fill_in "Number of hours per turn (#{default_turn_hours})", with: "7"
+      fill_in "Name", with: "Game 1"
+      fill_in "Number of Rounds", with: "33"
+      fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
 
       game = Game.first
       assert_equal "Game 1", game.name
-      assert_equal 33, game.game_days
+      assert_equal 33, game.num_rounds
       assert_equal 7, game.turn_hours
 
       assert_current_path new_admin_game_user_path(game_id: game.id)
@@ -43,21 +40,18 @@ class AdminGamesTest < ApplicationSystemTestCase
 
   test "Admin can add and edit game user" do
     DatabaseCleaner.cleaning do
-      default_game_days = Rails.configuration.default_game_days
-      default_turn_hours = Rails.configuration.default_turn_hours
-
       visit admin_games_path
       click_link "New Game"
 
       assert_current_path new_admin_game_path
-      fill_in "Game Name", with: "Game 1"
-      fill_in "Number of days for game (#{default_game_days})", with: "33"
-      fill_in "Number of hours per turn (#{default_turn_hours})", with: "7"
+      fill_in "Name", with: "Game 1"
+      fill_in "Number of Rounds", with: "22"
+      fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
 
       game = Game.first
       assert_equal "Game 1", game.name
-      assert_equal 33, game.game_days
+      assert_equal 22, game.num_rounds
       assert_equal 7, game.turn_hours
 
       assert_current_path new_admin_game_user_path(game_id: game.id)
@@ -104,7 +98,9 @@ class AdminGamesTest < ApplicationSystemTestCase
       click_link "New Game"
 
       assert_current_path new_admin_game_path
-      fill_in "Game Name", with: game.name
+      fill_in "Name", with: game.name
+      fill_in "Number of Rounds", with: "33"
+      fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
       assert_current_path new_admin_game_path
       assert_selector ".alert", text: "Please review the problems below:"
@@ -123,13 +119,13 @@ class AdminGamesTest < ApplicationSystemTestCase
     end
   end
 
-  test "Editing game with same name and user with same email does not present errors" do
+  test "Editing game and user does not present errors" do
     DatabaseCleaner.cleaning do
       game = create_game
       user = create_user(game_id: game.id)
 
       visit edit_admin_game_path(id: game.id)
-      fill_in "game[game_days]", with: "22"
+      fill_in "game[num_rounds]", with: "21"
       fill_in "game[turn_hours]", with: "12"
       click_button "Update Game"
       assert_current_path admin_games_path

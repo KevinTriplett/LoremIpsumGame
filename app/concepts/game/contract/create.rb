@@ -5,13 +5,15 @@ module Game::Contract
     property :id
     property :name
     property :token
-    property :game_days
     property :turn_hours
+    property :num_rounds
 
     validation do
       params do
         required(:id)
         required(:name).filled.value(:string)
+        required(:turn_hours).filled.value(:integer)
+        required(:num_rounds).filled.value(:integer)
       end
 
       rule(:name, :id) do

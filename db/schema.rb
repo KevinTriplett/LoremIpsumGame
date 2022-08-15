@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_03_184758) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_14_141204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,13 +19,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_184758) do
     t.bigint "current_player_id"
     t.datetime "turn_start"
     t.datetime "turn_end"
-    t.datetime "game_start"
-    t.datetime "game_end"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "game_days"
     t.integer "turn_hours"
     t.string "token"
+    t.integer "num_rounds"
+    t.integer "round"
     t.index ["current_player_id"], name: "index_games_on_current_player_id"
     t.index ["token"], name: "index_games_on_token", unique: true
   end
@@ -35,6 +34,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_184758) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "round"
+    t.bigint "game_id"
     t.index ["user_id"], name: "index_turns_on_user_id"
   end
 
@@ -46,6 +47,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_184758) do
     t.datetime "updated_at", null: false
     t.string "token"
     t.boolean "reminded"
+    t.integer "play_order"
     t.index ["game_id"], name: "index_users_on_game_id"
     t.index ["token"], name: "index_users_on_token", unique: true
   end

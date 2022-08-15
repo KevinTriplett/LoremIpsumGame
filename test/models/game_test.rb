@@ -38,60 +38,28 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "check for ! last turn" do
-    DatabaseCleaner.cleaning do
-      game_start = Time.now - 1.days
-      turn_start = Time.now - 4.hours - 1.minute
-      turn_end = turn_start + 2.hours
-      game_end = turn_end + 1.minute
-      game = create_game({
-        game_start: game_start,
-        game_end: game_end,
-        turn_start: turn_start,
-        turn_end: turn_end,
-        turn_hours: 2
-      })
-      user = create_user(game_id: game.id)
-
-      game.reload
-      assert !game.last_turn?
-    end
-  end
-
   it "check for last turn" do
     DatabaseCleaner.cleaning do
-      game_start = Time.now - 1.days
-      turn_start = Time.now - 4.hours - 1.minute
-      turn_end = turn_start + 2.hours
-      game_end = turn_end - 1.minute
-      game = create_game({
-        game_start: game_start,
-        game_end: game_end,
-        turn_start: turn_start,
-        turn_end: turn_end,
-        turn_hours: 2
+      game = Game.new({
+        num_rounds: 2,
+        round: 1
       })
-      user = create_user(game_id: game.id)
+      assert !game.last_turn?
 
-      game.reload
+      game.round += 1
       assert game.last_turn?
     end
   end
 
-  it "checks for ! game ended" do
-    game_end = Time.now + 1.minute
-    game = Game.new({
-      game_end: game_end
-    })
-    assert !game.ended?
-  end
-
   it "checks for game ended" do
-    game_end = Time.now - 1.minute
     game = Game.new({
-      game_end: game_end
+      num_rounds: 2,
+      round: 2
     })
-    assert game.ended?
+    assert !game.game_ended?
+
+    game.round += 1
+    assert game.game_ended?
   end
 
   it "checks for ! time_to_remind_player" do
@@ -133,9 +101,7 @@ class GameTest < MiniTest::Spec
   it "reminds users of turns when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now + 4.hours - 1.minute
-      game_end = Time.now + 1.day
       game1 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 8
       })
@@ -143,7 +109,6 @@ class GameTest < MiniTest::Spec
       user2 = create_game_user(game1.id)
 
       game2 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 8
       })
@@ -153,10 +118,11 @@ class GameTest < MiniTest::Spec
       ActionMailer::Base.deliveries.clear
       Game.remind_current_players
       assert_emails 2
+      last_user = game2.players.last
       email = ActionMailer::Base.deliveries.last
       assert_equal email.subject, "[Lorem Ipsum] Reminder: It's Your Turn 😅"
-      assert_match /#{user3.name}/, email.body.encoded
-      assert_match /#{get_magic_link(user3)}/, email.body.encoded
+      assert_match /#{last_user.name}/, email.body.encoded
+      assert_match /#{get_magic_link(last_user)}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
 
       [user1,user2,user3,user4].each(&:reload)
@@ -175,9 +141,7 @@ class GameTest < MiniTest::Spec
   it "does not remind users of turns when not time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now + 4.hours + 1.minute
-      game_end = Time.now + 1.day
       game1 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 8
       })
@@ -185,7 +149,6 @@ class GameTest < MiniTest::Spec
       user2 = create_game_user(game1.id)
 
       game2 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 8
       })
@@ -212,9 +175,7 @@ class GameTest < MiniTest::Spec
   it "auto finishes turns when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now - 1.hour - 1.minute
-      game_end = Time.now + 1.day
       game1 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 4
       })
@@ -222,7 +183,6 @@ class GameTest < MiniTest::Spec
       user2 = create_game_user(game1.id)
 
       game2 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 4
       })
@@ -247,9 +207,7 @@ class GameTest < MiniTest::Spec
   it "does not auto finish turns when not time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now - 1.hour + 1.minute
-      game_end = Time.now + 1.day
       game1 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 4
       })
@@ -257,7 +215,6 @@ class GameTest < MiniTest::Spec
       user2 = create_game_user(game1.id)
 
       game2 = create_game({
-        game_end: game_end,
         turn_end: turn_end,
         turn_hours: 4
       })
@@ -273,6 +230,45 @@ class GameTest < MiniTest::Spec
       assert_equal 0, user2.turns.count
       assert_equal 0, user3.turns.count
       assert_equal 0, user4.turns.count
+    end
+  end
+
+  it "checks for players finished" do
+    DatabaseCleaner.cleaning do
+      game1 = create_game
+      user1 = create_game_user(game1.id)
+      user2 = create_game_user(game1.id)
+      user3 = create_game_user(game1.id)
+      
+      game2 = create_game
+      user4 = create_game_user(game2.id)
+      user5 = create_game_user(game2.id)
+
+      game1.reload
+      create_turn({
+        user_id: game1.current_player_id,
+        game_id: game1.id
+      })
+      game1.update(current_player_id: game1.next_player_id)
+      assert !game1.players_finished?
+      assert !game2.players_finished?
+
+      game1.reload
+      create_turn({
+        user_id: game1.current_player_id,
+        game_id: game1.id
+      })
+      game1.update(current_player_id: game1.next_player_id)
+      assert !game1.players_finished?
+      assert !game2.players_finished?
+
+      game1.reload
+      create_turn({
+        user_id: game1.current_player_id,
+        game_id: game1.id
+      })
+      assert game1.players_finished?
+      assert !game2.players_finished?
     end
   end
 end
