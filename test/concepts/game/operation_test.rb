@@ -22,7 +22,7 @@ class GameOperationTest < MiniTest::Spec
         game = result[:model]
         game.reload
         
-        assert game.current_player_id.nil?
+        assert_nil game.current_player_id
         assert_equal last_random_game_name, game.name
         assert_equal 3, game.num_rounds
         assert_equal 2, game.turn_hours
