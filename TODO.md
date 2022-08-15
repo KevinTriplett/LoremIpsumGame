@@ -1,10 +1,10 @@
 # TODO
 
 ## MVP 2
-- [ ] add button to emails and replace "magic link" with actual link
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] add button to emails and replace "magic link" with actual link
 - [X] convert test helper create_user to use User::Operation::Create
 - [X] install comments plugin for pads
 - [X] fix js not triggering on initial page load
@@ -41,7 +41,7 @@
 ## MVP 3
 - [X] add collaborative editor like [EtherPad](https://github.com/ether/etherpad-lite)
 - [ ] add voting and change blocks (see design below) FIRST DO THIS ON MN USING POLLS
-- [X] add :play_order field on :users table for random option (with no double-turns) for turn-based games
+- [X] add :play_order field on :users table for random option (with no double-turns)
 - [X] remove game_days and add num_rounds for ending the game
 - [ ] allow game to end early when all players pass
 
