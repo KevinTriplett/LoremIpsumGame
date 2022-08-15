@@ -21,8 +21,8 @@ class Turn::Cell::Story < Cell::ViewModel
     game.token
   end
 
-  def users
-    game.users
+  def players
+    game.players
   end
 
   def current_player_id
@@ -52,6 +52,7 @@ class Turn::Cell::Story < Cell::ViewModel
       data: {
         pad_id: pad_name,
         user_name: user.name,
+        user_color: user.author_color,
         host: Rails.configuration.etherpad_url,
         height: 600
       }

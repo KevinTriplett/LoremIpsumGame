@@ -29,9 +29,7 @@
   .col 
     Players
     %ul
-      - if users.empty?
-        no users yet
-      - users.each do |u|
+      - players.each do |u|
         %li{ class: u.id == current_player_id ? "current-player" : nil }
           = u.name
           = u.id == current_player_id ? " <== current player" : ""
