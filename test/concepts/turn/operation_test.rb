@@ -208,23 +208,24 @@ class TurnOperationTest < MiniTest::Spec
     it "Sends an email to current_player on turn creation" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_user({game_id: game.id})
+        user1 = create_user({game_id: game.id})
+        user2 = create_user({game_id: game.id})
 
         ActionMailer::Base.deliveries.clear
         result = Turn::Operation::Create.call(
           params: {
             turn: {}
           },
-          user_id: user.id,
-          game_id: user.game_id
+          user_id: user1.id,
+          game_id: user1.game_id
         )
-        user = result[:model].user
 
         assert_emails 1
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
-        assert_match /#{last_random_user_name}/, email.body.encoded
-        assert_match /#{get_magic_link(user)}/, email.body.encoded
+        assert_match /#{user2.name}/, email.body.encoded
+        assert_match /#{get_magic_link(user2)}/, email.body.encoded
+
         ActionMailer::Base.deliveries.clear
       end
     end
