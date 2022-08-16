@@ -15,6 +15,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
 
+      sleep(1)
       game = Game.first
       assert_equal "Game 1", game.name
       assert_equal 33, game.num_rounds
@@ -135,7 +136,8 @@ class AdminGamesTest < ApplicationSystemTestCase
       fill_in "Name", with: random_user_name
       click_button "Update User"
 
-      user = User.find(user.id)
+      sleep(1)
+      user.reload
       assert_current_path admin_game_users_path(game_id: game.id)
       assert_selector ".flash", text: "#{user.name} has been saved"
     end
