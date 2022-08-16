@@ -10,14 +10,8 @@ class User < ActiveRecord::Base
 
   def remind
     return if reminded?
-    begin
-      UserMailer.with(user: self).turn_reminder.deliver_now
-      update(reminded: true)
-    rescue => detail
-      print detail.backtrace.join("\n")
-      Rails.logger.error "in #remind for user #{self.inspect}"
-      Rails.logger.error detail.to_s
-    end
+    UserMailer.with(user: self).turn_reminder.deliver_now
+    update(reminded: true)
   end
 
   def finish_turn
@@ -33,7 +27,7 @@ class User < ActiveRecord::Base
       )
       UserMailer.with(user: self).turn_auto_finished.deliver_now
     rescue => detail
-      print detail.backtrace.join("\n")
+      puts detail.backtrace.join("\n")
       Rails.logger.error "in #auto_finish_turn for user #{self.inspect}"
       Rails.logger.error detail.to_s
     end
