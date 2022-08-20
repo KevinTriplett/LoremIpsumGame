@@ -1,11 +1,14 @@
 # TODO
 
 ## MVP 2
-- [ ] allow game to end early when all players pass
+- [ ] implement more edge case tests
+- [ ] try setting author per https://github.com/jhollinger/ruby-etherpad-lite
 - [ ] fix user colors in Etherpad to be consistent between rounds
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] why does shuffle players sometimes fail? (Expected: [0, 3, 1, 4, 2] Actual: [4, 2, 0, 3, 1])
+- [X] allow game to end early when all players pass
 - [X] save revisions when turn (first) finished
 - [X] Game ends: this round (and remove "in")
 - [X] fix invalid date on player view
@@ -86,8 +89,10 @@ Voting and Change Blocks (feature request from David):
 - [ ] create this outside of Etherpad
 
 ## TRB QUESTIONS FOR NICK
-- [ ] how to default the game_days and turn_hours attributes during create?
+- [ ] how to default the num_rounds and turn_hours attributes during create?
 - [ ] when can I use def method(ctx, **) and def method(cts, :some_param, **)?
 - [ ] is the view file for Turn::Cell::Story in the right directory?
 - [ ] why I can't use model: kwarg in User::Operation::Index?
 - [ ] why do I have to monkey patch the Reform@full_messages_for method?
+- [ ] why can't I eager load in production?
+- [ ] how to create transaction wrap?
