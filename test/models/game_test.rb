@@ -27,30 +27,20 @@ class GameTest < MiniTest::Spec
       user1 = create_game_user(game_id: game1.id)
       user2 = create_game_user(game_id: game1.id)
       user3 = create_game_user(game_id: game1.id)
+      game1.reload
+      assert_equal [0,1,2], game1.users.order(id: :asc).pluck(:play_order)
 
       game2 = create_game
       user4 = create_game_user(game_id: game2.id)
       user5 = create_game_user(game_id: game2.id)
       user6 = create_game_user(game_id: game2.id)
+      game2.reload
+      assert_equal [0,1,2], game2.users.order(id: :asc).pluck(:play_order)
 
       game1.reload
       assert_equal user1.id, game1.current_player_id
-      assert_equal [0,1,2], game1.users.order(created_at: :asc).pluck(:play_order)
       game1.update(current_player_id: user3.id)
       assert_equal user1.id, game1.next_player_id
-    end
-  end
-
-  it "check for last turn" do
-    DatabaseCleaner.cleaning do
-      game = Game.new({
-        num_rounds: 2,
-        round: 1
-      })
-      assert !game.last_round?
-
-      game.round += 1
-      assert game.last_round?
     end
   end
 
@@ -90,7 +80,7 @@ class GameTest < MiniTest::Spec
     assert game.time_to_finish_turn?
   end
 
-  it "reminds users of turns when time" do
+  it "reminds users of turns only once when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now + 4.hours - 1.minute
       game1 = create_game({
@@ -127,6 +117,9 @@ class GameTest < MiniTest::Spec
       assert user3.reminded?
       assert !user2.reminded?
       assert !user4.reminded?
+
+      Game.remind_current_players
+      assert_emails 0
     end
   end
 
@@ -164,7 +157,7 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "auto finishes turns when time" do
+  it "auto finishes turns only once when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now - 1.hour - 1.minute
       game1 = create_game({
@@ -193,6 +186,9 @@ class GameTest < MiniTest::Spec
       assert_equal 0, user2.turns.count
       assert_equal 1, user3.turns.count
       assert_equal 0, user4.turns.count
+
+      Game.auto_finish_turns
+      assert_emails 0
     end
   end
 
@@ -222,6 +218,19 @@ class GameTest < MiniTest::Spec
       assert_equal 0, user2.turns.count
       assert_equal 0, user3.turns.count
       assert_equal 0, user4.turns.count
+    end
+  end
+
+  it "check for last round" do
+    DatabaseCleaner.cleaning do
+      game = Game.new({
+        num_rounds: 2,
+        round: 1
+      })
+      assert !game.last_round?
+
+      game.round += 1
+      assert game.last_round?
     end
   end
 
@@ -270,43 +279,39 @@ class GameTest < MiniTest::Spec
       user1 = create_user({game_id: game1.id})
       user2 = create_user({game_id: game1.id})
       user3 = create_user({game_id: game1.id})
+      game1.reload
       
       game2 = create_game
       user4 = create_user({game_id: game2.id})
       user5 = create_user({game_id: game2.id})
       create_user_turn(user_id: user4.id)
       create_user_turn(user_id: user5.id)
+      game2.reload
 
-      game1.reload
-      assert_equal user1.id, game1.current_player_id
       create_user_turn(user_id: game1.current_player_id, pass: true)
       game1.reload
       game2.reload
       assert !game1.players_finished?
       assert !game2.players_finished?
 
-      assert_equal user2.id, game1.current_player_id
       create_user_turn(user_id: game1.current_player_id, pass: false)
       game1.reload
       game2.reload
       assert !game1.players_finished?
       assert !game2.players_finished?
 
-      assert_equal user3.id, game1.current_player_id
       create_user_turn(user_id: game1.current_player_id, pass: true)
       game1.reload
       game2.reload
       assert !game1.players_finished?
       assert !game2.players_finished?
 
-      assert_equal user1.id, game1.current_player_id
       create_user_turn(user_id: game1.current_player_id, pass: true)
       game1.reload
       game2.reload
       assert !game1.players_finished?
       assert !game2.players_finished?
 
-      assert_equal user2.id, game1.current_player_id
       create_user_turn(user_id: game1.current_player_id, pass: true)
       game1.reload
       game2.reload
@@ -322,33 +327,34 @@ class GameTest < MiniTest::Spec
       user2 = create_game_user({game_id: game.id})
 
       game.reload
-      assert_equal [0,1], game.users.pluck(:play_order)
+      assert_equal [0,1], game.users.order(id: :asc).pluck(:play_order)
       (0..10).each do
         game.shuffle_players
         game.reload
-        assert_equal [0,1], game.users.pluck(:play_order)
+        assert_equal [0,1], game.users.order(id: :asc).pluck(:play_order)
       end
 
       user3 = create_game_user({game_id: game.id})
       user4 = create_game_user({game_id: game.id})
       user5 = create_game_user({game_id: game.id})
       game.reload
-      assert_equal [0,1,2,3,4], game.users.order(created_at: :asc).pluck(:play_order)
+      assert_equal [0,1,2,3,4], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 2)
       game.shuffle_players
       game.reload
-      assert_equal [0,3,1,4,2], game.users.pluck(:play_order)
+      # sometimes  [4,2,0,3,1]
+      assert_equal [0,3,1,4,2], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 3)
       game.shuffle_players
       game.reload
-      assert_equal [1,0,4,3,2], game.users.pluck(:play_order)
+      assert_equal [1,0,4,3,2], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 4)
       game.shuffle_players
       game.reload
-      assert_equal [1,3,0,2,4], game.users.pluck(:play_order)
+      assert_equal [1,3,0,2,4], game.users.order(id: :asc).pluck(:play_order)
     end
   end
 
@@ -362,22 +368,23 @@ class GameTest < MiniTest::Spec
       user5 = create_game_user({game_id: game.id})
       user6 = create_game_user({game_id: game.id})
       game.reload
-      assert_equal [0,1,2,3,4,5], game.users.order(created_at: :asc).pluck(:play_order)
+      assert_equal [0,1,2,3,4,5], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 2)
       game.shuffle_players
       game.reload
-      assert_equal [0,3,1,4,2,5], game.users.order(created_at: :asc).pluck(:play_order)
+      # sometimes  [2,5,0,3,1,4]
+      assert_equal [0,3,1,4,2,5], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 3)
       game.shuffle_players
       game.reload
-      assert_equal [4,0,2,3,5,1], game.users.order(created_at: :asc).pluck(:play_order)
+      assert_equal [4,0,2,3,5,1], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 4)
       game.shuffle_players
       game.reload
-      assert_equal [4,3,0,5,2,1], game.users.order(created_at: :asc).pluck(:play_order)
+      assert_equal [4,3,0,5,2,1], game.users.order(id: :asc).pluck(:play_order)
     end
   end
 end

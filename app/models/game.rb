@@ -24,7 +24,7 @@ class Game < ActiveRecord::Base
   end
 
   def last_round?
-    round == num_rounds
+    round >= num_rounds
   end
 
   def round_finished?
@@ -52,7 +52,7 @@ class Game < ActiveRecord::Base
   def shuffle_players
     return unless users.count > 2
     io = (round % 2 == 0) # alternate in/out shuffle each round
-    npo, opo = [], users.pluck(:play_order)
+    npo, opo = [], users.order(id: :asc).pluck(:play_order)
     i, mid = 0, (opo.count / 2) + (io ? opo.count % 2 : 0)
     while npo.count < opo.count
       npo.push(io ? opo[i] : opo[mid+i])
@@ -102,11 +102,11 @@ class Game < ActiveRecord::Base
 
   # class methods executed by cron job
   def self.remind_current_players
-    all.each(&:remind_current_player)
+    order(id: :asc).all.each(&:remind_current_player)
   end
 
   def self.auto_finish_turns
-    all.each(&:auto_finish_turn)
+    order(id: :asc).all.each(&:auto_finish_turn)
   end  
 
   def self.generate_report
