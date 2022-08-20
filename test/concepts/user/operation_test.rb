@@ -145,6 +145,26 @@ class UserOperationTest < MiniTest::Spec
       end
     end
 
+    it "shuffles players on user deletion" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_game_user(game_id: game.id)
+        user2 = create_game_user(game_id: game.id)
+        user3 = create_game_user(game_id: game.id)
+        user4 = create_game_user(game_id: game.id)
+        game.reload
+        assert_equal [0,1,2,3], game.users.order(id: :asc).pluck(:play_order)
+
+        User::Operation::Delete.call({
+          params: {
+            id: user2.id
+          }
+        })
+        game.reload
+        assert_equal [1,0,2], game.users.order(id: :asc).pluck(:play_order)
+      end
+    end
+
     it "Reassigns current_player_id and sends turn notification email on current user deletion" do
       DatabaseCleaner.cleaning do
         game = create_game

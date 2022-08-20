@@ -15,12 +15,14 @@ class UserMailer < ApplicationMailer
   def turn_notification
     @user = params[:user]
     @url = get_url(@user)
+    @players = @user.game.get_who_played_since(@user)
     mail(to: @user.email, subject: "[Lorem Ipsum] Yay! It's Your Turn! 🥳")
   end
 
   def turn_reminder
     @user = params[:user]
     @url = get_url(@user)
+    @players = @user.game.get_who_played_since(@user)
     mail(to: @user.email, subject: "[Lorem Ipsum] Reminder: It's Your Turn 😅")
   end
 

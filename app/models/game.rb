@@ -16,6 +16,10 @@ class Game < ActiveRecord::Base
     !ended.nil?
   end
 
+  def turns_this_round
+    turns.where(round: round)
+  end
+
   def next_player_id
     user_ids = players.pluck(:id) # use play_ordered collection
     i = user_ids.index(current_player_id)
@@ -28,12 +32,22 @@ class Game < ActiveRecord::Base
   end
 
   def round_finished?
-    turns.where(round: round).count == users.count
+    turns_this_round.count == users.count
   end
 
   def players_finished?
     return false if turns.count < users.count
-    users.all? {|u| u.turns.order(created_at: :asc).last.entry == "pass"}
+    users.all? {|u| u.turns.order(id: :desc).first.entry == "pass"}
+  end
+
+  def no_passes_this_round?
+    !turns_this_round.any? {|t| t.entry == "pass"}
+  end
+
+  def get_who_played_since(user)
+    return [] if user.turns.count == 0
+    dt = user.turns.order(id: :desc).first.created_at
+    turns.where("created_at > ?", dt).order(id: :asc).collect{ |t| t.user.name }
   end
 
   # [0, 1, 2, 3, 4]
@@ -51,15 +65,15 @@ class Game < ActiveRecord::Base
   # [1, 5, 2, 3, 0, 4] = in
   def shuffle_players
     return unless users.count > 2
-    io = (round % 2 == 0) # alternate in/out shuffle each round
-    npo, opo = [], users.order(id: :asc).pluck(:play_order)
+    io = (round % 2 == 0) # alternate in/out shuffle each round (in => true)
+    npo, opo = [], players.pluck(:id) # new play order, old play order
     i, mid = 0, (opo.count / 2) + (io ? opo.count % 2 : 0)
     while npo.count < opo.count
       npo.push(io ? opo[i] : opo[mid+i])
       npo.push(io ? opo[mid+i] : opo[i]) if npo.count < opo.count
       i += 1
     end
-    users.each_with_index { |u,i| u.update(play_order: npo[i]) }
+    users.each { |u| u.update(play_order: npo.index(u.id)) }
   end
 
   def time_to_remind_player?

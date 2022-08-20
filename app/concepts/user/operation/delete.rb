@@ -7,6 +7,7 @@ module User::Operation
 
     def update_game(ctx, model:, **)
       game = model.game
+      game.shuffle_players
       # deleting current player ?
       return true unless game.current_player_id == model.id
       # deleting last player ?

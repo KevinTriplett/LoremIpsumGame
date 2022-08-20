@@ -44,6 +44,33 @@ class GameTest < MiniTest::Spec
     end
   end
 
+  it "checks for passes this round" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user(game_id: game.id)
+      user2 = create_game_user(game_id: game.id)
+      user3 = create_game_user(game_id: game.id)
+      game.reload
+      assert_equal [0,1,2], game.users.order(id: :asc).pluck(:play_order)
+      assert game.no_passes_this_round?
+
+      create_user_turn(user_id: user1.id)
+      create_user_turn(user_id: user2.id)
+      create_user_turn(user_id: user3.id)
+      game.reload
+      assert_equal [1,0,2], game.users.order(id: :asc).pluck(:play_order)
+      assert game.no_passes_this_round?
+
+      create_user_turn(user_id: user1.id)
+      create_user_turn(user_id: user2.id, pass: true)
+      create_user_turn(user_id: user3.id)
+      game.reload
+      assert_equal [1,0,2], game.users.order(id: :asc).pluck(:play_order)
+      game.round -= 1
+      assert !game.no_passes_this_round?
+    end
+  end
+
   it "checks for ! time_to_remind_player" do
     turn_end = Time.now + 8.hours + 1.minute
     game = Game.new({
@@ -343,8 +370,7 @@ class GameTest < MiniTest::Spec
       game.update(round: 2)
       game.shuffle_players
       game.reload
-      # sometimes  [4,2,0,3,1]
-      assert_equal [0,3,1,4,2], game.users.order(id: :asc).pluck(:play_order)
+      assert_equal [0,2,4,1,3], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 3)
       game.shuffle_players
@@ -354,7 +380,7 @@ class GameTest < MiniTest::Spec
       game.update(round: 4)
       game.shuffle_players
       game.reload
-      assert_equal [1,3,0,2,4], game.users.order(id: :asc).pluck(:play_order)
+      assert_equal [2,0,3,1,4], game.users.order(id: :asc).pluck(:play_order)
     end
   end
 
@@ -373,18 +399,40 @@ class GameTest < MiniTest::Spec
       game.update(round: 2)
       game.shuffle_players
       game.reload
-      # sometimes  [2,5,0,3,1,4]
-      assert_equal [0,3,1,4,2,5], game.users.order(id: :asc).pluck(:play_order)
+      assert_equal [0,2,4,1,3,5], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 3)
       game.shuffle_players
       game.reload
-      assert_equal [4,0,2,3,5,1], game.users.order(id: :asc).pluck(:play_order)
+      assert_equal [1,5,2,3,0,4], game.users.order(id: :asc).pluck(:play_order)
 
       game.update(round: 4)
       game.shuffle_players
       game.reload
-      assert_equal [4,3,0,5,2,1], game.users.order(id: :asc).pluck(:play_order)
+      assert_equal [2,5,4,1,0,3], game.users.order(id: :asc).pluck(:play_order)
+    end
+  end
+
+  it "gets player names who played since a datetime" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+      user3 = create_game_user({game_id: game.id})
+      user4 = create_game_user({game_id: game.id})
+
+      game.reload
+      create_user_turn(user_id: game.current_player_id, pass: true)
+      game.reload
+      create_user_turn(user_id: game.current_player_id, pass: true)
+      game.reload
+      create_user_turn(user_id: game.current_player_id, pass: true)
+      game.reload
+      create_user_turn(user_id: game.current_player_id, pass: true)
+
+      game.reload
+      user1.reload
+      assert_equal [user2.name,user3.name,user4.name], game.get_who_played_since(user1)
     end
   end
 end

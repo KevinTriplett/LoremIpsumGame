@@ -20,6 +20,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_equal 2, game.round
       assert_equal user1.id, game.current_player_id
       
+      # can finish turn
       get new_user_turn_path(user_token: user1.token)
       assert_select "h1", "Lorem Ipsum"
       assert_select "h5", game.name
@@ -28,6 +29,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_select ".time-left", "2 hours, 59 minutes"
       assert_select ".current-player-name", user1.name
       assert_select "#ep", "Something went wrong: 😭Try refreshing the page 🤓(Note: JavaScript is required) 🤔"
+      assert_select "#finish", "Finish Turn"
+      assert_select "#pass", "Pass"
       assert_select "li.current-player", "#{user1.name}\n <== current player"
 
       get user_turns_path(user_token: user2.token)
@@ -42,11 +45,13 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       )
       game.reload
       assert_equal user2.id, game.current_player_id
+      assert_equal 1, user1.turns.count
 
       get user_turns_path(user_token: user2.token)
       assert_select ".turn-end", game.turn_end.iso8601
       assert_select ".time-left", "7 hours, 59 minutes"
       assert_select ".current-player-name", user2.name
+      assert_select "#ep", "Something went wrong: 😭Try refreshing the page 🤓(Note: JavaScript is required) 🤔"
       assert_select "li.current-player", "#{user2.name}\n <== current player"
     end
   end

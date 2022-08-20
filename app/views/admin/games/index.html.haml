@@ -6,7 +6,7 @@
     %br
     = link_to "edit", edit_admin_game_path(g.id)
     = link_to "users", admin_game_users_path(g.id)
-    = link_to "delete", admin_game_path(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }
     = link_to "end", toggle_end_admin_game_path
+    = link_to "delete", admin_game_path(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }
 
 = link_to "New Game", new_admin_game_path, class: "btn btn-secondary"

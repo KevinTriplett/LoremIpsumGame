@@ -34,9 +34,9 @@ class Turn::Operation::Create < Trailblazer::Operation
   def update_game(ctx, model:, **)
     game = model.game
     if game.round_finished?
+      game.shuffle_players if game.no_passes_this_round?
       game.round += 1
       game.users.each(&:reset_reminded)
-      game.shuffle_players
       game.current_player_id = game.players.first.id
     else
       game.current_player_id = game.next_player_id
