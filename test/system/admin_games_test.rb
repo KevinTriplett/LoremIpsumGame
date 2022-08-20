@@ -125,6 +125,16 @@ class AdminGamesTest < ApplicationSystemTestCase
       game = create_game
       user = create_user(game_id: game.id)
 
+      visit admin_games_path
+      click_link "end"
+      assert_selector ".flash", text: "#{game.name} has ended"
+      game.reload
+      assert game.ended?
+      click_link "end"
+      assert_selector ".flash", text: "#{game.name} has not ended"
+      game.reload
+      assert !game.ended?
+
       visit edit_admin_game_path(id: game.id)
       fill_in "game[num_rounds]", with: "21"
       fill_in "game[turn_hours]", with: "12"
