@@ -7,6 +7,9 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] system test for pass and ending game
+- [X] test for game start and end (and ended?)
+- [X] test for new user added not upsetting rounds and finished
 - [X] why does shuffle players sometimes fail? (Expected: [0, 3, 1, 4, 2] Actual: [4, 2, 0, 3, 1])
 - [X] allow game to end early when all players pass
 - [X] save revisions when turn (first) finished
