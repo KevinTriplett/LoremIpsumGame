@@ -22,8 +22,8 @@ class Turn::Operation::Create < Trailblazer::Operation
   def initialize_attributes(ctx, model:, **)
     game = model.game
     model.round = game.round
-    model.entry = ctx[:pass] ? "pass" : "test"
-    return true if ctx[:pass] || Rails.env == "test"
+    model.entry = ctx[:params][:pass] ? "pass" : "test"
+    return true if ctx[:params][:pass] || Rails.env == "test"
 
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     model.entry = client.getHTML(padID: game.token)[:html]

@@ -119,11 +119,11 @@ def create_user_turn(params)
   user = User.find(params[:user_id])
   Turn::Operation::Create.call(
     params: {
-      turn: {}
+      turn: {},
+      pass: params[:pass]
     },
     user_id: user.id,
-    game_id: user.game_id,
-    pass: params[:pass]
+    game_id: user.game_id
   )[:model]
 end
 

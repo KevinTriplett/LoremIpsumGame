@@ -190,14 +190,8 @@ class AdminGamesTest < ApplicationSystemTestCase
       click_link "play"
       
       assert_current_path new_user_turn_path(user_token: user.token)
-      assert_selector "h1", text: "Lorem Ipsum"
-      assert_selector "h5", text: game.name
-      assert_selector ".game-ends", text: "this round"
-      assert_selector ".turn-end", text: "Indefinite"
-      assert_selector ".time-left", text: "Indefinite"
-      assert_selector ".current-player-name", text: user.name
-      assert_selector "#ep", text: ""
-      assert_selector "li.current-player", text: "#{user.name} <== current player"
+      assert_selector "#finish", text: "Finish Turn"
+      assert_selector "#pass", text: "Pass"
     end
   end
 end
