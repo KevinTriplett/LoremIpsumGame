@@ -381,9 +381,14 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_user({game_id: game.id})
         user3 = create_user({game_id: game.id})
 
-        create_user_turn(user_id: user1.id)
-        create_user_turn(user_id: user2.id)
-        create_user_turn(user_id: user3.id)
+        game.reload
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: game.current_player_id)
         game.reload
         assert !game.ended?
 
@@ -393,10 +398,41 @@ class TurnOperationTest < MiniTest::Spec
           }
         })
 
-        create_user_turn(user_id: user2.id)
         game.reload
         assert !game.ended?
-        create_user_turn(user_id: user3.id)
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: user2.id)
+        game.reload
+        assert game.ended?
+      end
+    end
+
+    it "Player added allows the game to end" do
+      DatabaseCleaner.cleaning do
+        game = create_game({num_rounds: 2})
+        user1 = create_user({game_id: game.id})
+        user2 = create_user({game_id: game.id})
+
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+
+        user3 = create_user({game_id: game.id})
+        game.reload
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: game.current_player_id)
         game.reload
         assert game.ended?
       end
