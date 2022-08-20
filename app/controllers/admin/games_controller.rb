@@ -5,7 +5,7 @@ module Admin
     end
   
     def index
-      @games = Game.order(created_at: :desc)all
+      @games = Game.order(created_at: :desc).all
     end
     
     def new
@@ -49,5 +49,11 @@ module Admin
 
       flash[:notice] = "Unable to delete Game"
     end
+  end
+
+  def toggle_end
+    game = Game.find(params[:id])
+    game.update(end: Time.now)
+    flash[:notice] = "Game #{game.ended? ? 'ended' : 'not ended'}"
   end
 end

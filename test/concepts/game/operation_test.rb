@@ -27,7 +27,7 @@ class GameOperationTest < MiniTest::Spec
         assert_equal 3, game.num_rounds
         assert_equal 2, game.turn_hours
         assert_equal 1, game.round
-        assert !game.game_ended?
+        assert !game.ended?
       end
     end
 

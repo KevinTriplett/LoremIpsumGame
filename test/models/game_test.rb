@@ -47,22 +47,11 @@ class GameTest < MiniTest::Spec
         num_rounds: 2,
         round: 1
       })
-      assert !game.last_turn?
+      assert !game.last_round?
 
       game.round += 1
-      assert game.last_turn?
+      assert game.last_round?
     end
-  end
-
-  it "checks for game ended" do
-    game = Game.new({
-      num_rounds: 2,
-      round: 2
-    })
-    assert !game.game_ended?
-
-    game.round += 1
-    assert game.game_ended?
   end
 
   it "checks for ! time_to_remind_player" do
@@ -236,7 +225,7 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "checks for players finished" do
+  it "checks for round finished" do
     DatabaseCleaner.cleaning do
       game1 = create_game
       user1 = create_user({game_id: game1.id})
@@ -253,8 +242,8 @@ class GameTest < MiniTest::Spec
         game_id: game1.id
       })
       game1.update(current_player_id: game1.next_player_id)
-      assert !game1.players_finished?
-      assert !game2.players_finished?
+      assert !game1.round_finished?
+      assert !game2.round_finished?
 
       game1.reload
       create_turn({
@@ -262,14 +251,65 @@ class GameTest < MiniTest::Spec
         game_id: game1.id
       })
       game1.update(current_player_id: game1.next_player_id)
-      assert !game1.players_finished?
-      assert !game2.players_finished?
+      assert !game1.round_finished?
+      assert !game2.round_finished?
 
       game1.reload
       create_turn({
         user_id: game1.current_player_id,
         game_id: game1.id
       })
+      assert game1.round_finished?
+      assert !game2.round_finished?
+    end
+  end
+
+  it "checks for players finished" do
+    DatabaseCleaner.cleaning do
+      game1 = create_game
+      user1 = create_user({game_id: game1.id})
+      user2 = create_user({game_id: game1.id})
+      user3 = create_user({game_id: game1.id})
+      
+      game2 = create_game
+      user4 = create_user({game_id: game2.id})
+      user5 = create_user({game_id: game2.id})
+      create_user_turn(user_id: user4.id)
+      create_user_turn(user_id: user5.id)
+
+      game1.reload
+      assert_equal user1.id, game1.current_player_id
+      create_user_turn(user_id: game1.current_player_id, pass: true)
+      game1.reload
+      game2.reload
+      assert !game1.players_finished?
+      assert !game2.players_finished?
+
+      assert_equal user2.id, game1.current_player_id
+      create_user_turn(user_id: game1.current_player_id, pass: false)
+      game1.reload
+      game2.reload
+      assert !game1.players_finished?
+      assert !game2.players_finished?
+
+      assert_equal user3.id, game1.current_player_id
+      create_user_turn(user_id: game1.current_player_id, pass: true)
+      game1.reload
+      game2.reload
+      assert !game1.players_finished?
+      assert !game2.players_finished?
+
+      assert_equal user1.id, game1.current_player_id
+      create_user_turn(user_id: game1.current_player_id, pass: true)
+      game1.reload
+      game2.reload
+      assert !game1.players_finished?
+      assert !game2.players_finished?
+
+      assert_equal user2.id, game1.current_player_id
+      create_user_turn(user_id: game1.current_player_id, pass: true)
+      game1.reload
+      game2.reload
       assert game1.players_finished?
       assert !game2.players_finished?
     end

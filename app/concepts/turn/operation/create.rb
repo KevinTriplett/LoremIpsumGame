@@ -22,7 +22,9 @@ class Turn::Operation::Create < Trailblazer::Operation
   def initialize_attributes(ctx, model:, **)
     game = model.game
     model.round = game.round
-    return true if Rails.env == "test"
+    model.entry = ctx[:pass] ? "pass" : "test"
+    return true if ctx[:pass] || Rails.env == "test"
+
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     model.entry = client.getHTML(padID: game.token)[:html]
     client.saveRevision(padID: game.token)
@@ -31,7 +33,7 @@ class Turn::Operation::Create < Trailblazer::Operation
 
   def update_game(ctx, model:, **)
     game = model.game
-    if game.players_finished?
+    if game.round_finished?
       game.round += 1
       game.users.each(&:reset_reminded)
       game.shuffle_players
@@ -39,6 +41,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     else
       game.current_player_id = game.next_player_id
     end
+    game.started ||= Time.now
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours
     game.save
@@ -46,8 +49,10 @@ class Turn::Operation::Create < Trailblazer::Operation
 
   def notify(ctx, model:, **)
     game = model.game
-    if game.game_ended?
+    return true if game.ended?
+    if game.round > game.num_rounds || game.players_finished?
       game.users.each { |u| UserMailer.with(user: u).game_ended.deliver_now }
+      game.update(ended: Time.now)
     else
       user = game.current_player
       UserMailer.with(user: user).turn_notification.deliver_now

@@ -230,7 +230,7 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
-    it "Sends an email to all players on last turn finished" do
+    it "Sends only one email to all players on last turn finished" do
       DatabaseCleaner.cleaning do
         turn_start = Time.now - 4.hours
         turn_end = turn_start + 4.hours
@@ -275,7 +275,18 @@ class TurnOperationTest < MiniTest::Spec
 
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
+
         ActionMailer::Base.deliveries.clear
+        Turn::Operation::Create.call(
+          params: {
+            turn: {}
+          },
+          user_id: user3.id,
+          game_id: user3.game_id
+        )
+        assert_emails 0
+        ActionMailer::Base.deliveries.clear
+
       end
     end
 
@@ -313,9 +324,81 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user3.id,
           game_id: user3.game_id
         )
-
         game.reload
         assert_equal 2, game.round
+      end
+    end
+
+    it "All players passing consecutively ends the game" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_user({game_id: game.id})
+        user2 = create_user({game_id: game.id})
+        user3 = create_user({game_id: game.id})
+        game.reload
+
+        create_user_turn(user_id: game.current_player_id, pass: false)
+        game.reload
+        assert_equal 1, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id, pass: true)
+        game.reload
+        assert_equal 1, game.round
+        assert !game.ended?
+        
+        create_user_turn(user_id: game.current_player_id, pass: false)
+        game.reload
+        assert_equal 2, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id, pass: false)
+        game.reload
+        assert_equal 2, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id, pass: true)
+        game.reload
+        assert_equal 2, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id, pass: true)
+        game.reload
+        assert_equal 3, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id, pass: true)
+        game.reload
+        assert_equal 3, game.round
+        assert game.ended?
+      end
+    end
+
+    it "Player deleted allows the game to end" do
+      DatabaseCleaner.cleaning do
+        game = create_game({num_rounds: 2})
+        user1 = create_user({game_id: game.id})
+        user2 = create_user({game_id: game.id})
+        user3 = create_user({game_id: game.id})
+
+        create_user_turn(user_id: user1.id)
+        create_user_turn(user_id: user2.id)
+        create_user_turn(user_id: user3.id)
+        game.reload
+        assert !game.ended?
+
+        User::Operation::Delete.call({
+          params: {
+            id: user1.id
+          }
+        })
+
+        create_user_turn(user_id: user2.id)
+        game.reload
+        assert !game.ended?
+        create_user_turn(user_id: user3.id)
+        game.reload
+        assert game.ended?
       end
     end
 

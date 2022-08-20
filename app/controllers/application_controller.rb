@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   private
 
   def current_user
+    session[:ep_sessions] ||= {}
     session[:user_token] = params[:user_token] if params[:user_token]
     User.find_by_token( session[:user_token] )
   end

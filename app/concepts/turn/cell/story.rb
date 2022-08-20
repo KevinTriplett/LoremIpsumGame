@@ -38,12 +38,16 @@ class Turn::Cell::Story < Cell::ViewModel
     user.id == current_player_id
   end
 
-  def finish_button
-    current_player? ?
-      link_to("Finish Turn", user_turns_path, id: "finish", class: "btn btn-primary", data: { 
-        turbo_method: "post",
-        turbo_confirm: "Click OK if you are finished with your turn"
-      }) : nil
+  def buttons
+    return unless current_player?
+    link_to("Finish Turn", user_turns_path, id: "finish", class: "btn btn-primary", data: { 
+      turbo_method: "post",
+      turbo_confirm: "Click OK if you are finished with your turn"
+    }) +
+    link_to("Pass", user_turns_path(pass: true), id: "pass", class: "btn btn-secondary", data: { 
+      turbo_method: "post",
+      turbo_confirm: "Click OK if you want to pass"
+    })
   end
 
   def dataset

@@ -17,11 +17,10 @@ class TurnsController < ApplicationController
   end
 
   def create
-    return redirect_to user_turns_url unless current_player?
-    session[:ep_sessions] ||= {}
     @user = get_user
-    existing = @user.turns.last && @user.turns.last.round == @user.game.round
-    redirect_to action: "update" if existing
+    return user_turns_url if @user.game.ended? || !current_player?
+    @existing_turn = @user.turns.where(round: @user.game.round).first
+    return redirect_to user_turn_url(id: @existing_turn.id) if @existing_turn
 
     run Turn::Operation::Create, user_id: @user.id, game_id: @user.game.id do |ctx|
       flash[:notice] = "Turn has been completed and saved - thank you!"
@@ -32,12 +31,6 @@ class TurnsController < ApplicationController
   end
 
   def update
-    return redirect_to user_turns_url unless current_player?
-    session[:ep_sessions] ||= {}
-    @user = get_user
-    existing = @user.turn.last && @user.turn.last.round == @user.game.round
-    redirect_to action: "update" if existing
-
     run Turn::Operation::Update, user_id: @user.id, game_id: @user.game.id do |ctx|
       flash[:notice] = "Turn has been completed and saved - thank you!"
       return redirect_to user_turns_url

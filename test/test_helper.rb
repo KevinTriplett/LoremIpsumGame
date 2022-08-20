@@ -104,13 +104,14 @@ end
 def create_turn(params)
   game = Game.find(params[:game_id])
   turn = Turn.create({
-    entry: params[:entry] || "test",
+    entry: (params[:pass] ? "pass" : (params[:entry] || "test")),
     user_id: params[:user_id],
     game_id: params[:game_id],
     round: params[:round] || game.round
   })
   game.reload
-  game.round += 1 if game.players_finished?
+  game.round += 1 if game.round_finished?
+  game.update(current_player_id: game.next_player_id)
   turn
 end
 
@@ -118,12 +119,11 @@ def create_user_turn(params)
   user = User.find(params[:user_id])
   Turn::Operation::Create.call(
     params: {
-      turn: {
-        entry: params[:entry] || "test"
-      }
+      turn: {}
     },
     user_id: user.id,
-    game_id: user.game_id
+    game_id: user.game_id,
+    pass: params[:pass]
   )[:model]
 end
 

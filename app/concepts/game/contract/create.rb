@@ -7,6 +7,7 @@ module Game::Contract
     property :token
     property :turn_hours
     property :num_rounds
+    property :ended
 
     validation do
       params do

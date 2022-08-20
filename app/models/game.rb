@@ -12,24 +12,28 @@ class Game < ActiveRecord::Base
     User.find(current_player_id)
   end
 
+  def ended?
+    !ended.nil?
+  end
+
   def next_player_id
-    user_ids = players.pluck(:id)
+    user_ids = players.pluck(:id) # use play_ordered collection
     i = user_ids.index(current_player_id)
     # rollover if at the end of the player array
     user_ids[i+1 < user_ids.count ? i+1 : 0]
   end
 
-  def last_turn?
+  def last_round?
     round == num_rounds
   end
 
-  def game_ended?
-    round > num_rounds
+  def round_finished?
+    turns.where(round: round).count == users.count
   end
 
   def players_finished?
-    users_finished = Turn.where(game_id: id).where(round: round)
-    users_finished.count == users.count
+    return false if turns.count < users.count
+    users.all? {|u| u.turns.order(created_at: :asc).last.entry == "pass"}
   end
 
   # [0, 1, 2, 3, 4]
@@ -67,12 +71,12 @@ class Game < ActiveRecord::Base
   end
 
   def remind_current_player
-    return if game_ended? || !time_to_remind_player?
+    return if ended? || !time_to_remind_player?
     current_player.remind
   end
 
   def auto_finish_turn
-    return if game_ended? || last_turn? || !time_to_finish_turn?
+    return if ended? || last_round? || !time_to_finish_turn?
     current_player.finish_turn
   end
 
@@ -110,9 +114,11 @@ class Game < ActiveRecord::Base
     puts "#{User.all.count} users total"
     puts "#{Turn.all.count} turns total"
     Game.all.each do |g|
-      puts "Game: #{g.name}" + (g.game_ended? ? " [ended]" : "")
+      puts "Game: #{g.name}"
+      puts "  started: #{g.started.nil? ? " (not started yet)" : g.started.short_date_at_time}"
+      puts "  ended: #{g.ended.nil? ? " (not ended yet)" : g.ended.short_date_at_time}"
       puts "  #{g.users.count} players"
-      unless g.game_ended?
+      unless g.ended?
         time = g.turn_time_remaining
         rounds = game.num_rounds - game.round
         puts "  current_player: #{g.current_player ? g.current_player.name : "no player yet"}"

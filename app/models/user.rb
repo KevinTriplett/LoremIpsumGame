@@ -15,22 +15,17 @@ class User < ActiveRecord::Base
   end
 
   def finish_turn
-    begin
-      # Turn::Operation::Create updates current_player and
-      # notifies the new current_player
-      Turn::Operation::Create.call(
-        params: {
-          turn: {}
-        },
-        user_id: id,
-        game_id: game_id
-      )
-      UserMailer.with(user: self).turn_auto_finished.deliver_now
-    rescue => detail
-      puts detail.backtrace.join("\n")
-      Rails.logger.error "in #auto_finish_turn for user #{self.inspect}"
-      Rails.logger.error detail.to_s
-    end
+    # Turn::Operation::Create updates current_player and
+    # notifies the new current_player
+    Turn::Operation::Create.call(
+      params: {
+        turn: {}
+      },
+      user_id: id,
+      game_id: game_id,
+      pass: true
+    )
+    UserMailer.with(user: self).turn_auto_finished.deliver_now
   end
 
   def self.pick_author_color(i)
