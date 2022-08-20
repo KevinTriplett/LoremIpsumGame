@@ -49,6 +49,7 @@ class Turn::Operation::Create < Trailblazer::Operation
 
   def notify(ctx, model:, **)
     game = model.game
+    game.reload
     return true if game.ended?
     if game.round > game.num_rounds || game.players_finished?
       game.users.each { |u| UserMailer.with(user: u).game_ended.deliver_now }
