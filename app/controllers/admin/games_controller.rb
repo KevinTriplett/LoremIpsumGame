@@ -5,7 +5,7 @@ module Admin
     end
   
     def index
-      @games = Game.all
+      @games = Game.order(created_at: :desc)all
     end
     
     def new
