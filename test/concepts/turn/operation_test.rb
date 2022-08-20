@@ -9,21 +9,39 @@ class TurnOperationTest < MiniTest::Spec
 
     # ------------------
     # happy path tests
-    it "Game starts with an indefinite turn duration" do
+    it "timestamps game when started" do
       DatabaseCleaner.cleaning do
-        result = Game::Operation::Create.call(params: {
-          game: {
-            name: random_game_name,
-            num_rounds: 3,
-            turn_hours: 2
-          }
-        })
-        game = result[:model]
+        game = create_game
         user = create_user({game_id: game.id})
-
         game.reload
-        assert_nil game.turn_start
-        assert_nil game.turn_end
+        assert_nil game.started
+
+        create_user_turn({user_id: user.id})
+        game.reload
+        assert game.started
+      end
+    end
+
+    it "timestamps game when ended" do
+      DatabaseCleaner.cleaning do
+        game = create_game({num_rounds: 2})
+        user1 = create_user({game_id: game.id})
+        user2 = create_user({game_id: game.id})
+        game.reload
+        assert_nil game.ended
+
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_nil game.ended
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_nil game.ended
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_nil game.ended
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert game.ended
       end
     end
 

@@ -31,6 +31,19 @@ class GameOperationTest < MiniTest::Spec
       end
     end
 
+    it "Game starts with an indefinite turn duration" do
+      DatabaseCleaner.cleaning do
+        game = create_game({
+          num_rounds: 3,
+          turn_hours: 2
+        })
+        user = create_user({game_id: game.id})
+        game.reload
+        assert_nil game.turn_start
+        assert_nil game.turn_end
+      end
+    end
+
     it "Updates turn end when turn_hours rule changes" do
       DatabaseCleaner.cleaning do
         start = Time.now
