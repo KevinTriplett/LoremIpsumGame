@@ -230,7 +230,7 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_game_user({game_id: game.id})
 
         ActionMailer::Base.deliveries.clear
-        result = Turn::Operation::Create.call(
+        Turn::Operation::Create.call(
           params: {
             turn: {}
           },
