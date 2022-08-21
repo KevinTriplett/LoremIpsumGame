@@ -123,7 +123,7 @@ class UserOperationTest < MiniTest::Spec
       end
     end
 
-    it "nils game.current_player_id and sends an email on user deletion" do
+    it "nils game.current_player_id and sends an email on last user deletion" do
       DatabaseCleaner.cleaning do
         game = create_game
         user = create_game_user(game_id: game.id)
