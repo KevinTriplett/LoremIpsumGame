@@ -1,12 +1,12 @@
 # TODO
 
 ## MVP 2
-- [ ] implement more edge case tests
 - [ ] try setting author per https://github.com/jhollinger/ruby-etherpad-lite
 - [ ] fix user colors in Etherpad to be consistent between rounds
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] implement more edge case tests
 - [X] system test for pass and ending game
 - [X] test for game start and end (and ended?)
 - [X] test for new user added not upsetting rounds and finished
