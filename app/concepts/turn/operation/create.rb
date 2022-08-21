@@ -8,6 +8,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     step Contract::Build(constant: Turn::Contract::Create)
 
     def initialize_attributes(ctx, model:, **)
+      return false unless ctx[:user_id]
       model.user_id = ctx[:user_id]
       model.game_id = model.user.game_id
     end
