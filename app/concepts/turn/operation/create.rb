@@ -9,7 +9,7 @@ class Turn::Operation::Create < Trailblazer::Operation
 
     def initialize_attributes(ctx, model:, **)
       model.user_id = ctx[:user_id]
-      model.game_id = ctx[:game_id]
+      model.game_id = model.user.game_id
     end
   end
   
