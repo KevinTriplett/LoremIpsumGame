@@ -7,7 +7,7 @@ class UserMailerTest < ActionMailer::TestCase
   test 'welcome_email' do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user).welcome_email
       assert_emails 1 do
@@ -27,7 +27,7 @@ class UserMailerTest < ActionMailer::TestCase
   test 'goodbye_email' do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user).goodbye_email
       assert_emails 1 do
@@ -47,7 +47,7 @@ class UserMailerTest < ActionMailer::TestCase
   test 'turn_notification' do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user).turn_notification
       assert_emails 1 do
@@ -67,7 +67,7 @@ class UserMailerTest < ActionMailer::TestCase
   test 'turn_reminder' do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user).turn_reminder
       assert_emails 1 do
@@ -87,7 +87,7 @@ class UserMailerTest < ActionMailer::TestCase
   test 'turn_auto_finished' do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user).turn_auto_finished
       assert_emails 1 do
@@ -108,7 +108,7 @@ class UserMailerTest < ActionMailer::TestCase
   test 'game_ended' do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user).game_ended
       assert_emails 1 do

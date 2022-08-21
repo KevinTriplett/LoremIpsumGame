@@ -37,7 +37,7 @@ class GameOperationTest < MiniTest::Spec
           num_rounds: 3,
           turn_hours: 2
         })
-        user = create_user({game_id: game.id})
+        user = create_game_user({game_id: game.id})
         game.reload
         assert_nil game.turn_start
         assert_nil game.turn_end

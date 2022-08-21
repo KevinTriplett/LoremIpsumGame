@@ -11,8 +11,8 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
         turn_end: Time.now+3.hours,
         turn_hours: 8
       })
-      user1 = create_user({game_id: game.id})
-      user2 = create_user({game_id: game.id})
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
       game.update(round: 2)
 
       game.reload

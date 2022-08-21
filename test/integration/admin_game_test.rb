@@ -72,8 +72,8 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "input[value='Create User']", nil
       assert_select "a", "Done"
 
-      user1 = create_user({game_id: game.id})
-      user2 = create_user({game_id: game.id})
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
 
       get admin_game_users_path(game_id: game.id)
       assert_select "h1", "Lorem Ipsum"

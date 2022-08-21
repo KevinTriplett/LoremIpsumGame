@@ -7,9 +7,8 @@ class UserTest < MiniTest::Spec
   it "resets reminded flag" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id, reminded: true)
-
-      user.reload
+      user = create_game_user(game_id: game.id)
+      user.update(reminded: true)
       assert user.reminded?
 
       user.reset_reminded

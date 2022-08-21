@@ -6,8 +6,8 @@ class TurnsControllerTest < ActionDispatch::IntegrationTest
   test "finished turn should send an email" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user1 = create_user({game_id: game.id})
-      user2 = create_user({game_id: game.id})
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
 
       ActionMailer::Base.deliveries.clear
       assert_emails 1 do

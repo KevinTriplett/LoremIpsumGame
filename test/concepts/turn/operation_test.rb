@@ -12,7 +12,7 @@ class TurnOperationTest < MiniTest::Spec
     it "timestamps game when started" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_user({game_id: game.id})
+        user = create_game_user({game_id: game.id})
         game.reload
         assert_nil game.started
 
@@ -25,8 +25,8 @@ class TurnOperationTest < MiniTest::Spec
     it "timestamps game when ended" do
       DatabaseCleaner.cleaning do
         game = create_game({num_rounds: 2})
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
         game.reload
         assert_nil game.ended
 
@@ -48,7 +48,7 @@ class TurnOperationTest < MiniTest::Spec
     it "Creates {Turn} model when given valid attributes" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_user({game_id: game.id})
+        user = create_game_user({game_id: game.id})
 
         result = Turn::Operation::Create.call(
           params: {
@@ -69,7 +69,7 @@ class TurnOperationTest < MiniTest::Spec
     it "Does not change current_player_id attribute when turn finished and only one player" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_user({game_id: game.id})
+        user = create_game_user({game_id: game.id})
         game.reload
         assert_equal user.id, game.current_player_id
 
@@ -89,9 +89,9 @@ class TurnOperationTest < MiniTest::Spec
     it "Updates current_player_id attribute when turn finished (no rollover)" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
         game.update(current_player_id: user1.id)
 
         Turn::Operation::Create.call(
@@ -118,9 +118,9 @@ class TurnOperationTest < MiniTest::Spec
     it "resets the reminded flag on the new current_player" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
         game.update(current_player_id: user1.id)
 
         user1.update(reminded: true)
@@ -203,7 +203,7 @@ class TurnOperationTest < MiniTest::Spec
     it "Updates turn start/end datetime attributes" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user = create_user({game_id: game.id})
+        user = create_game_user({game_id: game.id})
         game.reload
         assert_equal false, game.turn_start.present?
         assert_equal false, game.turn_end.present?
@@ -226,8 +226,8 @@ class TurnOperationTest < MiniTest::Spec
     it "Sends an email to current_player on turn creation" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
 
         ActionMailer::Base.deliveries.clear
         result = Turn::Operation::Create.call(
@@ -258,9 +258,9 @@ class TurnOperationTest < MiniTest::Spec
           turn_end: turn_end,
           turn_hours: 4
         })
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
     
         ActionMailer::Base.deliveries.clear
         Turn::Operation::Create.call(
@@ -311,9 +311,9 @@ class TurnOperationTest < MiniTest::Spec
     it "Updates round number only when all turns finished" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
 
         Turn::Operation::Create.call(
           params: {
@@ -350,9 +350,9 @@ class TurnOperationTest < MiniTest::Spec
     it "All players passing consecutively ends the game" do
       DatabaseCleaner.cleaning do
         game = create_game
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
         game.reload
 
         create_user_turn(user_id: game.current_player_id, pass: false)
@@ -395,9 +395,9 @@ class TurnOperationTest < MiniTest::Spec
     it "Player deleted allows the game to end" do
       DatabaseCleaner.cleaning do
         game = create_game({num_rounds: 2})
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
-        user3 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
 
         game.reload
         create_user_turn(user_id: game.current_player_id)
@@ -430,8 +430,8 @@ class TurnOperationTest < MiniTest::Spec
     it "Player added allows the game to end" do
       DatabaseCleaner.cleaning do
         game = create_game({num_rounds: 2})
-        user1 = create_user({game_id: game.id})
-        user2 = create_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
 
         game.reload
         assert !game.ended?
@@ -442,7 +442,7 @@ class TurnOperationTest < MiniTest::Spec
         game.reload
         assert !game.ended?
 
-        user3 = create_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
         game.reload
         create_user_turn(user_id: game.current_player_id)
         game.reload

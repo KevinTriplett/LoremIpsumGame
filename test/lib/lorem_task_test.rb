@@ -7,15 +7,15 @@ class LoremTaskTest < ActiveSupport::TestCase
         turn_end: turn_end,
         turn_hours: 8
       })
-      user1 = create_user({game_id: game1.id})
-      user2 = create_user({game_id: game1.id})
+      user1 = create_game_user({game_id: game1.id})
+      user2 = create_game_user({game_id: game1.id})
 
       game2 = create_game({
         turn_end: turn_end,
         turn_hours: 8
       })
-      user3 = create_user({game_id: game2.id})
-      user4 = create_user({game_id: game2.id})
+      user3 = create_game_user({game_id: game2.id})
+      user4 = create_game_user({game_id: game2.id})
 
       ActionMailer::Base.deliveries.clear
       LoremIpsum::Application.load_tasks
@@ -32,15 +32,15 @@ class LoremTaskTest < ActiveSupport::TestCase
         turn_end: turn_end,
         turn_hours: 4
       })
-      user1 = create_user({game_id: game1.id})
-      user2 = create_user({game_id: game1.id})
+      user1 = create_game_user({game_id: game1.id})
+      user2 = create_game_user({game_id: game1.id})
 
       game2 = create_game({
         turn_end: turn_end,
         turn_hours: 4
       })
-      user3 = create_user({game_id: game2.id})
-      user4 = create_user({game_id: game2.id})
+      user3 = create_game_user({game_id: game2.id})
+      user4 = create_game_user({game_id: game2.id})
 
       ActionMailer::Base.deliveries.clear
       LoremIpsum::Application.load_tasks

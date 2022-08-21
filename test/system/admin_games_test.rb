@@ -93,7 +93,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Adding game with same name and user with same email presents errors" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
 
       visit admin_games_path
       click_link "New Game"
@@ -123,7 +123,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Editing game and user does not present errors" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user(game_id: game.id)
+      user = create_game_user(game_id: game.id)
 
       visit admin_games_path
       click_link "end"
@@ -156,7 +156,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Deleting user" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user({game_id: game.id})
+      user = create_game_user({game_id: game.id})
 
       visit admin_game_users_path(game_id: game.id)
       click_link "delete"
@@ -170,7 +170,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Deleting game" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_user({game_id: game.id})
+      user = create_game_user({game_id: game.id})
 
       visit admin_games_path
       click_link "delete"
@@ -184,7 +184,7 @@ class AdminGamesTest < ApplicationSystemTestCase
   test "Play user as admin" do
     DatabaseCleaner.cleaning do
       game = create_game(num_rounds: 1)
-      user = create_user({game_id: game.id})
+      user = create_game_user({game_id: game.id})
 
       visit admin_game_users_path(game_id: game.id)
       click_link "play"
