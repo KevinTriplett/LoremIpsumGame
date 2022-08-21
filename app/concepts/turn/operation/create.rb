@@ -42,6 +42,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     else
       game.current_player_id = game.next_player_id
     end
+    game.current_player.reset_reminded
     game.started ||= Time.now
     game.turn_start = Time.now
     game.turn_end = game.turn_start + game.turn_hours.hours

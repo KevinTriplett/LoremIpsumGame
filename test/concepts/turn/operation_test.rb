@@ -126,45 +126,22 @@ class TurnOperationTest < MiniTest::Spec
         user1.update(reminded: true)
         user2.update(reminded: true)
         user3.update(reminded: true)
-        [user1,user2,user3].each(&:reload)
-        # always resets the new current_player, not the previous current_player
-        assert user1.reminded
-        assert user2.reminded
-        assert user3.reminded
 
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user1.id,
-          game_id: user1.game_id
-        )
+        create_user_turn(user_id: game.current_player_id)
         [user1,user2,user3].each(&:reload)
         # always resets the new current_player, not the previous current_player
         assert user1.reminded
-        assert user2.reminded
+        assert !user2.reminded
         assert user3.reminded
         
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user2.id,
-          game_id: user2.game_id
-        )
+        create_user_turn(user_id: game.current_player_id)
         [user1,user2,user3].each(&:reload)
         # always resets the new current_player, not the previous current_player
         assert user1.reminded
-        assert user2.reminded
-        assert user3.reminded
+        assert !user2.reminded
+        assert !user3.reminded
 
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user2.id,
-          game_id: user2.game_id
-        )
+        create_user_turn(user_id: game.current_player_id)
         [user1,user2,user3].each(&:reload)
         # always resets the new current_player, not the previous current_player
         assert !user1.reminded
@@ -344,6 +321,46 @@ class TurnOperationTest < MiniTest::Spec
         )
         game.reload
         assert_equal 2, game.round
+      end
+    end
+
+    it "Playing all rounds ends the game" do
+      DatabaseCleaner.cleaning do
+        game = create_game(num_rounds: 2)
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
+        game.reload
+
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_equal 1, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_equal 1, game.round
+        assert !game.ended?
+        
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_equal 2, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_equal 2, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_equal 2, game.round
+        assert !game.ended?
+
+        create_user_turn(user_id: game.current_player_id)
+        game.reload
+        assert_equal 3, game.round
+        assert game.ended?
       end
     end
 
