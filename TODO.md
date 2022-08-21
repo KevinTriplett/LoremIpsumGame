@@ -1,6 +1,7 @@
 # TODO
 
 ## MVP 2
+- [ ] handle game creation when pad cannot be created
 - [ ] try setting author per https://github.com/jhollinger/ruby-etherpad-lite
 - [ ] fix user colors in Etherpad to be consistent between rounds
 - [ ] enable eager_loading in production (causes TRB issue)
