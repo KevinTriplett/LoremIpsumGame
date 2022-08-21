@@ -13,8 +13,8 @@ module Game::Operation
     
     step Subprocess(Present)
     step Contract::Validate(key: :game)
-    step :create_pad
     step Contract::Persist()
+    step :create_pad
 
     def create_pad(ctx, model:, **)
       return true if Rails.env == "test"
