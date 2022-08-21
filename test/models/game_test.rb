@@ -184,6 +184,72 @@ class GameTest < MiniTest::Spec
     end
   end
 
+  it "does not remind users of turns when game ended" do
+    DatabaseCleaner.cleaning do
+      turn_end = Time.now - 4.hours - 1.minute
+      game = create_game({
+        turn_end: turn_end,
+        turn_hours: 8
+      })
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+      game.update(ended: Time.now)
+
+      ActionMailer::Base.deliveries.clear
+      Game.remind_current_players
+      assert_emails 0
+    end
+  end
+
+  it "does auto-finish turns if game not ended" do
+    DatabaseCleaner.cleaning do
+      turn_end = Time.now - 6.hours - 1.minute
+      game = create_game({
+        turn_end: turn_end,
+        turn_hours: 8
+      })
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+
+      ActionMailer::Base.deliveries.clear
+      Game.auto_finish_turns
+      assert_emails 2
+    end
+  end
+
+  it "does remind users of turns if game not ended" do
+    DatabaseCleaner.cleaning do
+      turn_end = Time.now - 4.hours - 1.minute
+      game = create_game({
+        turn_end: turn_end,
+        turn_hours: 8
+      })
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+
+      ActionMailer::Base.deliveries.clear
+      Game.remind_current_players
+      assert_emails 1
+    end
+  end
+
+  it "does not auto-finish turns when game ended" do
+    DatabaseCleaner.cleaning do
+      turn_end = Time.now - 6.hours - 1.minute
+      game = create_game({
+        turn_end: turn_end,
+        turn_hours: 8
+      })
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+      game.update(ended: Time.now)
+
+      ActionMailer::Base.deliveries.clear
+      Game.auto_finish_turns
+      assert_emails 0
+    end
+  end
+
   it "auto finishes turns only once when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now - 1.hour - 1.minute
