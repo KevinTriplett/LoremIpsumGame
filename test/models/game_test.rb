@@ -413,26 +413,67 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "gets player names who played since a datetime" do
+  it "gets player names who played since a datetime (without passes)" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user1 = create_game_user({game_id: game.id})
-      user2 = create_game_user({game_id: game.id})
-      user3 = create_game_user({game_id: game.id})
-      user4 = create_game_user({game_id: game.id})
+      user1 = create_game_user({name: "user1", game_id: game.id})
+      user2 = create_game_user({name: "user2", game_id: game.id})
+      user3 = create_game_user({name: "user3", game_id: game.id})
+      user4 = create_game_user({name: "user4", game_id: game.id})
 
       game.reload
-      create_user_turn(user_id: game.current_player_id, pass: true)
+      create_user_turn(user_id: game.current_player_id)
       game.reload
-      create_user_turn(user_id: game.current_player_id, pass: true)
+      create_user_turn(user_id: game.current_player_id)
       game.reload
-      create_user_turn(user_id: game.current_player_id, pass: true)
+      create_user_turn(user_id: game.current_player_id)
       game.reload
-      create_user_turn(user_id: game.current_player_id, pass: true)
+      create_user_turn(user_id: game.current_player_id)
 
       game.reload
       user1.reload
       assert_equal [user2.name,user3.name,user4.name], game.get_who_played_since(user1)
+
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+
+      game.reload
+      user4.reload
+      assert_equal [user3.name,user1.name], game.get_who_played_since(user4)
+    end
+  end
+
+  it "gets player names who played since a datetime (with passes)" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({name: "user1", game_id: game.id})
+      user2 = create_game_user({name: "user2", game_id: game.id})
+      user3 = create_game_user({name: "user3", game_id: game.id})
+      user4 = create_game_user({name: "user4", game_id: game.id})
+
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+      game.reload
+      create_user_turn(user_id: game.current_player_id, pass: true)
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+
+      game.reload
+      user1.reload
+      assert_equal [user2.name + " (passed)",user3.name,user4.name], game.get_who_played_since(user1)
+
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+      game.reload
+      create_user_turn(user_id: game.current_player_id)
+
+      game.reload
+      user4.reload
+      assert_equal [user1.name,user2.name], game.get_who_played_since(user4)
     end
   end
 end

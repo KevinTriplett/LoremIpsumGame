@@ -47,7 +47,9 @@ class Game < ActiveRecord::Base
   def get_who_played_since(user)
     return [] if user.turns.count == 0
     dt = user.turns.order(id: :desc).first.created_at
-    turns.where("created_at > ?", dt).order(id: :asc).collect{ |t| t.user.name }
+    turns.where("created_at > ?", dt).order(id: :asc).collect do |t|
+      t.user.name + (t.entry == 'pass' ? ' (passed)' : '')
+    end
   end
 
   # [0, 1, 2, 3, 4]
