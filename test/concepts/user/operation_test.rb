@@ -165,6 +165,36 @@ class UserOperationTest < MiniTest::Spec
       end
     end
 
+    it "Doesn't shuffle players when adding user" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_game_user(game_id: game.id)
+        user2 = create_game_user(game_id: game.id)
+        user3 = create_game_user(game_id: game.id)
+        user4 = create_game_user(game_id: game.id)
+        game.reload
+        assert_equal [0,1,2,3], game.users.order(id: :asc).pluck(:play_order)
+
+        user4 = create_game_user(game_id: game.id)
+        game.reload
+        assert_equal [0,1,2,3,4], game.users.order(id: :asc).pluck(:play_order)
+      end
+    end
+
+    it "Doesn't disturb game attributes when adding user" do
+      DatabaseCleaner.cleaning do
+        start = Time.now
+        game = create_game(turn_hours: 4, turn_start: start, turn_end: start + 4.hours, num_rounds: 3, round: 2)
+        game.reload
+        user = create_game_user(game_id: game.id)
+        assert_equal game.turn_hours, user.game.turn_hours
+        assert_equal game.turn_start, user.game.turn_start
+        assert_equal game.turn_end, user.game.turn_end
+        assert_equal game.num_rounds, user.game.num_rounds
+        assert_equal game.round, user.game.round
+      end
+    end
+
     it "Reassigns current_player_id and sends turn notification email on current user deletion" do
       DatabaseCleaner.cleaning do
         game = create_game
