@@ -94,4 +94,28 @@ class PlayerTest < ApplicationSystemTestCase
     sleep(1)
     DatabaseCleaner.clean
   end
+
+  test "Player can access read-only pad when not their turn" do
+    DatabaseCleaner.start
+    
+    game = create_game({
+      num_rounds: 10,
+      turn_hours: 8
+    })
+    user1 = create_game_user({game_id: game.id})
+    user2 = create_game_user({game_id: game.id})
+    game.reload
+    assert_equal user1.id, game.current_player_id
+
+    visit new_user_turn_path(user_token: user2.token)
+    assert_current_path user_turns_path(user_token: user2.token)
+    assert_selector "h1", text: "Lorem Ipsum"
+    assert_selector "h5", text: game.name
+    assert_selector "li.current-player", text: "#{user1.name} <== current player"
+    assert_no_selector "#finish", text: "Finish Turn"
+    assert_no_selector "#pass", text: "Pass"
+
+    sleep(1)
+    DatabaseCleaner.clean
+  end
 end
