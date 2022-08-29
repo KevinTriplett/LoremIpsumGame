@@ -2,7 +2,7 @@
 
   $.fn.pad = function( options ) {
     var settings = {
-      'host'              : 'http://loremipsum.com',
+      'host'              : 'https://loremipsum.com',
       'baseUrl'           : '/p/',
       'showControls'      : false,
       'showChat'          : false,
