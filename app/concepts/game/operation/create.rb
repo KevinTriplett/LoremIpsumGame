@@ -20,7 +20,17 @@ module Game::Operation
       return true if Rails.env == "test"
       game = Game.find(model.id)
       client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
-      nil == client.createPad(padID: game.token, text: Rails.configuration.initial_etherpad_text)
+      begin
+        nil == client.createPad(padID: game.token, text: Rails.configuration.initial_etherpad_text)
+      rescue Errno::ECONNREFUSED
+        game.destroy
+        ctx[:flash] = "Error: Connection to Etherpad refused - is it running?"
+        false
+      rescue RestClient::SSLCertificateNotVerified => error
+        game.destroy
+        ctx[:flash] = "Error: #{error.message}"
+        false
+      end
     end
   end
 end

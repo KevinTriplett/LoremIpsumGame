@@ -20,6 +20,7 @@ module Admin
         return redirect_to new_admin_game_user_url(game_id: ctx[:model].id)
       end
     
+      flash[:error] = _ctx[:flash]
       @form = _ctx["contract.default"]
       render :new, status: :unprocessable_entity
     end
