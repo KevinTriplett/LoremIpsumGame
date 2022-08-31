@@ -22,6 +22,7 @@ class Admin::UsersController < ApplicationController
   def create
     @game = get_game
     _ctx = run User::Operation::Create, game_id: @game.id do |ctx|
+      flash[:error] = "#{ctx[:model].name} was created"
       return redirect_to new_admin_game_user_url
     end
 

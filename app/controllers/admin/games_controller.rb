@@ -17,6 +17,7 @@ module Admin
   
     def create
       _ctx = run Game::Operation::Create do |ctx|
+        flash[:error] = "#{ctx[:model].name} was created"
         return redirect_to new_admin_game_user_url(game_id: ctx[:model].id)
       end
     
