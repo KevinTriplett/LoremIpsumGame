@@ -5,6 +5,21 @@
 */
 @import "bootstrap";
 
+body {
+  background-image: url(/images/kiwihug-y_2GC4EhOP4-unsplash.jpg);
+}
+
+#ep {
+  border: 5px solid steelblue;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-bottom: 10px;
+}
+
+iframe#epframeep {
+  margin-bottom: -6px;
+}
+
 .game-name {
   color: green;
   &.ended {
@@ -26,12 +41,12 @@ a.btn {
 
 p.timestamp {
   margin-bottom: 0px;
-  font-weight: 100;
-  color: gray;
+  font-weight: 400;
+  color: #333;
   font-size: x-small;
 
   & span {
-    font-weight: 400;
+    font-weight: 800;
 
     &.time-left {
       color: green
