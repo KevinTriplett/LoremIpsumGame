@@ -1,12 +1,13 @@
 # TODO
 
 ## MVP 2
-- [ ] handle game creation when pad cannot be created
-- [ ] try setting author per https://github.com/jhollinger/ruby-etherpad-lite
 - [ ] fix user colors in Etherpad to be consistent between rounds
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] make nice background in css
+- [X] try setting author per https://github.com/jhollinger/ruby-etherpad-lite
+- [X] handle game creation when pad cannot be created
 - [X] implement more edge case tests
 - [X] system test for pass and ending game
 - [X] test for game start and end (and ended?)
