@@ -102,5 +102,5 @@ def create_user_turn(params)
 end
 
 def get_magic_link(user)
-    "http://127.0.0.1:3000/users/#{user.token}/turns/new"
+    "https://127.0.0.1:3000/users/#{user.token}/turns/new"
 end

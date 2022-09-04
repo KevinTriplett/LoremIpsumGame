@@ -23,7 +23,7 @@ module LoremIpsum
       ENV["ETHERPAD_API_KEY"]
     config.etherpad_url = (Rails.env == 'production' ?
       'https://loremipsumgame.com' :
-      'http://127.0.0.1') +
+      'https://127.0.0.1') +
       ":9001"
     config.initial_etherpad_text = "Welcome to the Lorem Ipsum Game!"
     config.admin_name = (Rails.env == 'production' ?
