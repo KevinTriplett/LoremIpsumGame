@@ -1,0 +1,29 @@
+!!! XML
+!!!
+%html
+  %head
+    %title Lorem Ipsum Game
+    %meta{ name: "viewport", content: "width=device-width,initial-scale=1" }
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = stylesheet_link_tag "application", "data-turbo-track": "reload" # this loads Sprockets/Rails asset pipeline
+    = javascript_importmap_tags #  this loads JS from importmaps
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true, type: "module"
+    %script{ src: "/js/jquery-3.6.0.js" }
+    %script{ src: "/js/application.js" }
+    = turbo_include_tags
+
+  %body#admin
+    .container
+      .row
+        .col-sm
+          - flash.each do |type, msg|
+            .row.alert.alert-info
+              .col.flash= msg
+      .row
+        .col-sm-8
+          %h1 Lorem Ipsum Admin
+          = yield
+        .col-sm-4

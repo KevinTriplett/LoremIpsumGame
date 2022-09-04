@@ -9,11 +9,16 @@ body {
   background-image: url(/images/kiwihug-y_2GC4EhOP4-unsplash.jpg);
 }
 
+body#admin {
+  background-image: none;
+}
+
 #ep {
   border: 5px solid steelblue;
   padding-right: 0px;
   padding-left: 0px;
   margin-bottom: 10px;
+  background: white;
 }
 
 iframe#epframeep {
