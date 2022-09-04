@@ -26,7 +26,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
       assert_select "h5", game.name
       assert_select ".game-ends", "in 9 rounds"
       assert_select ".turn-end", game.turn_end.iso8601
-      assert_select ".time-left", "2 hours, 59 minutes"
+      assert_select ".time-left", "2 hrs, 59 mins"
       assert_select ".current-player-name", user1.name
       assert_select "#ep", "Something went wrong: 😭Try refreshing the page 🤓(Note: JavaScript is required) 🤔"
       assert_select "#finish", "Finish Turn"
@@ -49,7 +49,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
 
       get user_turns_path(user_token: user2.token)
       assert_select ".turn-end", game.turn_end.iso8601
-      assert_select ".time-left", "7 hours, 59 minutes"
+      assert_select ".time-left", "7 hrs, 59 mins"
       assert_select ".current-player-name", user2.name
       assert_select "#ep", "Something went wrong: 😭Try refreshing the page 🤓(Note: JavaScript is required) 🤔"
       assert_select "li.current-player", "#{user2.name}\n <== current player"
