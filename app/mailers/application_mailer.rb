@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "noreply@loremipsumgame.com"
-  default cc: ["kt@kevintriplett.com", "speaktokai@gmail.com"]
+  default from: Rails.configuration.from_email_adr
+  default cc: Rails.configuration.admin_email_adrs
   layout "mailer"
 end

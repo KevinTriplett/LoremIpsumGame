@@ -18,6 +18,8 @@ module LoremIpsum
     #
     config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.from_email_adr = "noreply@loremipsumgame.com"
+    config.admin_email_adrs = ["kt@kevintriplett.com", "speaktokai@gmail.com"]
     config.etherpad_api_key = Rails.env == "development" ?
       "49052a8e1b7526b24fcc46b8dfeb31bddc4cc5bc06dd0f93950cb1de6c374b92" :
       ENV["ETHERPAD_API_KEY"]
