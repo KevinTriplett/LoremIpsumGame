@@ -324,6 +324,86 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
+    it "Pauses game every pre-configured rounds" do
+      DatabaseCleaner.cleaning do
+        game = create_game({
+          num_rounds: 6,
+          pause_rounds: 2
+        })
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
+
+        (1..game.num_rounds).each do |i|
+          game.reload
+          ActionMailer::Base.deliveries.clear
+          (1..game.users.count).each do
+            game.reload
+            create_user_turn(user_id: game.current_player_id)
+          end
+          previous_round = game.round
+          game.reload
+          email_to_user = [game.current_player.email]
+          email = ActionMailer::Base.deliveries.last
+          if game.round > game.num_rounds
+            assert !game.paused?
+            assert_emails 5
+            assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
+            assert_equal email.to, [game.users.last.email]
+            assert_equal email.cc, Rails.configuration.admin_email_adrs
+          elsif previous_round % game.pause_rounds > 0
+            assert !game.paused?
+            assert_emails 3
+            assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+            assert_equal email.to, email_to_user
+            assert_equal email.cc, Rails.configuration.admin_email_adrs
+          else
+            assert game.paused?
+            assert_emails 3
+            assert_equal email.subject, "[Lorem Ipsum] Game paused!"
+            assert_equal email.to, Rails.configuration.admin_email_adrs
+            assert_equal email.cc, Rails.configuration.admin_email_adrs
+            game.resume
+          end
+          ActionMailer::Base.deliveries.clear
+        end
+      end
+    end
+
+    it "Does not pause game if configured to zero :pause_rounds" do
+      DatabaseCleaner.cleaning do
+        game = create_game({
+          num_rounds: 4,
+          pause_rounds: 0
+        })
+        user1 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
+
+        (1..game.num_rounds).each do
+          ActionMailer::Base.deliveries.clear
+          (1..game.users.count).each do
+            game.reload
+            create_user_turn(user_id: game.current_player_id)
+          end
+          game.reload
+          assert !game.paused?
+          email_to_user = [game.current_player.email]
+          email = ActionMailer::Base.deliveries.last
+          if game.round > game.num_rounds
+            assert_emails 5
+            assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
+          else
+            assert_emails 3
+            assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+          end
+          assert_equal email.to, email_to_user
+          assert_equal email.cc, Rails.configuration.admin_email_adrs
+          ActionMailer::Base.deliveries.clear
+        end
+      end
+    end
+
     it "Playing all rounds ends the game" do
       DatabaseCleaner.cleaning do
         game = create_game(num_rounds: 2)

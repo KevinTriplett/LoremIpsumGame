@@ -12,6 +12,10 @@ class Game < ActiveRecord::Base
     User.find(current_player_id)
   end
 
+  def resume
+    update(paused: nil)
+  end
+
   def ended?
     !ended.nil?
   end

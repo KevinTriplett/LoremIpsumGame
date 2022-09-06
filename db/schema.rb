@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_31_031128) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_06_022733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_031128) do
     t.integer "round"
     t.datetime "started"
     t.datetime "ended"
+    t.integer "pause_rounds"
+    t.boolean "paused"
     t.index ["current_player_id"], name: "index_games_on_current_player_id"
     t.index ["token"], name: "index_games_on_token", unique: true
   end

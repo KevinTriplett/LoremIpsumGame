@@ -36,6 +36,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     game = model.game
     if game.round_finished?
       game.shuffle_players if game.no_passes_this_round?
+      game.paused = (game.pause_rounds > 0 && game.round < game.num_rounds && game.round % game.pause_rounds == 0)
       game.round += 1
       game.users.each(&:reset_reminded)
       game.current_player_id = game.players.first.id
@@ -53,7 +54,10 @@ class Turn::Operation::Create < Trailblazer::Operation
     game = model.game
     game.reload
     return true if game.ended?
-    if game.round > game.num_rounds || game.players_finished?
+    if game.paused?
+      email_adrs = Rails.configuration.admin_email_adrs
+      UserMailer.with(email_adrs: email_adrs).pause_notification.deliver_now
+    elsif game.round > game.num_rounds || game.players_finished?
       game.users.each { |u| UserMailer.with(user: u).game_ended.deliver_now }
       game.update(ended: Time.now)
     else

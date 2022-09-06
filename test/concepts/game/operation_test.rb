@@ -14,6 +14,7 @@ class GameOperationTest < MiniTest::Spec
           game: {
             name: random_game_name,
             num_rounds: 3,
+            pause_rounds: 0,
             turn_hours: 2
           }
         })
@@ -25,6 +26,7 @@ class GameOperationTest < MiniTest::Spec
         assert_nil game.current_player_id
         assert_equal last_random_game_name, game.name
         assert_equal 3, game.num_rounds
+        assert_equal 0, game.pause_rounds
         assert_equal 2, game.turn_hours
         assert_equal 1, game.round
         assert !game.ended?
@@ -35,6 +37,7 @@ class GameOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         game = create_game({
           num_rounds: 3,
+          pause_rounds: 0,
           turn_hours: 2
         })
         user = create_game_user({game_id: game.id})
@@ -56,6 +59,7 @@ class GameOperationTest < MiniTest::Spec
             id: game.id,
             name: game.name,
             num_rounds: game.num_rounds,
+            num_rounds: game.pause_rounds,
             turn_hours: 2
           },
           id: game.id
@@ -81,7 +85,8 @@ class GameOperationTest < MiniTest::Spec
         result = Game::Operation::Create.call(params: {
           game: {
             name: random_game_name,
-            num_rounds: 30
+            num_rounds: 30,
+            pause_rounds: 10
           }
         })
 
@@ -95,12 +100,28 @@ class GameOperationTest < MiniTest::Spec
         result = Game::Operation::Create.call(params: {
           game: {
             name: random_game_name,
-            turn_hours: 48
+            turn_hours: 48,
+            pause_rounds: 0
           }
         })
 
         assert_equal false, result.success?
         assert_equal(["num_rounds must be filled"], result["contract.default"].errors.full_messages_for(:num_rounds))
+      end
+    end
+
+    it "Fails with missing pause_rounds" do
+      DatabaseCleaner.cleaning do
+        result = Game::Operation::Create.call(params: {
+          game: {
+            name: random_game_name,
+            num_rounds: 30,
+            turn_hours: 48
+          }
+        })
+
+        assert_equal false, result.success?
+        assert_equal(["pause_rounds must be filled"], result["contract.default"].errors.full_messages_for(:pause_rounds))
       end
     end
 
@@ -110,6 +131,7 @@ class GameOperationTest < MiniTest::Spec
           game: {
             name: random_game_name,
             num_rounds: 30,
+            pause_rounds: 0,
             turn_hours: 48
           }
         })
@@ -119,6 +141,7 @@ class GameOperationTest < MiniTest::Spec
           game: {
             name: last_random_game_name,
             num_rounds: game.num_rounds,
+            pause_rounds: 0,
             turn_hours: game.turn_hours
           }
         })
@@ -134,6 +157,7 @@ class GameOperationTest < MiniTest::Spec
           game: {
             name: "",
             num_rounds: 20,
+            pause_rounds: 2,
             turn_hours: 24
           }
         })

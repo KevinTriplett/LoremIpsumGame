@@ -12,6 +12,8 @@ module User::Operation
     step :notify
 
     def notify(ctx, **)
+      # TODO: only send if email address changed
+      # TODO: send turn notification instead if suer is current player
       user = ctx[:model]
       UserMailer.with(user: user).welcome_email.deliver_now
     end

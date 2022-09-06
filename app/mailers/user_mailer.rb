@@ -38,6 +38,11 @@ class UserMailer < ApplicationMailer
     mail(to: @user.email, subject: "[Lorem Ipsum] Your turn was finished for you 🫣")
   end
 
+  def pause_notification
+    email_adrs = params[:email_adrs]
+    mail(to: email_adrs, subject: "[Lorem Ipsum] Game paused!")    
+  end
+
   private
 
   def get_url(user)

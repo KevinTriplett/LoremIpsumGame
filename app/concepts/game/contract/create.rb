@@ -7,6 +7,7 @@ module Game::Contract
     property :token
     property :turn_hours
     property :num_rounds
+    property :pause_rounds
     property :ended
 
     validation do
@@ -15,6 +16,7 @@ module Game::Contract
         required(:name).filled.value(:string)
         required(:turn_hours).filled.value(:integer)
         required(:num_rounds).filled.value(:integer)
+        required(:pause_rounds).filled.value(:integer)
       end
 
       rule(:name, :id) do

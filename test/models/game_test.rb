@@ -71,6 +71,15 @@ class GameTest < MiniTest::Spec
     end
   end
 
+  it "can resume paused game" do
+    game = create_game
+    assert !game.paused?
+    game.update(paused: true)
+    assert game.paused?
+    game.resume
+    assert !game.paused?
+  end
+
   it "checks for ! time_to_remind_player" do
     turn_end = Time.now + 8.hours + 1.minute
     game = Game.new({
