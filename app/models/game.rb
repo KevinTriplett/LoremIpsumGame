@@ -41,7 +41,10 @@ class Game < ActiveRecord::Base
 
   def players_finished?
     return false if turns.count < users.count
-    users.all? {|u| u.turns.order(id: :desc).first.entry == "pass"}
+    users.all? do |u|
+      turn = u.turns.order(id: :desc).first
+      turn && turn.entry == "pass"
+    end
   end
 
   def no_passes_this_round?

@@ -388,7 +388,6 @@ class TurnOperationTest < MiniTest::Spec
           end
           game.reload
           assert !game.paused?
-          email_to_user = [game.current_player.email]
           email = ActionMailer::Base.deliveries.last
           if game.round > game.num_rounds
             assert_emails 5
@@ -397,7 +396,6 @@ class TurnOperationTest < MiniTest::Spec
             assert_emails 3
             assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
           end
-          assert_equal email.to, email_to_user
           assert_equal email.cc, Rails.configuration.admin_email_adrs
           ActionMailer::Base.deliveries.clear
         end

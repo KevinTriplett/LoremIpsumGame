@@ -4,7 +4,6 @@ class AdminGameTest < ActionDispatch::IntegrationTest
   DatabaseCleaner.clean
 
   test "Admin page with no games" do
-    DatabaseCleaner.clean
     DatabaseCleaner.cleaning do
       get admin_games_path
   
@@ -14,7 +13,6 @@ class AdminGameTest < ActionDispatch::IntegrationTest
   end
 
   test "Admin page with games and no users" do
-    DatabaseCleaner.clean
     DatabaseCleaner.cleaning do
       game = create_game
 
@@ -35,7 +33,6 @@ class AdminGameTest < ActionDispatch::IntegrationTest
   end
 
   test "Admin page for editing game and editing user" do
-    DatabaseCleaner.clean
     DatabaseCleaner.cleaning do
 
       ##################
@@ -56,6 +53,15 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "span.game-name", "#{game.name}", nil
       assert_select "a", "edit"
       assert_select "a", "users"
+      assert_select "a", "end"
+      assert_select "a", "delete"
+
+      game.update(paused: true)
+      get admin_games_path
+      assert_select "span.game-name", "#{game.name}", nil
+      assert_select "a", "edit"
+      assert_select "a", "users"
+      assert_select "a", "resume"
       assert_select "a", "end"
       assert_select "a", "delete"
 

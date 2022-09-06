@@ -1,5 +1,7 @@
 class LoremTaskTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
+  DatabaseCleaner.clean
+
   test "sends emails for reminders" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now + 4.hours - 1.minute
