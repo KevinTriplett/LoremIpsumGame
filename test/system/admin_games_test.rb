@@ -12,6 +12,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_current_path new_admin_game_path
       fill_in "Name", with: "Game 1"
       fill_in "Number of Rounds", with: "33"
+      fill_in "Pause each N Rounds (zero = no pause)", with: "3"
       fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
 
@@ -19,6 +20,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       game = Game.first
       assert_equal "Game 1", game.name
       assert_equal 33, game.num_rounds
+      assert_equal 3, game.pause_rounds
       assert_equal 7, game.turn_hours
 
       assert_current_path new_admin_game_user_path(game_id: game.id)
@@ -47,12 +49,14 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_current_path new_admin_game_path
       fill_in "Name", with: "Game 1"
       fill_in "Number of Rounds", with: "22"
+      fill_in "Pause each N Rounds (zero = no pause)", with: "0"
       fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
 
       game = Game.first
       assert_equal "Game 1", game.name
       assert_equal 22, game.num_rounds
+      assert_equal 0, game.pause_rounds
       assert_equal 7, game.turn_hours
 
       assert_current_path new_admin_game_user_path(game_id: game.id)
@@ -101,6 +105,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_current_path new_admin_game_path
       fill_in "Name", with: game.name
       fill_in "Number of Rounds", with: "33"
+      fill_in "Pause each N Rounds (zero = no pause)", with: "3"
       fill_in "Hours per Turn", with: "7"
       click_button "Create Game"
       assert_current_path new_admin_game_path
