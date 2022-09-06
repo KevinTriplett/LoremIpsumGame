@@ -14,6 +14,7 @@ class Game < ActiveRecord::Base
 
   def resume
     update(paused: nil)
+    UserMailer.with(user: current_player).turn_notification.deliver_now
   end
 
   def ended?

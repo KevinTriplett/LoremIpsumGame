@@ -1,6 +1,7 @@
 require "application_system_test_case"
 
 class AdminGamesTest < ApplicationSystemTestCase
+  include ActionMailer::TestHelper
   DatabaseCleaner.clean
 
   test "Admin can create a game and add a user" do
@@ -143,10 +144,13 @@ class AdminGamesTest < ApplicationSystemTestCase
 
       game.update(paused: true)
       visit admin_games_path
+      ActionMailer::Base.deliveries.clear
       click_link "resume"
       assert_selector ".flash", text: "#{game.name} has resumed"
       game.reload
       assert !game.paused?
+      assert_emails 1
+      ActionMailer::Base.deliveries.clear
 
       visit edit_admin_game_path(id: game.id)
       fill_in "game[num_rounds]", with: "21"
