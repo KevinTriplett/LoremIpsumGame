@@ -1,11 +1,12 @@
 # TODO
 
 ## MVP 2
-- [ ] implement game pause after N rounds and sends email to admins
+- [ ] improve email notification when updating user
 - [ ] remove first and final turns indefinite
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] implement game pause after N rounds and sends email to admins
 - [X] fix user colors in Etherpad to be consistent between rounds
 - [X] make nice background in css
 - [X] try setting author per https://github.com/jhollinger/ruby-etherpad-lite
