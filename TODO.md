@@ -7,6 +7,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] include "round X of Y" in game play screen
 - [X] implement game pause after N rounds and sends email to admins
 - [X] fix user colors in Etherpad to be consistent between rounds
 - [X] make nice background in css
