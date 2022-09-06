@@ -3,11 +3,11 @@
 .row.timestamps
   .col-sm-5
     %p.timestamp
-      Game ends:
-      %span.game-ends= game_ends
-    %p.timestamp
-      Current Player:
-      %span.current-player-name= current_player_name
+      Round:
+      %span.game-round= game_round
+    %p.timestamp.pause-or-end
+      = game_pause_or_end_label
+      %span= game_pause_or_end_text
   .col-sm-7
     %p.timestamp
       Turn Ends:

@@ -71,9 +71,24 @@ class Turn::Cell::Story < Cell::ViewModel
     "time-left" + (game.turn_end && game.turn_end - Time.now < 0 ? " minus" : "")
   end
 
-  def game_ends
-    rounds = game.num_rounds - game.round + 1
-    rounds == 1 ? "this round" : "in " + pluralize(rounds, "round")
+  def game_round
+    "#{game.round} of #{game.num_rounds}"
+  end
+
+  def game_pause_or_end_label
+    rounds_remaining = game.num_rounds - game.round + 1
+    game.pause_rounds > 0 && rounds_remaining > game.pause_rounds ?
+      "Pauses:" :
+      "Ends:"
+  end
+
+  def game_pause_or_end_text
+    rounds_remaining = game.num_rounds - game.round + 1
+    rounds_remainder = game.pause_rounds > 0 ? game.round % game.pause_rounds : 0
+    remaining = game.pause_rounds > 0 && rounds_remaining > game.pause_rounds ?
+      (rounds_remainder > 0 ? game.pause_rounds - rounds_remainder + 1 : 0) :
+      rounds_remaining
+    remaining > 1 ? "in #{remaining} rounds" : "this round"
   end
 
   def turn_start
