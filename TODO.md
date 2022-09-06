@@ -2,6 +2,7 @@
 
 ## MVP 2
 - [ ] improve email notification when updating user
+- [ ] fix etherpad not loading on page open
 - [ ] remove first and final turns indefinite
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
