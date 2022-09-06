@@ -150,6 +150,9 @@ class AdminGamesTest < ApplicationSystemTestCase
       game.reload
       assert !game.paused?
       assert_emails 1
+      email = ActionMailer::Base.deliveries.last
+      assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+      assert_equal email.to, [game.current_player.email]
       ActionMailer::Base.deliveries.clear
 
       visit edit_admin_game_path(id: game.id)
