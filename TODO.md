@@ -1,6 +1,7 @@
 # TODO
 
 ## MVP 2
+- [ ] resume should send email to current user that it's their turn
 - [ ] improve email notification when updating user
 - [ ] fix etherpad not loading on page open
 - [ ] remove first and final turns indefinite
