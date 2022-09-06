@@ -54,6 +54,13 @@ module Admin
       flash[:notice] = "Unable to delete Game"
     end
 
+    def resume
+      game = Game.find(params[:id])
+      game.resume
+      flash[:notice] = "Game #{game.name} has resumed"
+      redirect_to admin_games_url
+    end
+
     def toggle_end
       game = Game.find(params[:id])
       game.update(ended: game.ended? ? nil : Time.now)

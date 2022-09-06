@@ -131,6 +131,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       user = create_game_user(game_id: game.id)
 
       visit admin_games_path
+      assert_no_selector "a", text: "resume"
       click_link "end"
       assert_selector ".flash", text: "#{game.name} has ended"
       game.reload
@@ -139,6 +140,13 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_selector ".flash", text: "#{game.name} has not ended"
       game.reload
       assert !game.ended?
+
+      game.update(paused: true)
+      visit admin_games_path
+      click_link "resume"
+      assert_selector ".flash", text: "#{game.name} has resumed"
+      game.reload
+      assert !game.paused?
 
       visit edit_admin_game_path(id: game.id)
       fill_in "game[num_rounds]", with: "21"

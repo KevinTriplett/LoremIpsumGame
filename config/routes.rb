@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   post "/admin/games(/:id)/end", to: "admin/games#toggle_end", as: :end_admin_game
+  post "/admin/games(/:id)/resume", to: "admin/games#resume", as: :resume_admin_game
 
   resources :admin, only: [:index]
 
