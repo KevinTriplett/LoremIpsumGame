@@ -1,12 +1,12 @@
 # TODO
 
 ## MVP 2
-- [ ] improve email notification when updating user
 - [ ] fix etherpad not loading on page open
 - [ ] remove first and final turns indefinite
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] improve email notification when updating user
 - [X] resume should send email to current user that it's their turn
 - [X] include "round X of Y" in game play screen
 - [X] implement game pause after N rounds and sends email to admins
