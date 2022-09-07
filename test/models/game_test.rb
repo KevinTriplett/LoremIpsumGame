@@ -74,6 +74,8 @@ class GameTest < MiniTest::Spec
   it "can resume paused game" do
     DatabaseCleaner.cleaning do
       game = create_game
+      user = create_game_user(game_id: game.id)
+      game.reload
       assert !game.paused?
       game.update(paused: true)
       assert game.paused?

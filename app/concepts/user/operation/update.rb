@@ -15,7 +15,11 @@ module User::Operation
       # TODO: only send if email address changed
       # TODO: send turn notification instead if suer is current player
       user = ctx[:model]
-      UserMailer.with(user: user).welcome_email.deliver_now
+      if user.id == user.game.current_player_id
+        UserMailer.with(user: user).turn_notification.deliver_now
+      else
+        UserMailer.with(user: user).welcome_email.deliver_now
+      end
     end
   end
 end

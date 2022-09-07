@@ -233,13 +233,55 @@ class UserOperationTest < MiniTest::Spec
           params: {
             user: {
               id: user.id,
-              name: "jumpin jack flash yeah",
+              name: random_user_name,
               email: user.email
             },
             id: user.id
           }
         )
         assert_equal true, result.success?
+      end
+    end
+
+    it "Sends an email on user update" do
+      DatabaseCleaner.cleaning do
+        game = create_game
+        user1 = create_game_user(game_id: game.id)
+        user2 = create_game_user(game_id: game.id)
+        
+        ActionMailer::Base.deliveries.clear
+        result = User::Operation::Update.call(
+          params: {
+            user: {
+              id: user2.id,
+              name: random_user_name,
+              email: user2.email
+            },
+            id: user2.id
+          }
+        )
+        assert_equal true, result.success?
+        assert_emails 1
+        email = ActionMailer::Base.deliveries.first
+        assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
+        assert_match /#{last_random_user_name}/, email.body.encoded
+        
+        ActionMailer::Base.deliveries.clear
+        result = User::Operation::Update.call(
+          params: {
+            user: {
+              id: user1.id,
+              name: random_user_name,
+              email: user1.email
+            },
+            id: user1.id
+          }
+        )
+        assert_equal true, result.success?
+        assert_emails 1
+        email = ActionMailer::Base.deliveries.first
+        assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+        assert_match /#{last_random_user_name}/, email.body.encoded
       end
     end
 
