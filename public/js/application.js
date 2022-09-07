@@ -63,8 +63,9 @@ function convertUTC() {
 
 function loadEtherpad() {
   var dom = $('#ep');
-  if (!dom.data("padId")) return;
-  dom.pad(dom.data());
+  if (dom.data("padId")) {
+    setTimeout(() => { dom.pad(dom.data()); }, 1000);
+  }
 }
 
 document.addEventListener('turbo:load', function() {
