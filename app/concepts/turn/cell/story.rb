@@ -56,7 +56,7 @@ class Turn::Cell::Story < Cell::ViewModel
       data: {
         pad_id: pad_name,
         user_name: user.name, #user.author_id,
-        user_color: user.author_color,
+        user_color: user.author_color.gsub("#","%23"),
         host: Rails.configuration.etherpad_url,
         height: 600
       }
