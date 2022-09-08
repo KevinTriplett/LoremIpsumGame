@@ -327,19 +327,6 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "check for last round" do
-    DatabaseCleaner.cleaning do
-      game = Game.new({
-        num_rounds: 2,
-        round: 1
-      })
-      assert !game.last_round?
-
-      game.round += 1
-      assert game.last_round?
-    end
-  end
-
   it "checks for round finished" do
     DatabaseCleaner.cleaning do
       game1 = create_game

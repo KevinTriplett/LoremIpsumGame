@@ -32,10 +32,6 @@ class Game < ActiveRecord::Base
     user_ids[i+1 < user_ids.count ? i+1 : 0]
   end
 
-  def last_round?
-    round >= num_rounds
-  end
-
   def round_finished?
     turns_this_round.count == users.count
   end
@@ -95,13 +91,11 @@ class Game < ActiveRecord::Base
   end
 
   def remind_current_player
-    return if ended? || !time_to_remind_player?
-    current_player.remind
-  end
+    current_player.remind unless ended? || !time_to_remind_player?
+    end
 
   def auto_finish_turn
-    return if ended? || last_round? || !time_to_finish_turn?
-    current_player.finish_turn
+    current_player.finish_turn unless ended? || !time_to_finish_turn?
   end
 
   def turn_time_remaining
