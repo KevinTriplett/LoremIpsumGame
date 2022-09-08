@@ -18,6 +18,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
         }
       end
       ActionMailer::Base.deliveries.clear
+
+      follow_redirect!
+      assert_equal new_admin_game_user_path, path
     end
   end
 

@@ -32,11 +32,8 @@ class AdminGameTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "Admin page for editing game and editing user" do
+  test "Admin page for editing game" do
     DatabaseCleaner.cleaning do
-
-      ##################
-      # games
       get new_admin_game_path
       assert_select "h1", "Lorem Ipsum Admin"
       assert_select "h5", "New Game"
@@ -73,38 +70,6 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "input#game_turn_hours[value='#{game.turn_hours}']", nil
       assert_select "input#game_pause_rounds[value='#{game.pause_rounds}']", nil
       assert_select "input[value='Update Game']", nil
-      assert_select "a", "Cancel"
-
-      ##################
-      # users
-      get new_admin_game_user_path(game_id: game.id)
-      assert_select "h1", "Lorem Ipsum Admin"
-      assert_select "h5", "New User for #{game.name}"
-      assert_select "input#user_name", nil
-      assert_select "input#user_email", nil
-      assert_select "input[value='Create User']", nil
-      assert_select "a", "Done"
-
-      user1 = create_game_user({game_id: game.id})
-      user2 = create_game_user({game_id: game.id})
-
-      get admin_game_users_path(game_id: game.id)
-      assert_select "h1", "Lorem Ipsum Admin"
-      assert_select "h5", "Users for game #{game.name}"
-      assert_select "a", user1.name
-      assert_select "a", user2.name
-      assert_select "a", "play"
-      assert_select "a", "edit"
-      assert_select "a", "delete"
-      assert_select "a", "Add User"
-      assert_select "a", "Back"
-
-      get edit_admin_game_user_path(game_id: game.id, id: user1.id)
-      assert_select "h1", "Lorem Ipsum Admin"
-      assert_select "h5", "Editing user"
-      assert_select "input#user_name[value='#{user1.name}']", nil
-      assert_select "input#user_email[value='#{user1.email}']", nil
-      assert_select "input[value='Update User']", nil
       assert_select "a", "Cancel"
 
       game.update(ended: Time.now)
