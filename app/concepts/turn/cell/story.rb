@@ -96,10 +96,11 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def turn_end
-    game.turn_end.iso8601
+    game.turn_end ? game.turn_end.iso8601 : "not started yet"
   end
 
   def turn_time_remaining
+    return "not started yet" unless game.turn_end
     time = game.turn_time_remaining
     "#{time[:hours]} hrs, #{time[:minutes]} mins" + (time[:hours] < 0 ? " (grace)" : "")
   end

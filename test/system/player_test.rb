@@ -111,6 +111,7 @@ class PlayerTest < ApplicationSystemTestCase
     assert_current_path user_turns_path(user_token: user2.token)
     assert_selector "h1", text: "Lorem Ipsum"
     assert_selector "h5", text: game.name
+    assert_selector "span.turn-end", text: "not started yet"
     assert_selector "li.current-player", text: "#{user1.name} <== current player"
     assert_no_selector "#finish", text: "Finish Turn"
     assert_no_selector "#pass", text: "Pass"
