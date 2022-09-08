@@ -68,6 +68,7 @@ end
 def create_game(params = {})
   Game.create(
     name: params[:name] || random_game_name,
+    started: params[:started],
     turn_start: params[:turn_start],
     turn_end: params[:turn_end],
     num_rounds: params[:num_rounds] || 10,

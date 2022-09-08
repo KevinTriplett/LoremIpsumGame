@@ -96,11 +96,10 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def turn_end
-    game.turn_end ? game.turn_end.iso8601 : "Indefinite"
+    game.turn_end.iso8601
   end
 
   def turn_time_remaining
-    return "Indefinite" if game.turn_end.nil?
     time = game.turn_time_remaining
     "#{time[:hours]} hrs, #{time[:minutes]} mins" + (time[:hours] < 0 ? " (grace)" : "")
   end

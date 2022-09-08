@@ -7,6 +7,7 @@ class PlayerFlowsTest < ActionDispatch::IntegrationTest
     DatabaseCleaner.cleaning do
       game = create_game({
         num_rounds: 10,
+        started: Time.now-1.day,
         turn_start: Time.now-5.hours,
         turn_end: Time.now+3.hours,
         turn_hours: 8
