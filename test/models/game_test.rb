@@ -479,7 +479,7 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "gets player names who played since a datetime (without passes)" do
+  it "gets player names who played since a datetime (passes)" do
     DatabaseCleaner.cleaning do
       game = create_game
       user1 = create_game_user({name: "user1", game_id: game.id})
@@ -488,26 +488,30 @@ class GameTest < MiniTest::Spec
       user4 = create_game_user({name: "user4", game_id: game.id})
 
       game.reload
-      create_user_turn(user_id: game.current_player_id)
+      create_user_turn(user_id: game.current_player_id) # 1
       game.reload
-      create_user_turn(user_id: game.current_player_id)
+      create_user_turn(user_id: game.current_player_id) # 2
       game.reload
-      create_user_turn(user_id: game.current_player_id)
+      create_user_turn(user_id: game.current_player_id) # 3
       game.reload
-      create_user_turn(user_id: game.current_player_id)
+      assert_equal [user1.name,user2.name,user3.name], game.get_who_played_since(game.current_player)
+      game.reload
+      create_user_turn(user_id: game.current_player_id) # 4 and end of 1st round
 
       game.reload
-      user1.reload
-      assert_equal [user2.name,user3.name,user4.name], game.get_who_played_since(user1)
+      players = game.players.pluck(:name)
+      create_user_turn(user_id: game.current_player_id) # 1
+      game.reload
+      create_user_turn(user_id: game.current_player_id, pass: true) # 2 (pass)
+      game.reload
+      create_user_turn(user_id: game.current_player_id) # 3
+      game.reload
+      create_user_turn(user_id: game.current_player_id) # 4 and end of 2nd round
 
       game.reload
-      create_user_turn(user_id: game.current_player_id)
-      game.reload
-      create_user_turn(user_id: game.current_player_id)
-
-      game.reload
-      user4.reload
-      assert_equal [user3.name,user1.name], game.get_who_played_since(user4)
+      players[1] = players[1] + " (passed)"
+      players.slice! players.index(game.current_player.name)
+      assert_equal players, game.get_who_played_since(game.current_player)
     end
   end
 
