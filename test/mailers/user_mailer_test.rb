@@ -46,7 +46,11 @@ class UserMailerTest < ActionMailer::TestCase
 
   test 'turn_notification' do
     DatabaseCleaner.cleaning do
-      game = create_game(started: Time.now-1.day)
+      game = create_game({
+        started: Time.now-1.day,
+        round: 3,
+        num_rounds: 7
+      })
       user1 = create_game_user(game_id: game.id)
       user2 = create_game_user(game_id: game.id)
       user3 = create_game_user(game_id: game.id)
@@ -67,6 +71,7 @@ class UserMailerTest < ActionMailer::TestCase
       assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
       assert_match /Here's your magic link/, email.body.encoded
       assert_match /<li>#{Regexp.quote(user1.name)}<\/li>\r\n          <li>#{user2.name}<\/li>/, email.body.encoded
+      assert_match /Round #{game.round} of #{game.num_rounds}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end
   end

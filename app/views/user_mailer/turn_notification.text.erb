@@ -9,3 +9,4 @@ Players who've played since your last turn, in order:
 <% @players.each do |name| %>
 - <%= name %>
 <% end %>
+Round <%= @user.game.round %> of <%= @user.game.num_rounds %>
