@@ -349,7 +349,7 @@ class TurnOperationTest < MiniTest::Spec
             assert !game.paused?
             assert_emails 5
             assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
-            assert_equal email.to, [game.users.last.email]
+            assert_equal email.to, [game.users.order(id: :asc).last.email]
             assert_equal email.cc, Rails.configuration.admin_email_adrs
           elsif previous_round % game.pause_rounds > 0
             assert !game.paused?
