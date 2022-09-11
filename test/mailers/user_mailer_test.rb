@@ -55,9 +55,23 @@ class UserMailerTest < ActionMailer::TestCase
       user2 = create_game_user(game_id: game.id)
       user3 = create_game_user(game_id: game.id)
 
+      ActionMailer::Base.deliveries.clear
+      email = UserMailer.with(user: user1).turn_notification
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      assert_equal email.to, [user1.email]
+      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_nil email.bcc
+      assert_equal email.from, ['noreply@loremipsumgame.com']
+      assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+      assert_match /Here's your magic link/, email.body.encoded
+      assert_no_match /played since your last turn, in order/, email.body.encoded
+      assert_match /Round #{game.round} of #{game.num_rounds}/, email.body.encoded
+
       create_user_turn(user_id: user1.id)
       create_user_turn(user_id: user2.id)
-
       ActionMailer::Base.deliveries.clear
       email = UserMailer.with(user: user3).turn_notification
       assert_emails 1 do
@@ -70,7 +84,7 @@ class UserMailerTest < ActionMailer::TestCase
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
       assert_match /Here's your magic link/, email.body.encoded
-      assert_match /<li>#{Regexp.quote(user1.name)}<\/li>\r\n          <li>#{user2.name}<\/li>/, email.body.encoded
+      assert_match /<li>#{Regexp.quote(user1.name)}<\/li>\r\n            <li>#{Regexp.quote(user2.name)}<\/li>/, email.body.encoded
       assert_match /Round #{game.round} of #{game.num_rounds}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end

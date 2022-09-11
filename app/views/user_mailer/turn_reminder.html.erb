@@ -14,13 +14,18 @@
       or use this link:<br>
       <a href="<%= @url %>"><%= @url %></a>
     </p>
+    <% if @players.count > 0 %>
+      <p>
+        Players who've played since your last turn, in order:
+        <ul>
+          <% @players.each do |name| %>
+            <li><%= name %></li>
+          <% end %>
+        </ul>
+      </p>
+    <% end %>
     <p>
-      Players who've played since your last turn, in order:
-      <ul>
-        <% @players.each do |name| %>
-          <li><%= name %>
-        <% end %>
-      </ul>
+      Round <%= @user.game.round %> of <%= @user.game.num_rounds %>
     </p>
   </body>
 </html>
