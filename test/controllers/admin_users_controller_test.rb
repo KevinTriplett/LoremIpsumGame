@@ -27,10 +27,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test "add second user to game should send one email" do
     DatabaseCleaner.cleaning do
       game = create_game
-      create_game_user(game_id: game.id)
 
       ActionMailer::Base.deliveries.clear
-      assert_emails 1 do
+      assert_emails 2 do
         post admin_game_users_url(game_id: game.id), params: {
           user: {
             name: random_user_name,
