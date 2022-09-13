@@ -136,14 +136,16 @@ class Game < ActiveRecord::Base
       puts "  ended: #{g.ended.nil? ? " (not ended yet)" : g.ended.short_date_at_time}"
       puts "  #{g.users.count} players"
       unless g.ended?
-        time = g.turn_time_remaining
         rounds = game.num_rounds - game.round
         puts "  current_player: #{g.current_player ? g.current_player.name : "no player yet"}"
         puts "  current round: #{game.round}"
         puts "  game_ends: in #{ pluralize(rounds, "round") }"
-        puts "  turn_end: #{g.turn_end.iso8601} (#{g.turn_end.short_date_at_time})"
-        puts "  remaining: #{time[:hours]} hours, #{time[:minutes]} minuutes"
         puts "  turn_hours: #{g.turn_hours}"
+        if g.turn_end
+          time = g.turn_time_remaining 
+          puts "  turn_end: #{g.turn_end.iso8601} (#{g.turn_end.short_date_at_time})"
+          puts "  remaining: #{time[:hours]} hours, #{time[:minutes]} minuutes"
+        end
         g.players.each do |u|
           puts "  user #{user.play_order}:"
           puts "    name #{u.name}"
