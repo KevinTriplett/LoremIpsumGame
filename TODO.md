@@ -4,6 +4,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] hide and scroll in read-only mode
 - [X] in turn notifications, give round X of Y message (and pause rounds)
 - [X] remove the ability to delete authorship colors
 - [X] fix etherpad not loading on page open
