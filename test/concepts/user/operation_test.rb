@@ -100,28 +100,24 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         ActionMailer::Base.deliveries.clear
         game = create_game
-        user = create_game_user(game_id: game.id)
-
-        assert_emails 2
-        email = ActionMailer::Base.deliveries.first
-        assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
-        assert_match /#{user.name}/, email.body.encoded
-
-        email = ActionMailer::Base.deliveries.last
-        assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
-        assert_match /#{user.name}/, email.body.encoded
-        assert_match /#{get_magic_link(user)}/, email.body.encoded
+        assert_emails 2 do
+          user1 = create_game_user(game_id: game.id)
+          email = ActionMailer::Base.deliveries.first
+          assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
+          assert_match /#{user1.name}/, email.body.encoded
+          email = ActionMailer::Base.deliveries.last
+          assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+          assert_match /#{user1.name}/, email.body.encoded
+          assert_match /#{get_magic_link(user1)}/, email.body.encoded
+        end
 
         ActionMailer::Base.deliveries.clear
-        user = create_game_user(game_id: game.id)
-
-        assert_emails 2
-        email = ActionMailer::Base.deliveries.first
-        assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
-        assert_match /#{user.name}/, email.body.encoded
-        email = ActionMailer::Base.deliveries.last
-        assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
-        assert_match /#{user.name}/, email.body.encoded
+        assert_emails 1 do
+          user2 = create_game_user(game_id: game.id)
+          email = ActionMailer::Base.deliveries.first
+          assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
+          assert_match /#{user2.name}/, email.body.encoded
+        end
         ActionMailer::Base.deliveries.clear
       end
     end

@@ -205,22 +205,26 @@ class TurnOperationTest < MiniTest::Spec
         game = create_game
         user1 = create_game_user({game_id: game.id})
         user2 = create_game_user({game_id: game.id})
+        user3 = create_game_user({game_id: game.id})
 
+        game.reload
         ActionMailer::Base.deliveries.clear
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user1.id,
-          game_id: user1.game_id
-        )
+        assert_emails 1 do
+          Turn::Operation::Create.call(
+            params: {
+              turn: {}
+            },
+            user_id: game.current_player_id,
+            game_id: game.id
+          )
+        end
 
-        assert_emails 1
+        game.reload
+        assert_equal user2.name, game.current_player.name
         email = ActionMailer::Base.deliveries.last
         assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
-        assert_match /#{user2.name}/, email.body.encoded
-        assert_match /#{get_magic_link(user2)}/, email.body.encoded
-
+        assert_match /#{game.current_player.name}/, email.body.encoded
+        assert_match /#{get_magic_link(game.current_player)}/, email.body.encoded
         ActionMailer::Base.deliveries.clear
       end
     end

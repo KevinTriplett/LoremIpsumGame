@@ -20,8 +20,8 @@ module User::Operation
     step Contract::Validate(key: :user)
     step Contract::Persist()
     step :create_author
-    step :notify
     step :update_game
+    step :notify
 
     def create_author(ctx, model:, **)
       # TODO: allow tests to run with SSL
@@ -44,7 +44,8 @@ module User::Operation
 
     def notify(ctx, model:, **)
       UserMailer.with(user: model).welcome_email.deliver_now
-      UserMailer.with(user: model).turn_notification.deliver_now
+      UserMailer.with(user: model).turn_notification.deliver_now if model.id == model.game.current_player_id
+      true
     end
 
     def update_game(ctx, model:, **)
