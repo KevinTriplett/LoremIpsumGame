@@ -21,6 +21,10 @@ body#admin {
   margin-bottom: 10px;
   background: white;
   height: 610px;
+
+  &.read-only {
+    overflow: scroll;
+  }
 }
 
 iframe#epframeep {

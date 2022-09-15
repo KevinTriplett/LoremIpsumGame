@@ -51,7 +51,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def dataset
-    return {} unless current_player?
+    return {class: "read-only"} unless current_player?
     {
       data: {
         pad_id: pad_name,
