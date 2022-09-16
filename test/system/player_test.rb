@@ -109,6 +109,7 @@ class PlayerTest < ApplicationSystemTestCase
 
     visit new_user_turn_path(user_token: user2.token)
     assert_current_path user_turns_path(user_token: user2.token)
+    assert_selector "#ep.read-only"
     assert_selector "h1", text: "Lorem Ipsum"
     assert_selector "h5", text: game.name
     assert_selector "span.turn-end", text: "not started yet"
