@@ -4,6 +4,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] add admin boolean to user (cc'd on all emails)
 - [X] wrong person is being notified of their turn
 - [X] hide and scroll in read-only mode
 - [X] in turn notifications, give round X of Y message (and pause rounds)
