@@ -19,28 +19,8 @@ module User::Operation
     step Subprocess(Present)
     step Contract::Validate(key: :user)
     step Contract::Persist()
-    step :create_author
     step :update_game
     step :notify
-
-    def create_author(ctx, model:, **)
-      # TODO: allow tests to run with SSL
-      return true if Rails.env == "test"
-      client = EtherpadLite.connect(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
-      begin
-        result = client.author(model.id, name: model.name)
-        return false unless result.id
-        model.update(author_id: result.id)
-      rescue Errno::ECONNREFUSED => error
-        model.destroy
-        ctx[:flash] = "Error: Connection to Etherpad refused - is it running?"
-        false
-      rescue RestClient::SSLCertificateNotVerified => error
-        model.destroy
-        ctx[:flash] = "Error: #{error.message}"
-        false
-      end
-    end
 
     def notify(ctx, model:, **)
       UserMailer.with(user: model).welcome_email.deliver_now
