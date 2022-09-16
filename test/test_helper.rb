@@ -84,7 +84,8 @@ def create_game_user(params)
     params: {
       user: {
         name: params[:name] || random_user_name, 
-        email: params[:email] || random_email
+        email: params[:email] || random_email,
+        admin: params[:admin] || false
       }
     },
     game_id: params[:game_id]

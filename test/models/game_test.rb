@@ -120,6 +120,18 @@ class GameTest < MiniTest::Spec
     assert game.time_to_finish_turn?
   end
 
+  it "gets admins" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({name: "user1", game_id: game.id})
+      user2 = create_game_user({name: "user2", game_id: game.id, admin: true})
+      user3 = create_game_user({name: "user3", game_id: game.id})
+      user4 = create_game_user({name: "user4", game_id: game.id, admin: true})
+
+      assert_equal [user2.id,user4.id].to_set, game.get_admins.pluck(:id).to_set
+    end
+  end
+
   it "reminds users of turns only once when time" do
     DatabaseCleaner.cleaning do
       turn_end = Time.now + 4.hours - 1.minute

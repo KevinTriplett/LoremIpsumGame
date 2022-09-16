@@ -15,7 +15,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, '[Lorem Ipsum] Welcome to the Game 🤗'
@@ -35,7 +35,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, '[Lorem Ipsum] Sorry to see you go 😭'
@@ -62,7 +62,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user1.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
@@ -79,7 +79,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user3.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
@@ -101,7 +101,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Reminder: It's Your Turn 😅"
@@ -121,7 +121,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] Your turn was finished for you 🫣"
@@ -142,7 +142,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user.email]
-      assert_equal email.cc, Rails.configuration.admin_email_adrs
+      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"

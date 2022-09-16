@@ -12,6 +12,10 @@ class Game < ActiveRecord::Base
     User.find(current_player_id)
   end
 
+  def get_admins
+    users.where(admin: true)
+  end
+
   def resume
     update(paused: nil)
     UserMailer.with(user: current_player).turn_notification.deliver_now

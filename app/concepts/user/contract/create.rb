@@ -5,11 +5,13 @@ module User::Contract
     property :id
     property :name
     property :email
+    property :admin
     property :game_id
 
     validation do
       params do
         required(:id)
+        required(:admin)
         required(:name).filled
         required(:email).filled
         required(:game_id).filled.value(:integer)

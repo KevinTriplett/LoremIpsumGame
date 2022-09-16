@@ -8,6 +8,8 @@
   .row
     .col= f.input :email, placeholder: "Email", label: false
   .row
+    .col= f.input :admin, as: :boolean, label: "Admin"
+  .row
     .col= f.button :submit, "Create User", class: "btn-primary"
 .row
   .col= link_to "Done", admin_game_users_path

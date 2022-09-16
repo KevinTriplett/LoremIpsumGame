@@ -335,8 +335,8 @@ class TurnOperationTest < MiniTest::Spec
           pause_rounds: 2
         })
         user1 = create_game_user({game_id: game.id})
-        user2 = create_game_user({game_id: game.id})
-        user3 = create_game_user({game_id: game.id})
+        user2 = create_game_user({game_id: game.id, admin: true})
+        user3 = create_game_user({game_id: game.id, admin: true})
 
         (1..game.num_rounds).each do |i|
           game.reload
@@ -354,19 +354,19 @@ class TurnOperationTest < MiniTest::Spec
             assert_emails 5
             assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
             assert_equal email.to, [game.users.order(id: :asc).last.email]
-            assert_equal email.cc, Rails.configuration.admin_email_adrs
+            assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           elsif previous_round % game.pause_rounds > 0
             assert !game.paused?
             assert_emails 3
             assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
             assert_equal email.to, email_to_user
-            assert_equal email.cc, Rails.configuration.admin_email_adrs
+            assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           else
             assert game.paused?
             assert_emails 3
             assert_equal email.subject, "[Lorem Ipsum] Game paused!"
-            assert_equal email.to, Rails.configuration.admin_email_adrs
-            assert_equal email.cc, Rails.configuration.admin_email_adrs
+            assert_equal email.to.to_set, game.get_admins.pluck(:email).to_set
+            assert_nil email.cc
             game.resume
           end
           ActionMailer::Base.deliveries.clear
@@ -380,7 +380,7 @@ class TurnOperationTest < MiniTest::Spec
           num_rounds: 4,
           pause_rounds: 0
         })
-        user1 = create_game_user({game_id: game.id})
+        user1 = create_game_user({game_id: game.id, admin: true})
         user2 = create_game_user({game_id: game.id})
         user3 = create_game_user({game_id: game.id})
 
@@ -400,7 +400,7 @@ class TurnOperationTest < MiniTest::Spec
             assert_emails 3
             assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
           end
-          assert_equal email.cc, Rails.configuration.admin_email_adrs
+          assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           ActionMailer::Base.deliveries.clear
         end
       end

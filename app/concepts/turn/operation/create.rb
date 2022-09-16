@@ -65,8 +65,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     game.reload
     return true if game.ended?
     if game.paused?
-      email_adrs = Rails.configuration.admin_email_adrs
-      UserMailer.with(email_adrs: email_adrs).pause_notification.deliver_now
+      GameMailer.with(game: game).pause_notification.deliver_now
     elsif game.round > game.num_rounds || game.players_finished?
       game.users.order(id: :asc).each { |u| UserMailer.with(user: u).game_ended.deliver_now }
       game.update(ended: Time.now)
