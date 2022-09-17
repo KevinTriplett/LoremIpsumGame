@@ -32,18 +32,34 @@ module LoremIpsum
     config.admin_password = (Rails.env == 'production' ?
       ENV["ADMIN_PASSWORD"] : "password")
     config.author_colors = [
-      "%23E0F1F1",
-      "%23E3FFEA",
-      "%23D0FCF5",
-      "%23F0DEEC",
-      "%23E7FFCF",
-      "%23FFE6F7",
-      "%23F9D2F3",
-      "%23E1E6F7",
-      "%23F9F9D3",
-      "%23FDC3CD",
-      "%23FDE1CD",
-      "%23D5D0B1"
+      "%2300FFFF", # vibrant colors
+      "%23FFFF00",
+      "%2399FF99",
+      "%23FFCC66",
+      "%23FF9900",
+      "%23FF00FF",
+      "%230000FF",
+      "%2300FF00",
+      "%23606F82",
+      "%23FFF4CB",
+      "%235D8EC1",
+      "%23D9849B",
+      "%23A9976F",
+      "%2356A8B3",
+      "%2391CCF1",
+      "%23F493F2"
+      # "%23E0F1F1", # pastel colors
+      # "%23E3FFEA",
+      # "%23D0FCF5",
+      # "%23F0DEEC",
+      # "%23E7FFCF",
+      # "%23FFE6F7",
+      # "%23F9D2F3",
+      # "%23E1E6F7",
+      # "%23F9F9D3",
+      # "%23FDC3CD",
+      # "%23FDE1CD",
+      # "%23D5D0B1"
     ]
   end
 end
