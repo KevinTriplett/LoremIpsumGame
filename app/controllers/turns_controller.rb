@@ -6,7 +6,6 @@ class TurnsController < ApplicationController
 
   def new
     return redirect_to user_turns_url unless current_player?
-    session[:ep_sessions] ||= {}
     @user = get_user
 
     run Turn::Operation::Create::Present, user_id: @user.id do |ctx|
