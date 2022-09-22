@@ -26,6 +26,9 @@
   .col= buttons
 
 .row
+  .col.diff
+    = link_to "Show changes since my last turn", user_turns_diff_path(user_token: user.token)
+.row
   .col 
     Players
     %ul
