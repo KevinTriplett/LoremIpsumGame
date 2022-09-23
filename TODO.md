@@ -1,9 +1,11 @@
 # TODO
 
 ## MVP 2
+- [ ] separate user admin system tests edit/create from game system tests
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] add boolean flag for game to enable/disable player shuffle
 - [X] show diffs using EtherPad diffs or [diffy](https://github.com/samg/diffy)
 - [X] add admin boolean to user (cc'd on all emails)
 - [X] wrong person is being notified of their turn
