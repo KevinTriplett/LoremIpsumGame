@@ -13,8 +13,4 @@ class ApplicationController < ActionController::Base
   def current_player?
     current_user.id == current_game.current_player_id
   end
-
-  def not_found
-    render :file => "#{Rails.root}/public/puppy.html", :status => 404, :layout => false
-  end
 end
