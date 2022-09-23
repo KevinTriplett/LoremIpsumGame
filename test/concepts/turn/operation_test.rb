@@ -511,7 +511,7 @@ class TurnOperationTest < MiniTest::Spec
 
         User::Operation::Delete.call({
           params: {
-            id: user1.id
+            token: user1.token
           }
         })
 

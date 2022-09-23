@@ -46,7 +46,7 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "a", "Add User"
       assert_select "a", "Back"
 
-      get edit_admin_game_user_path(game_id: game.id, id: user1.id)
+      get edit_admin_game_user_path(game_id: game.id, token: user1.token)
       assert_select "h1", "Lorem Ipsum Admin"
       assert_select "h5", "Editing user"
       assert_select "input#user_name[value='#{user1.name}']", nil

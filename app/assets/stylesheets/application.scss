@@ -13,6 +13,11 @@ body#admin {
   background-image: none;
 }
 
+body.root {
+  background-image: none;
+  background-color: #EFEFEF;
+}
+
 #ep {
   border: 5px solid steelblue;
   padding-right: 0px;

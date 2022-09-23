@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class PlayerTest < ApplicationSystemTestCase
+class PlayerSystemTest < ApplicationSystemTestCase
   DatabaseCleaner.clean
 
   test "Player can access pad and submit turn" do

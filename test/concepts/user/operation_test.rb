@@ -130,7 +130,7 @@ class UserOperationTest < MiniTest::Spec
         ActionMailer::Base.deliveries.clear
         User::Operation::Delete.call({
           params: {
-            id: user.id
+            token: user.token
           }
         })
         game.reload
@@ -156,7 +156,7 @@ class UserOperationTest < MiniTest::Spec
 
         User::Operation::Delete.call({
           params: {
-            id: user2.id
+            token: user2.token
           }
         })
         game.reload
@@ -205,7 +205,7 @@ class UserOperationTest < MiniTest::Spec
         ActionMailer::Base.deliveries.clear
         User::Operation::Delete.call({
           params: {
-            id: user1.id
+            token: user1.token
           }
         })
         game.reload
@@ -231,11 +231,10 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Update.call(
           params: {
             user: {
-              id: user.id,
               name: random_user_name,
               email: user.email
             },
-            id: user.id
+            token: user.token
           }
         )
         assert_equal true, result.success?
@@ -252,11 +251,10 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Update.call(
           params: {
             user: {
-              id: user2.id,
               name: random_user_name,
               email: user2.email
             },
-            id: user2.id
+            token: user2.token
           }
         )
         assert_equal true, result.success?
@@ -269,11 +267,10 @@ class UserOperationTest < MiniTest::Spec
         result = User::Operation::Update.call(
           params: {
             user: {
-              id: user1.id,
               name: random_user_name,
               email: user1.email
             },
-            id: user1.id
+            token: user1.token
           }
         )
         assert_equal true, result.success?

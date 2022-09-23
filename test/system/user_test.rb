@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class UserTest < ApplicationSystemTestCase
+class UserSystemTest < ApplicationSystemTestCase
   DatabaseCleaner.clean
 
   test "User can unsubscribe" do
@@ -15,6 +15,7 @@ class UserTest < ApplicationSystemTestCase
     click_link "Unsubscribe"
     page.driver.browser.switch_to.alert.accept
     assert_current_path root_path
+    assert_selector ".flash", text: "You've been removed from #{game.name}"
 
     sleep(1)
     assert_nil User.find_by_token(user1.token)
