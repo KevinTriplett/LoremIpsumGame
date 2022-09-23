@@ -4,6 +4,7 @@
   - @model.each do |u|
     %li{ class: @game.current_player_id == u.id ? "current-player" : nil }
       = link_to u.name, "mailto:#{u.email}"
+      =  u.admin? ? " (admin)" : ""
       = @game.current_player_id == u.id ? "<== current player" : ""
       %br
       = link_to "play", new_user_turn_path(user_token: u.token)
