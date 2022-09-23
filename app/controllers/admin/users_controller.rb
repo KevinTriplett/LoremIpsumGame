@@ -41,7 +41,7 @@ class Admin::UsersController < ApplicationController
 
   def update
     _ctx = run User::Operation::Update do |ctx|
-      flash[:notice] = "#{ctx[:model].name} has been saved"
+      flash[:notice] = "#{ctx[:model].name} was updated"
       return redirect_to admin_game_users_url(ctx[:model].game_id)
     end
   

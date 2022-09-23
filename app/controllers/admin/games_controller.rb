@@ -37,7 +37,7 @@ module Admin
   
     def update
       _ctx = run Game::Operation::Update do |ctx|
-        flash[:notice] = "#{ctx[:model].name} has been saved"
+        flash[:notice] = "#{ctx[:model].name} was updated"
         return redirect_to admin_games_url
       end
     
