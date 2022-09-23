@@ -28,14 +28,14 @@ class AdminUsersTest < ApplicationSystemTestCase
       assert_current_path admin_game_users_path(game_id: game.id)
       click_link "edit"
 
-      assert_current_path edit_admin_game_user_path(game_id: game.id, id: user.id)
+      assert_current_path edit_admin_game_user_path(game_id: game.id, token: user.token)
       assert_selector "h5", text: "Editing user"
       click_link "Cancel"
 
       assert_current_path admin_game_users_path(game_id: game.id)
       click_link "edit"
 
-      assert_current_path edit_admin_game_user_path(game_id: game.id, id: user.id)
+      assert_current_path edit_admin_game_user_path(game_id: game.id, token: user.token)
       fill_in "Name", with: random_user_name
       uncheck "Admin"
       click_button "Update User"
@@ -75,7 +75,7 @@ class AdminUsersTest < ApplicationSystemTestCase
       game = create_game
       user = create_game_user(game_id: game.id)
 
-      visit edit_admin_game_user_path(game_id: game.id, id: user.id)
+      visit edit_admin_game_user_path(game_id: game.id, token: user.token)
       fill_in "Name", with: random_user_name
       check "Admin"
       click_button "Update User"

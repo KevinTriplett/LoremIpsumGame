@@ -1,0 +1,16 @@
+.row
+  .col
+    %h5= @user.game.name
+.row
+  .col
+    %strong= "Unsubscribe from #{@user.game.name}?"
+.row
+  .col
+    %ul
+      %li This will permanently delete you from the game, are you sure?
+      %li Your contributions will be retained and not deleted
+      %li
+        If you want your contributions deleted, contact
+        = link_to "kt@kevintriplett.com", "mailto:kt@kevintriplett.com"
+    %p= link_to "Unsubscribe", user_path(token: @user.token),
+      id: "unsubscribe", class: "btn btn-primary", data: {turbo_method: "delete", turbo_confirm: "Permanently leave game?" }

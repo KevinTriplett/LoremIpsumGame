@@ -52,6 +52,7 @@ module Admin
       end
 
       flash[:notice] = "Unable to delete Game"
+      render :index, status: :unprocessable_entity
     end
 
     def resume

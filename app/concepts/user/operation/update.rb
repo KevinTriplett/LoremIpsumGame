@@ -2,7 +2,7 @@ module User::Operation
   class Update < Trailblazer::Operation
 
     class Present < Trailblazer::Operation
-      step Model(User, :find_by)
+      step Model(User, :find_by, :token)
       step Contract::Build(constant: User::Contract::Create) # reuse the validations
     end
     

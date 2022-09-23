@@ -8,8 +8,9 @@
       = @game.current_player_id == u.id ? "<== current player" : ""
       %br
       = link_to "play", new_user_turn_path(user_token: u.token)
-      = link_to "edit", edit_admin_game_user_path(id: u.id)
-      = link_to "delete", admin_game_user_path(id: u.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{u.name}?" }
+      = link_to "edit", edit_admin_game_user_path(token: u.token)
+      = link_to "delete", admin_game_user_path(token: u.token), data: { turbo_method: "delete", turbo_confirm: "Really delete #{u.name}?" }
+      = link_to "unsub", user_unsubscribe_path(token: u.token)
 = link_to "Add User", new_admin_game_user_path, class: "btn btn-primary"
 .row
   .col= link_to "Back", admin_games_path

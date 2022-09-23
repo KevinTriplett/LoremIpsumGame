@@ -56,6 +56,7 @@ class Admin::UsersController < ApplicationController
     end
   
     flash[:notice] = "Unable to delete User"
+    return redirect_to admin_game_users_url(game_id: params[:game_id]), status: :unprocessable_entity
   end
 
   private
