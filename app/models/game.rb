@@ -73,7 +73,7 @@ class Game < ActiveRecord::Base
   # [5, 3, 4, 1, 2, 0] = out
   # [1, 5, 2, 3, 0, 4] = in
   def shuffle_players
-    return unless users.count > 2
+    return unless shuffle? && users.count > 2
     io = (round % 2 == 0) # alternate in/out shuffle each round (in => true)
     npo, opo = [], players.pluck(:id) # new play order, old play order
     i, mid = 0, (opo.count / 2) + (io ? opo.count % 2 : 0)

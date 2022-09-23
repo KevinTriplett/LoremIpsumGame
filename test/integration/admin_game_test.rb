@@ -41,10 +41,11 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "input#game_num_rounds", nil
       assert_select "input#game_pause_rounds", nil
       assert_select "input#game_turn_hours", nil
+      assert_select "input#game_shuffle", nil
       assert_select "input[value='Create Game']", nil
       assert_select "a", "Cancel"
 
-      game = create_game
+      game = create_game(shuffle: true)
 
       get admin_games_path
       assert_select "span.game-name", "#{game.name}", nil
@@ -69,6 +70,7 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "input#game_num_rounds[value='#{game.num_rounds}']", nil
       assert_select "input#game_turn_hours[value='#{game.turn_hours}']", nil
       assert_select "input#game_pause_rounds[value='#{game.pause_rounds}']", nil
+      assert_select "input#game_shuffle[value='#{game.shuffle ? 1 : 0}']", nil
       assert_select "input[value='Update Game']", nil
       assert_select "a", "Cancel"
 

@@ -75,7 +75,8 @@ def create_game(params = {})
     turn_hours: (params[:turn_hours] || 48),
     current_player_id: params[:current_player_id] || nil,
     round: params[:round] || 1,
-    pause_rounds: params[:pause_rounds] || 0
+    pause_rounds: params[:pause_rounds] || 0,
+    shuffle: params[:shuffle] || false
   )
 end
 

@@ -46,7 +46,7 @@ class GameTest < MiniTest::Spec
 
   it "checks for passes this round" do
     DatabaseCleaner.cleaning do
-      game = create_game
+      game = create_game(shuffle: true)
       user1 = create_game_user(game_id: game.id)
       user2 = create_game_user(game_id: game.id)
       user3 = create_game_user(game_id: game.id)
@@ -427,7 +427,7 @@ class GameTest < MiniTest::Spec
 
   it "shuffles player order for odd number of players" do
     DatabaseCleaner.cleaning do
-      game = create_game
+      game = create_game(shuffle: true)
       user1 = create_game_user({game_id: game.id})
       user2 = create_game_user({game_id: game.id})
 
@@ -464,7 +464,7 @@ class GameTest < MiniTest::Spec
 
   it "shuffles player order for even number of players" do
     DatabaseCleaner.cleaning do
-      game = create_game
+      game = create_game(shuffle: true)
       user1 = create_game_user({game_id: game.id})
       user2 = create_game_user({game_id: game.id})
       user3 = create_game_user({game_id: game.id})
@@ -488,6 +488,27 @@ class GameTest < MiniTest::Spec
       game.shuffle_players
       game.reload
       assert_equal [2,5,4,1,0,3], game.users.order(id: :asc).pluck(:play_order)
+    end
+  end
+
+  it "does not shuffle players when shuffle flag false" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+      user3 = create_game_user({game_id: game.id})
+      user4 = create_game_user({game_id: game.id})
+      user5 = create_game_user({game_id: game.id})
+      game.reload
+      assert_equal [0,1,2,3,4], game.users.order(id: :asc).pluck(:play_order)
+
+      game.update(round: 2)
+      game.shuffle_players
+      game.reload
+      assert_equal [0,1,2,3,4], game.users.order(id: :asc).pluck(:play_order)
+      game.shuffle_players
+      game.reload
+      assert_equal [0,1,2,3,4], game.users.order(id: :asc).pluck(:play_order)
     end
   end
 

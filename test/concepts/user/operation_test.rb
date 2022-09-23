@@ -146,7 +146,7 @@ class UserOperationTest < MiniTest::Spec
 
     it "shuffles players on user deletion" do
       DatabaseCleaner.cleaning do
-        game = create_game
+        game = create_game(shuffle: true)
         user1 = create_game_user(game_id: game.id)
         user2 = create_game_user(game_id: game.id)
         user3 = create_game_user(game_id: game.id)

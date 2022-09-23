@@ -12,6 +12,8 @@
   .row
     .col= f.input :pause_rounds, placeholder: "Pause each N Rounds (zero = no pause)", label: false
   .row
+    .col= f.input :shuffle, as: :boolean, label: "Shuffle"
+  .row
     .col= f.button :submit, "Create Game", class: "btn-primary"
 .row
   .col= link_to "Cancel", admin_games_path

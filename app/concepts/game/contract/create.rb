@@ -9,6 +9,7 @@ module Game::Contract
     property :num_rounds
     property :pause_rounds
     property :ended
+    property :shuffle
 
     validation do
       params do
@@ -17,6 +18,7 @@ module Game::Contract
         required(:turn_hours).filled.value(:integer)
         required(:num_rounds).filled.value(:integer)
         required(:pause_rounds).filled.value(:integer)
+        required(:shuffle)
       end
 
       rule(:name, :id) do

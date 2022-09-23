@@ -15,6 +15,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       fill_in "Number of Rounds", with: "33"
       fill_in "Pause each N Rounds (zero = no pause)", with: "3"
       fill_in "Hours per Turn", with: "7"
+      check "Shuffle"
       click_button "Create Game"
 
       sleep(1)
@@ -23,6 +24,7 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_equal 33, game.num_rounds
       assert_equal 3, game.pause_rounds
       assert_equal 7, game.turn_hours
+      assert game.shuffle
 
       assert_current_path new_admin_game_user_path(game_id: game.id)
       assert "h5", "New User for #{game.name}"
@@ -164,10 +166,12 @@ class AdminGamesTest < ApplicationSystemTestCase
 
       visit edit_admin_game_user_path(game_id: game.id, id: user.id)
       fill_in "Name", with: random_user_name
+      check "Admin"
       click_button "Update User"
 
       sleep(1)
       user.reload
+      assert user.admin
       assert_current_path admin_game_users_path(game_id: game.id)
       assert_selector ".flash", text: "#{user.name} has been saved"
     end
