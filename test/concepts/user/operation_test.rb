@@ -109,6 +109,7 @@ class UserOperationTest < MiniTest::Spec
           assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
           assert_match /#{user1.name}/, email.body.encoded
           assert_match /#{get_magic_link(user1)}/, email.body.encoded
+          assert_match /#{get_unsubscribe_link(user1)}/, email.header['List-Unsubscribe'].inspect
         end
 
         ActionMailer::Base.deliveries.clear

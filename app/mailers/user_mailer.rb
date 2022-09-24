@@ -5,12 +5,14 @@ class UserMailer < ApplicationMailer
     @game = @user.game
     @url = get_url(@user)
     admins = @user.game.get_admins.pluck(:email)
+    set_unsubscribe_header
     mail(to: @user.email, cc: admins, subject: '[Lorem Ipsum] Welcome to the Game 🤗')
   end
 
   def goodbye_email
     @user = params[:user]
     admins = @user.game.get_admins.pluck(:email)
+    set_unsubscribe_header
     mail(to: @user.email, cc: admins, subject: "[Lorem Ipsum] Sorry to see you go 😭")
   end
 
@@ -19,6 +21,7 @@ class UserMailer < ApplicationMailer
     @url = get_url(@user)
     @players = @user.game.get_who_played_since(@user)
     admins = @user.game.get_admins.pluck(:email)
+    set_unsubscribe_header
     mail(to: @user.email, cc: admins, subject: "[Lorem Ipsum] Yay! It's Your Turn! 🥳")
   end
 
@@ -27,6 +30,7 @@ class UserMailer < ApplicationMailer
     @url = get_url(@user)
     @players = @user.game.get_who_played_since(@user)
     admins = @user.game.get_admins.pluck(:email)
+    set_unsubscribe_header
     mail(to: @user.email, cc: admins, subject: "[Lorem Ipsum] Reminder: It's Your Turn 😅")
   end
 
@@ -34,6 +38,7 @@ class UserMailer < ApplicationMailer
     @user = params[:user]
     @url = get_url(@user)
     admins = @user.game.get_admins.pluck(:email)
+    set_unsubscribe_header
     mail(to: @user.email, cc: admins, subject: "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉")
   end
 
@@ -41,15 +46,18 @@ class UserMailer < ApplicationMailer
     @user = params[:user]
     @url = get_url(@user)
     admins = @user.game.get_admins.pluck(:email)
+    set_unsubscribe_header
     mail(to: @user.email, cc: admins, subject: "[Lorem Ipsum] Your turn was finished for you 🫣")
   end
 
   private
 
   def get_url(user)
-    (Rails.env == 'production' ?
-      'https://loremipsumgame.com/users/' :
-      'https://127.0.0.1:3000/users/') +
-      user.token + "/turns/new"
+    "https://loremipsumgame.com/users/#{ user.token }/turns/new"
+  end
+
+  def set_unsubscribe_header
+    unsubscribe_url = "https://loremipsumgame.com/users/#{ @user.token }/unsubscribe"
+    headers['List-Unsubscribe'] = "<#{unsubscribe_url}>"
   end
 end

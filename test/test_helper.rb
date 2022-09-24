@@ -106,5 +106,9 @@ def create_user_turn(params)
 end
 
 def get_magic_link(user)
-    "https://127.0.0.1:3000/users/#{user.token}/turns/new"
+  "https://loremipsumgame.com/users/#{user.token}/turns/new"
+end
+
+def get_unsubscribe_link(user)
+  "https://loremipsumgame.com/users/#{user.token}/unsubscribe"
 end

@@ -225,7 +225,8 @@ class TurnOperationTest < MiniTest::Spec
         assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
         assert_match /#{game.current_player.name}/, email.body.encoded
         assert_match /#{get_magic_link(game.current_player)}/, email.body.encoded
-        ActionMailer::Base.deliveries.clear
+        assert_match /#{get_unsubscribe_link(game.current_player)}/, email.header['List-Unsubscribe'].inspect
+          ActionMailer::Base.deliveries.clear
       end
     end
 
