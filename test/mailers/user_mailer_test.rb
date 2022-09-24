@@ -88,7 +88,7 @@ class UserMailerTest < ActionMailer::TestCase
       assert_match /Here's your magic link/, email.body.encoded
       assert_match /#{get_magic_link(user3)}/, email.body.encoded
       assert_match /#{get_unsubscribe_link(user3)}/, email.header['List-Unsubscribe'].inspect
-      assert_match /<li>#{Regexp.quote(user1.name)}<\/li>\r\n            <li>#{Regexp.quote(user2.name)}<\/li>/, email.body.encoded
+      assert_match /<li>#{Regexp.quote(user1.name)}<\/li>\r\n<li>#{Regexp.quote(user2.name)}<\/li>/, email.body.encoded
       assert_match /Round #{game.round} of #{game.num_rounds}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end
