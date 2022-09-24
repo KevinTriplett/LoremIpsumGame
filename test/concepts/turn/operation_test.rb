@@ -222,7 +222,7 @@ class TurnOperationTest < MiniTest::Spec
         game.reload
         assert_equal user2.name, game.current_player.name
         email = ActionMailer::Base.deliveries.last
-        assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+        assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"
         assert_match /#{game.current_player.name}/, email.body.encoded
         assert_match /#{get_magic_link(game.current_player)}/, email.body.encoded
         assert_match /#{get_unsubscribe_link(game.current_player)}/, email.header['List-Unsubscribe'].inspect
@@ -274,7 +274,7 @@ class TurnOperationTest < MiniTest::Spec
         assert_emails 3
 
         email = ActionMailer::Base.deliveries.last
-        assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
+        assert_equal email.subject, "Lorem Ipsum - It's Done! Time to Celebrate!"
 
         ActionMailer::Base.deliveries.clear
         Turn::Operation::Create.call(
@@ -353,19 +353,19 @@ class TurnOperationTest < MiniTest::Spec
           if game.round > game.num_rounds
             assert !game.paused?
             assert_emails 5
-            assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
+            assert_equal email.subject, "Lorem Ipsum - It's Done! Time to Celebrate!"
             assert_equal email.to, [game.users.order(id: :asc).last.email]
             assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           elsif previous_round % game.pause_rounds > 0
             assert !game.paused?
             assert_emails 3
-            assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+            assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"
             assert_equal email.to, email_to_user
             assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           else
             assert game.paused?
             assert_emails 3
-            assert_equal email.subject, "[Lorem Ipsum] Game paused!"
+            assert_equal email.subject, "Lorem Ipsum - Game paused"
             assert_equal email.to.to_set, game.get_admins.pluck(:email).to_set
             assert_nil email.cc
             game.resume
@@ -396,10 +396,10 @@ class TurnOperationTest < MiniTest::Spec
           email = ActionMailer::Base.deliveries.last
           if game.round > game.num_rounds
             assert_emails 5
-            assert_equal email.subject, "[Lorem Ipsum] It's Done! Time to Celebrate! 🎉"
+            assert_equal email.subject, "Lorem Ipsum - It's Done! Time to Celebrate!"
           else
             assert_emails 3
-            assert_equal email.subject, "[Lorem Ipsum] Yay! It's Your Turn! 🥳"
+            assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"
           end
           assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           ActionMailer::Base.deliveries.clear

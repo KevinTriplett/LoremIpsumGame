@@ -154,7 +154,7 @@ class GameTest < MiniTest::Spec
       assert_emails 2
       last_user = game2.players.first
       email = ActionMailer::Base.deliveries.last
-      assert_equal email.subject, "[Lorem Ipsum] Reminder: It's Your Turn 😅"
+      assert_equal email.subject, "Lorem Ipsum - Reminder: It's Your Turn"
       assert_match /#{last_user.name}/, email.body.encoded
       assert_match /#{get_magic_link(last_user)}/, email.body.encoded
       assert_match /#{get_unsubscribe_link(last_user)}/, email.header['List-Unsubscribe'].inspect
@@ -297,7 +297,7 @@ class GameTest < MiniTest::Spec
       Game.auto_finish_turns
       assert_emails 4
       email = ActionMailer::Base.deliveries.last
-      assert_equal email.subject, "[Lorem Ipsum] Your turn was finished for you 🫣"
+      assert_equal email.subject, "Lorem Ipsum - Your turn was finished for you"
       ActionMailer::Base.deliveries.clear
 
       [user1,user2,user3,user4].each(&:reload)

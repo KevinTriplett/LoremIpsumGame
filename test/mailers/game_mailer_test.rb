@@ -20,7 +20,7 @@ class GameMailerTest < ActionMailer::TestCase
       assert_nil email.cc
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
-      assert_equal email.subject, "[Lorem Ipsum] Game paused!"
+      assert_equal email.subject, "Lorem Ipsum - Game paused"
       assert_match /#{Regexp.quote(game.name)}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end
@@ -42,7 +42,7 @@ class GameMailerTest < ActionMailer::TestCase
       assert_nil email.cc
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
-      assert_equal email.subject, "[Lorem Ipsum] Game paused!"
+      assert_equal email.subject, "Lorem Ipsum - Game paused"
       assert_match /#{Regexp.quote(game.name)}/, email.body.encoded
       ActionMailer::Base.deliveries.clear
     end
