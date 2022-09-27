@@ -27,8 +27,6 @@ class UsersController < ApplicationController
 
   def pad_token
     user = User.find_by_token(params[:token])
-    puts "user = #{user}"
-    puts "params[:padToken] = #{params[:padToken]}"
     result = user.update(pad_token: params[:padToken])
     render json: {result: result}
   end
