@@ -1,3 +1,13 @@
+function getCookies() {
+  var pairs = document.cookie.split(/; ?/);
+  var cookies = {};
+  for (var i = 0; i < pairs.length; i++) {
+    var pair = pairs[i].split('=');
+    cookies[(pair[0] + '').trim()] = unescape(pair.slice(1).join('='));
+  }
+  return cookies;
+}
+
 function optShortDateAtTime(tzString) {
   return {
     timeZone: tzString,
@@ -61,10 +71,34 @@ function convertUTC() {
   })
 };
 
+function sendPadTokenToServer() {
+  var padToken = getCookies().token;
+  // console.log("token = " + padToken);
+  if (!padToken) return;
+  url = $("#ep").data("urlToken");
+  if (!url) return;
+  // console.log("sending token to " + url);
+  $.ajax({
+    url: url,
+    type: "POST",
+    // contentType: "application/json",
+    dataType: "json",
+    data: { padToken: padToken },
+    success: function() { console.log("success") }
+  });
+}
+
+function requestPad(dom, data) {
+  // console.log("setting pad token " + data['padToken']);
+  document.cookie = 'token=' + data['padToken'];
+  dom.pad(data);
+  setTimeout(() => { sendPadTokenToServer(); }, 10000);
+}
+
 function loadEtherpad() {
   var dom = $('#ep');
   if (dom.data("padId")) {
-    setTimeout(() => { dom.pad(dom.data()); }, 1000);
+    setTimeout(() => { requestPad(dom, dom.data()) }, 1000);
   }
 }
 

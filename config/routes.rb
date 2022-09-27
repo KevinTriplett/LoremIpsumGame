@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post "/admin/games(/:id)/resume", to: "admin/games#resume", as: :resume_admin_game
   get "/users(/:token)/turns/diff", to: "turns#diff", as: :user_turns_diff
   get "/users(/:token)/unsubscribe", to: "users#unsubscribe", as: :user_unsubscribe
+  post "/users(/:token)/padtoken", to: "users#pad_token", as: :user_pad_token
 
   resources :admin, only: [:index]
 

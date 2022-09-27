@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  protect_from_forgery with: :null_session
+
   def index
     # game is entered through /users(/:user_token)/turns/new
     @body_class = "root"
@@ -21,5 +23,13 @@ class UsersController < ApplicationController
     @user = User.find_by_token(params[:token])
     @body_class = "root"
     render
+  end
+
+  def pad_token
+    user = User.find_by_token(params[:token])
+    puts "user = #{user}"
+    puts "params[:padToken] = #{params[:padToken]}"
+    result = user.update(pad_token: params[:padToken])
+    render json: {result: result}
   end
 end

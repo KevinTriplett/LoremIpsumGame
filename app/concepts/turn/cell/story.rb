@@ -58,7 +58,9 @@ class Turn::Cell::Story < Cell::ViewModel
         user_name: user.name,
         user_color: user.author_color.gsub("#","%23"),
         host: Rails.configuration.etherpad_url,
-        height: 600
+        height: 600,
+        url_token: user.pad_token ? nil : user_pad_token_url(token: user.token),
+        pad_token: user.pad_token
       }
     }
   end
