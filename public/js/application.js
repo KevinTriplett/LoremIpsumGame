@@ -90,7 +90,10 @@ function sendPadTokenToServer() {
 
 function requestPad(dom, data) {
   // console.log("setting pad token " + data['padToken']);
-  document.cookie = 'token=' + data['padToken'];
+  var date = new Date();
+  date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
+  var expires = "; expires=" + date.toUTCString();
+  document.cookie = "token=" + data["padToken"] + expires + "; path=/";
   dom.pad(data);
   setTimeout(() => { sendPadTokenToServer(); }, 10000);
 }
