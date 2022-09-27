@@ -1,11 +1,19 @@
-function getCookies() {
-  var pairs = document.cookie.split(/; ?/);
-  var cookies = {};
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i].split('=');
-    cookies[(pair[0] + '').trim()] = unescape(pair.slice(1).join('='));
-  }
-  return cookies;
+function getCookie(name) {
+  var value = `; ${document.cookie}`;
+  var parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function setCookie(name, value) {
+  if (!value || value === "undefined") return;
+  console.log(`setting cookie ${name}=${value}`);
+  var date = new Date();
+  date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000)); // one week
+  document.cookie = [
+    `${ name }=${ value }`,
+    `expires=${ date.toUTCString() }`,
+    "path=/"
+  ].join("; ");
 }
 
 function optShortDateAtTime(tzString) {
@@ -72,40 +80,36 @@ function convertUTC() {
 };
 
 function sendPadTokenToServer() {
-  var padToken = getCookies().token;
-  // console.log("token = " + padToken);
-  if (!padToken) return;
-  url = $("#ep").data("urlToken");
+  var url = $("#ep").data("urlToken");
+  console.log(`url = ${url}`);
   if (!url) return;
-  // console.log("sending token to " + url);
-  $.ajax({
-    url: url,
-    type: "POST",
-    // contentType: "application/json",
-    dataType: "json",
-    data: { padToken: padToken },
-    success: function() { console.log("success") }
-  });
-}
-
-function requestPad(dom, data) {
-  // console.log("setting pad token " + data['padToken']);
-  var date = new Date();
-  date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
-  var expires = "; expires=" + date.toUTCString();
-  document.cookie = "token=" + data["padToken"] + expires + "; path=/";
-  dom.pad(data);
-  setTimeout(() => { sendPadTokenToServer(); }, 10000);
-}
-
-function loadEtherpad() {
-  var dom = $('#ep');
-  if (dom.data("padId")) {
-    setTimeout(() => { requestPad(dom, dom.data()) }, 1000);
+  var padToken = getCookie("token");
+  if (padToken) {
+    console.log(`sending token = ${padToken} to ${url}`);
+    $.ajax({
+      url: url,
+      type: "POST",
+      dataType: "json",
+      data: { padToken: padToken },
+      success: function() { console.log("success") },
+      error: function() { console.log("error") }
+    });
+  } else {
+    setTimeout(sendPadTokenToServer, 1000);
   }
 }
 
+function loadEtherPad() {
+  var dom = $("#ep");
+  if (!dom.data("padId")) return;
+  var padToken = dom.data("padToken");
+  setCookie("token", padToken);
+  dom.pad(dom.data());
+  setTimeout(sendPadTokenToServer, 10000);
+}
+
 document.addEventListener('turbo:load', function() {
+  console.log(`cookies = ${document.cookie}`);
   convertUTC();
-  loadEtherpad();
+  setTimeout(loadEtherPad, 1000);
 });

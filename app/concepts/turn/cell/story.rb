@@ -52,6 +52,8 @@ class Turn::Cell::Story < Cell::ViewModel
 
   def dataset
     return {class: "read-only"} unless current_player?
+    pad_token = user.pad_token
+    pad_token = nil if pad_token == "undefined"
     {
       data: {
         pad_id: pad_name,
@@ -59,8 +61,8 @@ class Turn::Cell::Story < Cell::ViewModel
         user_color: user.author_color.gsub("#","%23"),
         host: Rails.configuration.etherpad_url,
         height: 600,
-        url_token: user.pad_token ? nil : user_pad_token_url(token: user.token),
-        pad_token: user.pad_token
+        url_token: pad_token ? nil : user_pad_token_url(token: user.token),
+        pad_token: pad_token
       }
     }
   end
