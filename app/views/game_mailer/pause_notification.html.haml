@@ -1,0 +1,5 @@
+%h3= "The Lorem Ipsum #{@game.name} is paused"
+%p Time to start the next checkin process or resume the %game
+%p= link_to "Game Admin", @url, class: "button"
+%p or use this link:
+%p= link_to @url, @url

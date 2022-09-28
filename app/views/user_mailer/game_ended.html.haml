@@ -1,8 +1,5 @@
 %h3 The Lorem Ipsum story is done!
 %p Ready to bask in the finished story?
-%p
-  = link_to "Lets Go", @url, class: "button"
-  %br
-  or use this link:
-  %br
-  = link_to @url, @url
+%p= link_to "Lets Go", @url, class: "button"
+%p or use this link:
+%p= link_to @url, @url

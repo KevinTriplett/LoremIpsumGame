@@ -1,10 +1,7 @@
 %h3= "Ready to add your part to #{ @game.name }?"
-%p
-  = link_to "Lets Go", @url, class: "button"
-  %br
-  or use this link:
-  %br
-  = link_to @url, @url
+%p= link_to "Lets Go", @url, class: "button"
+%p or use this link:
+%p= link_to @url, @url
 - if @players.count > 0
   %p Players who've played since your last turn, in order:
   %ul
