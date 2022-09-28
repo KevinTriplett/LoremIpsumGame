@@ -5,7 +5,6 @@ function getCookie(name) {
 }
 
 function setCookie(name, value) {
-  if (!value || value === "undefined") return;
   // console.log(`setting cookie ${name}=${value}`);
   var date = new Date();
   date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000)); // one week
