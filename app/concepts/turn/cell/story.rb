@@ -38,10 +38,6 @@ class Turn::Cell::Story < Cell::ViewModel
     user.id == current_player_id
   end
 
-  def authorColor
-    user.author_color.gsub("%23", "#")
-  end
-
   def buttons
     return unless current_player?
     link_to("Finish Turn", user_turns_path, id: "finish", class: "btn btn-primary", data: { 
@@ -62,7 +58,7 @@ class Turn::Cell::Story < Cell::ViewModel
       data: {
         pad_id: pad_name,
         user_name: user.name,
-        user_color: authorColor,
+        user_color: user.author_color.gsub("#", "%23"),
         host: Rails.configuration.etherpad_url,
         height: 600,
         url_token: pad_token ? nil : user_pad_token_url(token: user.token),

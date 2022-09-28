@@ -34,7 +34,7 @@
     %ul
       - players.each do |u|
         %li{ class: u.id == current_player_id ? "current-player" : nil }
-          .square{ style: "background-color:#{authorColor};"}
+          .square{ style: "background-color:#{u.author_color};"}
           = u.name
           = u.id == current_player_id ? " <== current player" : ""
 
