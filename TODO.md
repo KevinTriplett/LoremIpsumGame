@@ -5,6 +5,7 @@
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] make authorIds stable between browsers
 - [X] fix unsubscribe error
 - [X] separate user admin system tests edit/create from game system tests
 - [X] add boolean flag for game to enable/disable player shuffle
@@ -115,8 +116,8 @@ Voting and Change Blocks (feature request from David):
 - [ ] External Domains in your DMARC are not giving permission for your reports to be sent to them.
 - [ ] SOA Serial Number Format is Invalid (set your serial number with a date format to make it easier to to manage. This format uses 10 digits to represent the date and then a two digit sequence number with the format of YYYYmmddss.)
 - [ ] SOA Expire Value out of recommended range
-- [ ] Your DKIM key has errors. (Generate a Public DKIM Key for your domain. This needs to be done with the applications you are using to send emails and/or your mail server. Add the Public Key to your Domain's DKIM DNS records. Enable DKIM signing from your Email Service Provider and mail server / application if applicable. NOTE: Gmail requires a DKIM key of 1024 bits or longer.)
 - [ ] Your DMARC authentication is not setup using best practices. (Your "from" domain does not match your DKIM "from" domain or does not have DKIM signing. Your From domain is: loremipsumgame.com and Your DKIM domain(s) is blank.)
+- [X] Your DKIM key has errors. (Generate a Public DKIM Key for your domain. This needs to be done with the applications you are using to send emails and/or your mail server. Add the Public Key to your Domain's DKIM DNS records. Enable DKIM signing from your Email Service Provider and mail server / application if applicable. NOTE: Gmail requires a DKIM key of 1024 bits or longer.)
 - [X] The subject line formatting is not clear or obfuscated. The subject line is not composed of legitimate and accepted characters.
 - [X] The HTML font is bad readable or have not normal size. The HTML body is not composed of properly closed and nested tags. The HTML body is not composed of standard and supported HTML elements.
 - [X] allow http to go through with no problem
