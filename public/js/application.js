@@ -6,7 +6,7 @@ function getCookie(name) {
 
 function setCookie(name, value) {
   if (!value || value === "undefined") return;
-  console.log(`setting cookie ${name}=${value}`);
+  // console.log(`setting cookie ${name}=${value}`);
   var date = new Date();
   date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000)); // one week
   document.cookie = [
@@ -81,18 +81,18 @@ function convertUTC() {
 
 function sendPadTokenToServer() {
   var url = $("#ep").data("urlToken");
-  console.log(`url = ${url}`);
+  // console.log(`url = ${url}`);
   if (!url) return;
   var padToken = getCookie("token");
   if (padToken) {
-    console.log(`sending token = ${padToken} to ${url}`);
+    // console.log(`sending token = ${padToken} to ${url}`);
     $.ajax({
       url: url,
       type: "POST",
       dataType: "json",
-      data: { padToken: padToken },
-      success: function() { console.log("success") },
-      error: function() { console.log("error") }
+      data: { padToken: padToken }
+      // success: function() { console.log("success") },
+      // error: function() { console.log("error") }
     });
   } else {
     setTimeout(sendPadTokenToServer, 2000);
@@ -118,7 +118,6 @@ function loadEtherPad() {
 }
 
 document.addEventListener("turbo:load", function() {
-  console.log(`cookies = ${document.cookie}`);
   convertUTC();
   setTimeout(loadEtherPad, 1000);
 });
