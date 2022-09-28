@@ -95,21 +95,16 @@ function sendPadTokenToServer() {
       error: function() { console.log("error") }
     });
   } else {
-    setTimeout(sendPadTokenToServer, 1000);
+    setTimeout(sendPadTokenToServer, 2000);
   }
 }
 
-function requestPad(dom, data) {
-  setCookie('token', data['padToken']);
-  dom.pad(data);
-  setTimeout(() => { sendPadTokenToServer(); }, 10000);
-}
-
 function loadEtherpad() {
-  var dom = $('#ep');
+  var dom = $("#ep");
+  setCookie("token", dom.data["padToken"]);
   if (dom.data("padId")) {
-    setTimeout(() => { requestPad(dom, dom.data()) }, 1000);
->>>>>>> 1837e2522decae6af3f9f746e6dee09cdeb5934f
+    dom.pad(data);
+    setTimeout(sendPadTokenToServer, 10000);
   }
 }
 
@@ -122,7 +117,7 @@ function loadEtherPad() {
   setTimeout(sendPadTokenToServer, 10000);
 }
 
-document.addEventListener('turbo:load', function() {
+document.addEventListener("turbo:load", function() {
   console.log(`cookies = ${document.cookie}`);
   convertUTC();
   setTimeout(loadEtherPad, 1000);
