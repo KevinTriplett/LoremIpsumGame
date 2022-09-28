@@ -5,8 +5,13 @@ function getCookie(name) {
 }
 
 function setCookie(name, value) {
+<<<<<<< HEAD
   if (!value || value === "undefined") return;
   console.log(`setting cookie ${name}=${value}`);
+=======
+  // console.log("setting pad token " + data['padToken']);
+  if (value === "undefined") return;
+>>>>>>> 1837e2522decae6af3f9f746e6dee09cdeb5934f
   var date = new Date();
   date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000)); // one week
   document.cookie = [
@@ -81,6 +86,7 @@ function convertUTC() {
 
 function sendPadTokenToServer() {
   var url = $("#ep").data("urlToken");
+<<<<<<< HEAD
   console.log(`url = ${url}`);
   if (!url) return;
   var padToken = getCookie("token");
@@ -96,6 +102,33 @@ function sendPadTokenToServer() {
     });
   } else {
     setTimeout(sendPadTokenToServer, 1000);
+=======
+  var padToken = getCookie("token");
+  // console.log("token = " + padToken + " and url = " + url);
+  if (!url || !padToken || padToken === "undefined") return;
+  // console.log("sending token to " + url);
+  $.ajax({
+    url: url,
+    type: "POST",
+    // contentType: "application/json", rails didn't like this in early development
+    dataType: "json",
+    data: { padToken: padToken },
+    success: function() { console.log("success") },
+    error: function() { console.log("error") }
+  });
+}
+
+function requestPad(dom, data) {
+  setCookie('token', data['padToken']);
+  dom.pad(data);
+  setTimeout(() => { sendPadTokenToServer(); }, 10000);
+}
+
+function loadEtherpad() {
+  var dom = $('#ep');
+  if (dom.data("padId")) {
+    setTimeout(() => { requestPad(dom, dom.data()) }, 1000);
+>>>>>>> 1837e2522decae6af3f9f746e6dee09cdeb5934f
   }
 }
 
