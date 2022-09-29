@@ -65,7 +65,7 @@ module Admin
     def toggle_end
       game = Game.find(params[:id])
       game.update(ended: game.ended? ? nil : Time.now)
-      flash[:notice] = "Game #{game.name} has #{game.ended? ? 'ended' : 'not ended'}"
+      flash[:notice] = "Game #{game.name} has #{game.ended? ? '' : 'not'} ended"
       redirect_to admin_games_url
     end
   end

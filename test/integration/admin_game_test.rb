@@ -63,6 +63,15 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "a", "end"
       assert_select "a", "delete"
 
+      game.update(paused: false)
+      game.update(ended: Time.now)
+      get admin_games_path
+      assert_select "span.game-name", "#{game.name} (ended)", nil
+      assert_select "a", "edit"
+      assert_select "a", "users"
+      assert_select "a", "un-end"
+      assert_select "a", "delete"
+
       get edit_admin_game_path(id: game.id)
       assert_select "h1", "Lorem Ipsum Admin"
       assert_select "h5", "Editing game"

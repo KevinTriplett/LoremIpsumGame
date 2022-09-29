@@ -76,7 +76,8 @@ def create_game(params = {})
     current_player_id: params[:current_player_id] || nil,
     round: params[:round] || 1,
     pause_rounds: params[:pause_rounds] || 0,
-    shuffle: params[:shuffle] || false
+    shuffle: params[:shuffle] || false,
+    ended: params[:ended]
   )
 end
 

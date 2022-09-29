@@ -22,7 +22,7 @@ class Game < ActiveRecord::Base
   end
 
   def ended?
-    !ended.nil?
+    ended
   end
 
   def turns_this_round

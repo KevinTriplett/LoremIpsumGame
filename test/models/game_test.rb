@@ -84,6 +84,18 @@ class GameTest < MiniTest::Spec
     end
   end
 
+  it "checks for ended" do
+    DatabaseCleaner.cleaning do
+      game = Game.new({
+        ended: Time.now
+      })
+      assert game.ended?
+
+      game.update(ended: nil)
+      assert !game.ended?
+    end
+  end
+
   it "checks for ! time_to_remind_player" do
     turn_end = Time.now + 8.hours + 1.minute
     game = Game.new({
