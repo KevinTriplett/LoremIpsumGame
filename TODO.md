@@ -1,10 +1,11 @@
 # TODO
 
 ## MVP 2
-- [ ] improve email spam score (see below)
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery
+- [X] clarify toggle end action for games
+- [X] improve email spam score (see below)
 - [X] make authorIds stable between browsers
 - [X] fix unsubscribe error
 - [X] separate user admin system tests edit/create from game system tests
