@@ -51,6 +51,7 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "span.game-name", "#{game.name}", nil
       assert_select "a", "edit"
       assert_select "a", "users"
+      assert_select "a", "pause"
       assert_select "a", "end"
       assert_select "a", "delete"
 
@@ -69,6 +70,7 @@ class AdminGameTest < ActionDispatch::IntegrationTest
       assert_select "span.game-name", "#{game.name} (ended)", nil
       assert_select "a", "edit"
       assert_select "a", "users"
+      assert_select "a", "pause"
       assert_select "a", "un-end"
       assert_select "a", "delete"
 

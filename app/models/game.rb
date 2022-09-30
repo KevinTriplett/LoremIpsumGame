@@ -16,9 +16,29 @@ class Game < ActiveRecord::Base
     users.where(admin: true)
   end
 
-  def resume
-    update(paused: nil)
-    UserMailer.with(user: current_player).turn_notification.deliver_now
+  def start_turn
+    now = Time.now
+    self.started ||= now
+    self.turn_start = now
+    self.turn_end = now + turn_hours.hours
+    save
+  end
+
+  def pause_this_round?
+    pause_rounds > 0 &&
+    round < num_rounds && # not last round
+    round % pause_rounds == 0
+  end
+
+  def toggle_paused
+    self.paused = !paused
+    if paused?
+      self.turn_start = self.turn_end = nil
+    else
+      start_turn
+      UserMailer.with(user: current_player).turn_notification.deliver_now
+    end
+    save
   end
 
   def ended?
@@ -86,19 +106,23 @@ class Game < ActiveRecord::Base
   end
 
   def time_to_remind_player?
+    !ended &&
+    !paused &&
     turn_end && Time.now > (turn_end - turn_reminder_hours)
   end
 
   def time_to_finish_turn?
+    !ended &&
+    !paused &&
     turn_end && Time.now > (turn_end + grace_period_hours)
   end
 
   def remind_current_player
-    current_player.remind unless ended? || !time_to_remind_player?
+    current_player.remind if time_to_remind_player?
     end
 
   def auto_finish_turn
-    current_player.finish_turn unless ended? || !time_to_finish_turn?
+    current_player.finish_turn if time_to_finish_turn?
   end
 
   def turn_time_remaining

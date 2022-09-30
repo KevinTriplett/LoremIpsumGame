@@ -23,7 +23,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game.id
         )
 
-        assert_equal true, result.success?
+        assert result.success?
         user = result[:model]
         assert_equal last_random_user_name, user.name
         assert_equal last_random_email, user.email
@@ -84,7 +84,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game2.id
         )
 
-        assert_equal true, result.success?
+        assert result.success?
       end
     end
 
@@ -238,7 +238,7 @@ class UserOperationTest < MiniTest::Spec
             token: user.token
           }
         )
-        assert_equal true, result.success?
+        assert result.success?
       end
     end
 
@@ -258,7 +258,7 @@ class UserOperationTest < MiniTest::Spec
             token: user2.token
           }
         )
-        assert_equal true, result.success?
+        assert result.success?
         assert_emails 1
         email = ActionMailer::Base.deliveries.first
         assert_equal email.subject, 'Lorem Ipsum - Welcome to the Game'
@@ -274,7 +274,7 @@ class UserOperationTest < MiniTest::Spec
             token: user1.token
           }
         )
-        assert_equal true, result.success?
+        assert result.success?
         assert_emails 1
         email = ActionMailer::Base.deliveries.first
         assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"
@@ -288,7 +288,7 @@ class UserOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         result = User::Operation::Create.call(params: {})
 
-        assert_equal false, result.success?
+        assert !result.success?
       end
     end
 
@@ -306,7 +306,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game.id
         )
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["name must be filled"], result["contract.default"].errors.full_messages_for(:name))
       end
     end
@@ -325,7 +325,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game.id
         )
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["email has invalid format"], result["contract.default"].errors.full_messages_for(:email))
       end
     end
@@ -344,7 +344,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game.id
         )
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["email must be filled"], result["contract.default"].errors.full_messages_for(:email))
       end
     end
@@ -363,7 +363,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: nil
         )
 
-        assert_equal false, result.success?
+        assert !result.success?
       end
     end
 
@@ -382,7 +382,7 @@ class UserOperationTest < MiniTest::Spec
           game_id: game.id
         )
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["email must be unique"], result["contract.default"].errors.full_messages_for(:email))
       end
     end

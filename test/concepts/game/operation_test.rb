@@ -19,7 +19,7 @@ class GameOperationTest < MiniTest::Spec
           }
         })
 
-        assert_equal true, result.success?
+        assert result.success?
         game = result[:model]
         game.reload
         
@@ -76,7 +76,7 @@ class GameOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         result = Game::Operation::Create.call(params: {})
 
-        assert_equal false, result.success?
+        assert !result.success?
       end
     end
 
@@ -90,7 +90,7 @@ class GameOperationTest < MiniTest::Spec
           }
         })
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["turn_hours must be filled"], result["contract.default"].errors.full_messages_for(:turn_hours))
       end
     end
@@ -105,7 +105,7 @@ class GameOperationTest < MiniTest::Spec
           }
         })
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["num_rounds must be filled"], result["contract.default"].errors.full_messages_for(:num_rounds))
       end
     end
@@ -120,7 +120,7 @@ class GameOperationTest < MiniTest::Spec
           }
         })
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["pause_rounds must be filled"], result["contract.default"].errors.full_messages_for(:pause_rounds))
       end
     end
@@ -146,7 +146,7 @@ class GameOperationTest < MiniTest::Spec
           }
         })
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["name must be unique"], result["contract.default"].errors.full_messages_for(:name))
       end
     end
@@ -162,7 +162,7 @@ class GameOperationTest < MiniTest::Spec
           }
         })
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_equal(["name must be filled"], result["contract.default"].errors.full_messages_for(:name))
       end
     end

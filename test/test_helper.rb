@@ -52,7 +52,7 @@ def last_random_user_name
 end
 
 GAME_NAMES_FIRST = %w(dark lorem glad sad melancholy joyful lonesome tender lucid)
-GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissfully wispy wistfully)
+GAME_NAMES_SECOND = %w(windy shiney crazy lovely stormy blissful wispy wistful)
 GAME_NAMES_THIRD = %w(night ipsum song melody heart dove mercies dreams)
 def random_game_name
   begin
@@ -73,10 +73,11 @@ def create_game(params = {})
     turn_end: params[:turn_end],
     num_rounds: params[:num_rounds] || 10,
     turn_hours: (params[:turn_hours] || 48),
-    current_player_id: params[:current_player_id] || nil,
+    current_player_id: params[:current_player_id],
     round: params[:round] || 1,
     pause_rounds: params[:pause_rounds] || 0,
-    shuffle: params[:shuffle] || false,
+    paused: params[:paused],
+    shuffle: params[:shuffle],
     ended: params[:ended]
   )
 end

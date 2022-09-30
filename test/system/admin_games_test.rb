@@ -74,10 +74,10 @@ class AdminGamesTest < ApplicationSystemTestCase
     end
   end
 
-  test "Can resume a paused game" do
+  test "Can pause and resume a game" do
     DatabaseCleaner.cleaning do
       game = create_game
-      user = create_game_user(game_id: game.id)
+      user = create_game_user(game_id: game.id, admin: true)
 
       visit admin_games_path
       assert_no_selector "a", text: "resume"
@@ -90,13 +90,26 @@ class AdminGamesTest < ApplicationSystemTestCase
       game.reload
       assert !game.ended?
 
-      game.update(paused: true)
       visit admin_games_path
+      ActionMailer::Base.deliveries.clear
+      click_link "pause"
+      assert_selector ".flash", text: "#{game.name} has paused"
+      game.reload
+      assert game.paused?
+      assert_nil game.turn_start
+      assert_nil game.turn_end
+      assert_emails 1
+      email = ActionMailer::Base.deliveries.last
+      assert_equal email.subject, "Lorem Ipsum - Game paused"
+      assert_equal email.to, game.get_admins.pluck(:email)
+
       ActionMailer::Base.deliveries.clear
       click_link "resume"
       assert_selector ".flash", text: "#{game.name} has resumed"
       game.reload
       assert !game.paused?
+      assert game.turn_start
+      assert game.turn_end
       assert_emails 1
       email = ActionMailer::Base.deliveries.last
       assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"

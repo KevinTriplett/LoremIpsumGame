@@ -6,7 +6,7 @@ class Turn::Operation::Create < Trailblazer::Operation
     step Model(Turn, :new)
     step :initialize_attributes
     step Contract::Build(constant: Turn::Contract::Create)
-    step :start_game_if_not_started
+    step :start_turn_if_not_started
 
     def initialize_attributes(ctx, model:, **)
       return false unless ctx[:user_id]
@@ -14,14 +14,9 @@ class Turn::Operation::Create < Trailblazer::Operation
       model.game_id = model.user.game_id
     end
 
-    def start_game_if_not_started(ctx, model:, **)
-      return true if model.game.started
-      game = model.game
-      now = Time.now
-      game.started = now
-      game.turn_start = now
-      game.turn_end = game.turn_start + game.turn_hours.hours
-      game.save
+    def start_turn_if_not_started(ctx, model:, **)
+      return true if model.game.turn_start
+      model.game.start_turn
     end
   end
   
@@ -47,16 +42,15 @@ class Turn::Operation::Create < Trailblazer::Operation
     game = model.game
     if game.round_finished?
       game.shuffle_players if game.no_passes_this_round?
-      game.paused = (game.pause_rounds > 0 && game.round < game.num_rounds && game.round % game.pause_rounds == 0)
+      game.toggle_paused if game.pause_this_round? && !game.paused?
       game.round += 1
       game.users.each(&:reset_reminded)
       game.current_player_id = game.players.first.id
     else
+      game.start_turn
       game.current_player_id = game.next_player_id
     end
     game.current_player.reset_reminded
-    game.turn_start = Time.now
-    game.turn_end = game.turn_start + game.turn_hours.hours
     game.save
   end
 

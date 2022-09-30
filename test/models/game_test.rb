@@ -71,28 +71,91 @@ class GameTest < MiniTest::Spec
     end
   end
 
-  it "can resume paused game" do
+  it "can toggle paused" do
     DatabaseCleaner.cleaning do
-      game = create_game
+      game = create_game({
+        started: Time.now - 1.day,
+        turn_start: Time.now,
+        turn_end: Time.now + 10.hours
+      })
       user = create_game_user(game_id: game.id)
+      
       game.reload
       assert !game.paused?
-      game.update(paused: true)
+
+      game.toggle_paused
+      game.reload
       assert game.paused?
-      game.resume
+      assert game.started
+      assert_nil game.turn_start
+      assert_nil game.turn_end
+
+      game.toggle_paused
+      game.reload
       assert !game.paused?
+      assert game.started
+      assert game.turn_start
+      assert game.turn_end
+    end
+  end
+
+  it "checks for pause" do
+    DatabaseCleaner.cleaning do
+      game = create_game({
+        pause_rounds: 0,
+        num_rounds: 9,
+        round: 1
+      })
+      assert !game.pause_this_round?
+      game.update(pause_rounds: 3)
+      game.reload
+      assert !game.pause_this_round?
+      game.update(round: 3)
+      game.reload
+      assert game.pause_this_round?
+      game.update(round: 9)
+      game.reload
+      assert !game.pause_this_round?
+      game.update(num_rounds: 10)
+      game.reload
+      assert game.pause_this_round?
     end
   end
 
   it "checks for ended" do
     DatabaseCleaner.cleaning do
-      game = Game.new({
+      game = create_game({
         ended: Time.now
       })
       assert game.ended?
 
       game.update(ended: nil)
       assert !game.ended?
+    end
+  end
+
+  it "starts turn" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      assert_nil game.started
+      assert_nil game.turn_start
+      assert_nil game.turn_end
+
+      game.start_turn
+      game.reload
+      assert game.started
+      assert game.turn_start
+      assert game.turn_end
+
+      started = game.started
+      turn_start = game.turn_start
+      turn_end = game.turn_end
+      
+      game.start_turn
+      game.reload
+      assert_equal started, game.started
+      assert turn_start != game.turn_start
+      assert turn_end != game.turn_end
     end
   end
 
@@ -318,8 +381,10 @@ class GameTest < MiniTest::Spec
       assert_equal 1, user3.turns.count
       assert_equal 0, user4.turns.count
 
+      assert_emails 0
       Game.auto_finish_turns
       assert_emails 0
+      ActionMailer::Base.deliveries.clear
     end
   end
 

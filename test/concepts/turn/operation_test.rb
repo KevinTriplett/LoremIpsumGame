@@ -58,7 +58,7 @@ class TurnOperationTest < MiniTest::Spec
           game_id: user.game_id
         )
 
-        assert_equal true, result.success?
+        assert result.success?
 
         turn = result[:model]
         assert_equal user.id, turn.user_id
@@ -182,8 +182,8 @@ class TurnOperationTest < MiniTest::Spec
         game = create_game
         user = create_game_user({game_id: game.id})
         game.reload
-        assert_equal false, game.turn_start.present?
-        assert_equal false, game.turn_end.present?
+        assert !game.turn_start.present?
+        assert !game.turn_end.present?
 
         Turn::Operation::Create.call(
           params: {
@@ -194,8 +194,8 @@ class TurnOperationTest < MiniTest::Spec
         )
 
         game.reload
-        assert_equal true, game.turn_start.present?
-        assert_equal true, game.turn_end.present?
+        assert game.turn_start.present?
+        assert game.turn_end.present?
         assert_equal game.turn_end, game.turn_start + game.turn_hours.hours
       end
     end
@@ -368,7 +368,14 @@ class TurnOperationTest < MiniTest::Spec
             assert_equal email.subject, "Lorem Ipsum - Game paused"
             assert_equal email.to.to_set, game.get_admins.pluck(:email).to_set
             assert_nil email.cc
-            game.resume
+            assert_nil game.turn_start
+            assert_nil game.turn_end
+            
+            game.toggle_paused
+            game.reload
+            assert !game.paused?
+            assert game.turn_start
+            assert game.turn_end
           end
           ActionMailer::Base.deliveries.clear
         end
@@ -562,7 +569,7 @@ class TurnOperationTest < MiniTest::Spec
       DatabaseCleaner.cleaning do
         result = Turn::Operation::Create.call(params: {})
 
-        assert_equal false, result.success?
+        assert !result.success?
         assert_nil(result["result.contract.default"])
       end
     end

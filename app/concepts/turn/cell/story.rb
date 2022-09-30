@@ -6,7 +6,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def user
-    model
+    model.reload # get any updates from Turn::Operation::Present operation
   end
 
   def game
@@ -14,7 +14,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def game_name
-    game.name
+    game.name + (game.paused? ? " (paused)" : "")
   end
 
   def pad_name
@@ -38,8 +38,12 @@ class Turn::Cell::Story < Cell::ViewModel
     user.id == current_player_id
   end
 
+  def do_not_load_pad?
+    !current_player? || game.paused
+  end
+
   def buttons
-    return unless current_player?
+    return if do_not_load_pad?
     link_to("Finish Turn", user_turns_path, id: "finish", class: "btn btn-primary", data: { 
       turbo_method: "post",
       turbo_confirm: "Click OK if you are finished with your turn"
@@ -51,7 +55,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def dataset
-    return {class: "read-only"} unless current_player?
+    return {class: "read-only"} if do_not_load_pad?
     pad_token = user.pad_token
     pad_token = nil if pad_token == "undefined"
     {
@@ -68,7 +72,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def story
-    current_player? ? js_required_text : html_story
+    do_not_load_pad? ? js_required_text : html_story
   end  
 
   def time_left_classes
@@ -87,6 +91,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def game_pause_or_end_text
+    return "Paused" if game.paused?
     rounds_remaining = game.num_rounds - game.round + 1
     rounds_remainder = game.pause_rounds > 0 ? game.round % game.pause_rounds : 0
     remaining = game.pause_rounds > 0 && rounds_remaining > game.pause_rounds ?
@@ -95,16 +100,13 @@ class Turn::Cell::Story < Cell::ViewModel
     remaining > 1 ? "in #{remaining} rounds" : "this round"
   end
 
-  def turn_start
-    game.turn_start ? game.turn_start.iso8601 : nil
-  end
-
   def turn_end
-    game.turn_end ? game.turn_end.iso8601 : "not started yet"
+    game.paused? ? "game paused" : game.turn_end ? game.turn_end.iso8601 : "turn not started"
   end
 
   def turn_time_remaining
-    return "not started yet" unless game.turn_end
+    return "game paused" if game.paused?
+    return "turn not started" if game.turn_end.nil?
     time = game.turn_time_remaining
     "#{time[:hours]} hrs, #{time[:minutes]} mins" + (time[:hours] < 0 ? " (grace)" : "")
   end

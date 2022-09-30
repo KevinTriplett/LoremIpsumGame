@@ -112,8 +112,36 @@ class PlayerSystemTest < ApplicationSystemTestCase
     assert_selector "#ep.read-only"
     assert_selector "h1", text: "Lorem Ipsum"
     assert_selector "h5", text: game.name
-    assert_selector "span.turn-end", text: "not started yet"
+    assert_selector "span.turn-end", text: "turn not started"
+    assert_selector "span.time-remaining", text: "turn not started"
     assert_selector "li.current-player", text: "#{user1.name} <== current player"
+    assert_no_selector "#finish", text: "Finish Turn"
+    assert_no_selector "#pass", text: "Pass"
+
+    sleep(1)
+    DatabaseCleaner.clean
+  end
+
+  test "Player can access read-only pad when game is paused" do
+    DatabaseCleaner.start
+    
+    game = create_game
+    user = create_game_user({game_id: game.id})
+
+    visit new_user_turn_path(user_token: user.token)
+    assert_current_path new_user_turn_path(user_token: user.token)
+
+    game.toggle_paused
+
+    visit new_user_turn_path(user_token: user.token)
+    assert_current_path user_turns_path(user_token: user.token)
+
+    assert_selector "#ep.read-only"
+    assert_selector "h1", text: "Lorem Ipsum"
+    assert_selector "h5", text: "#{game.name} (paused)"
+    assert_selector "span.turn-end", text: "game paused"
+    assert_selector "span.time-remaining", text: "game paused"
+    assert_selector "li.current-player", text: "#{user.name} <== current player"
     assert_no_selector "#finish", text: "Finish Turn"
     assert_no_selector "#pass", text: "Pass"
 

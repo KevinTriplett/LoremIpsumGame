@@ -15,8 +15,8 @@ class User < ActiveRecord::Base
   end
 
   def finish_turn
-    # Turn::Operation::Create updates current_player and
-    # notifies the new current_player
+    # Turn::Operation::Create updates game.current_player and
+    # notifies the new game.current_player
     Turn::Operation::Create.call(
       params: {
         turn: {}

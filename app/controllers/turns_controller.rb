@@ -5,8 +5,8 @@ class TurnsController < ApplicationController
   end
 
   def new
-    return redirect_to user_turns_url unless current_player?
     @user = get_user
+    return redirect_to user_turns_url if !current_player? || @user.game.paused?
 
     run Turn::Operation::Create::Present, user_id: @user.id do |ctx|
       return render

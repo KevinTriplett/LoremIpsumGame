@@ -55,14 +55,15 @@ module Admin
       render :index, status: :unprocessable_entity
     end
 
-    def resume
+    def toggle_paused
       game = Game.find(params[:id])
-      game.resume
-      flash[:notice] = "Game #{game.name} has resumed"
+      game.toggle_paused
+      GameMailer.with(game: game).pause_notification.deliver_now if game.paused?
+      flash[:notice] = "Game #{game.name} has #{game.paused? ? "paused" : "resumed"}"
       redirect_to admin_games_url
     end
 
-    def toggle_end
+    def toggle_ended
       game = Game.find(params[:id])
       game.update(ended: game.ended? ? nil : Time.now)
       flash[:notice] = "Game #{game.name} has #{game.ended? ? '' : 'not'} ended"
