@@ -72,7 +72,7 @@ class Turn::Cell::Story < Cell::ViewModel
   end
 
   def story
-    do_not_load_pad? ? js_required_text : html_story
+    do_not_load_pad? ? html_story : js_required_text
   end  
 
   def time_left_classes
