@@ -2,7 +2,7 @@
 
 - @games.each do |g|
   %p
-    %span.game-name{class: g.ended? ? "ended" : nil}= g.name + (g.ended? ? " (ended)" : "")
+    %span.game-name{class: g.ended? ? "ended" : nil}= g.name + (g.ended? ? " (ended)" : "") + (g.paused? ? " (paused)" : "")
     %br
     = link_to "edit", edit_admin_game_path(g.id)
     = link_to "users", admin_game_users_path(g.id)
