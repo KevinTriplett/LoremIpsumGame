@@ -57,7 +57,7 @@ class AdminGameTest < ActionDispatch::IntegrationTest
 
       game.update(paused: true)
       get admin_games_path
-      assert_select "span.game-name", "#{game.name}", nil
+      assert_select "span.game-name", "#{game.name} (paused)", nil
       assert_select "a", "edit"
       assert_select "a", "users"
       assert_select "a", "resume"
