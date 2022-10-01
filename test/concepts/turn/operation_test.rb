@@ -15,10 +15,14 @@ class TurnOperationTest < MiniTest::Spec
         user = create_game_user({game_id: game.id})
         game.reload
         assert_nil game.started
+        assert_nil game.turn_start
+        assert_nil game.turn_end
 
         create_user_turn({user_id: user.id})
         game.reload
         assert game.started
+        assert game.turn_start
+        assert game.turn_end
       end
     end
 
@@ -63,6 +67,8 @@ class TurnOperationTest < MiniTest::Spec
         turn = result[:model]
         assert_equal user.id, turn.user_id
         assert_equal turn.id, user.turns.first.id
+        assert_equal turn.round, 1
+        assert_equal "test", turn.entry
       end
     end
 
@@ -101,6 +107,10 @@ class TurnOperationTest < MiniTest::Spec
           user_id: user1.id,
           game_id: user1.game_id
         )
+
+        game.reload
+        assert_equal user2.id, game.current_player_id
+        
         Turn::Operation::Create.call(
           params: {
             turn: {}
@@ -110,7 +120,6 @@ class TurnOperationTest < MiniTest::Spec
         )
 
         game.reload
-        assert_equal last_random_game_name, game.name
         assert_equal user3.id, game.current_player_id
       end
     end
@@ -150,12 +159,13 @@ class TurnOperationTest < MiniTest::Spec
       end
     end
 
-    it "Shuffles players and updates current_player_id when last turn finished" do
+    it "Shuffles players and updates current_player_id when round finished" do
       DatabaseCleaner.cleaning do
         game = create_game
         user1 = create_game_user({game_id: game.id})
         user2 = create_game_user({game_id: game.id})
         user3 = create_game_user({game_id: game.id})
+
         game.reload
         assert_equal [0,1,2], game.users.order(created_at: :asc).pluck(:play_order)
         assert_equal game.players.first.id, game.current_player_id
@@ -163,13 +173,7 @@ class TurnOperationTest < MiniTest::Spec
         game.players.pluck(:id).each do |uid|
           assert_equal uid, game.current_player_id
           assert_equal 1, game.round
-          Turn::Operation::Create.call(
-            params: {
-              turn: {}
-            },
-            user_id: uid,
-            game_id: game.id
-          )
+          create_user_turn(user_id: game.current_player_id)
           game.reload
         end
         assert_equal 2, game.round
@@ -182,16 +186,11 @@ class TurnOperationTest < MiniTest::Spec
         game = create_game
         user = create_game_user({game_id: game.id})
         game.reload
-        assert !game.turn_start.present?
-        assert !game.turn_end.present?
+        assert_nil game.started
+        assert_nil game.turn_start
+        assert_nil game.turn_end
 
-        Turn::Operation::Create.call(
-          params: {
-            turn: {}
-          },
-          user_id: user.id,
-          game_id: user.game_id
-        )
+        create_user_turn(user_id: game.current_player_id)
 
         game.reload
         assert game.turn_start.present?

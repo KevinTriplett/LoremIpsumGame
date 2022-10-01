@@ -42,6 +42,7 @@ class GameOperationTest < MiniTest::Spec
         })
         user = create_game_user({game_id: game.id})
         game.reload
+        assert_nil game.started
         assert_nil game.turn_start
         assert_nil game.turn_end
       end
