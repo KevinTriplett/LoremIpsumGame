@@ -1,4 +1,4 @@
-%h3 Gentle reminder: the Lorem Ipsum game is waiting for your amazing imagination
+%h3= "Gentle reminder: \"#{ @game.name }\" is waiting for your amazing imagination."
 %p= link_to "Lets Go", @url, class: "button"
 %p or use this link:
 %p= link_to @url, @url
