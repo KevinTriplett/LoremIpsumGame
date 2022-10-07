@@ -34,7 +34,8 @@ class TurnsController < ApplicationController
     @user = get_user
     @user_last_turn = @user.turns.order(id: :asc).last
     @game_last_turn = @user.game.turns.order(id: :asc).last
-    return render unless @user_last_turn.revision == @game_last_turn.revision
+    return render unless @user_last_turn && @game_last_turn &&
+      @user_last_turn.revision == @game_last_turn.revision
 
     flash[:notice] = "No changes made since your last turn"
     return redirect_to new_user_turn_url(user_token: @user.token)
