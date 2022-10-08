@@ -13,6 +13,14 @@ class Turn::Cell::Diff < Cell::ViewModel
     model.game.name
   end
 
+  def players
+    game.players
+  end
+
+  def current_player_id
+    game.current_player_id
+  end
+
   def pad_name
     model.game.token
   end
