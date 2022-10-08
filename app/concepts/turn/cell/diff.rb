@@ -8,9 +8,13 @@ class Turn::Cell::Diff < Cell::ViewModel
   def user
     model
   end
+  
+  def game
+    model.game
+  end
 
   def game_name
-    model.game.name
+    game.name
   end
 
   def players
@@ -22,7 +26,7 @@ class Turn::Cell::Diff < Cell::ViewModel
   end
 
   def pad_name
-    model.game.token
+    game.token
   end
 
   def diff
