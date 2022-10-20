@@ -33,8 +33,8 @@ class Turn::Cell::Diff < Cell::ViewModel
     # see https://github.com/ether/etherpad-lite/issues/3750
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     pad_id = Rails.env == "test" ? "test_story" : pad_name
-    start_rev = context[:start_rev] ? context[:start_rev].revision : 0
-    end_rev = context[:end_rev] ? context[:end_rev].revision : 9999
+    start_rev = context[:user_last_turn] ? context[:user_last_turn].revision : 0
+    end_rev = context[:game_last_turn] ? context[:game_last_turn].revision : 9999
     begin
       client.createDiffHTML(padID: pad_id, startRev: start_rev, endRev: end_rev)[:html]
     rescue
