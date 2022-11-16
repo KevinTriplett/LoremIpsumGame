@@ -1,6 +1,8 @@
 # TODO
 
 ## MVP 2
+- [ ] disable admin playing as someone else
+- [ ] re-add player name to emails
 - [ ] enable eager_loading in production (causes TRB issue)
 - [ ] remove Reform#full_messages_for monkey patch
 - [ ] fix js asset delivery

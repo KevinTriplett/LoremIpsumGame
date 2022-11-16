@@ -1,3 +1,7 @@
 %h3= "Welcome to the Lorem Ipsum Game, #{ @user.name }"
 %p You've been added to "#{ @user.game.name }" -- you'll receive notification emails when it's your turn.
 %p Looking forward to your creative input!
+%p Want to view the current state of the story?
+%p= link_to "Lets Go", @url, class: "button"
+%p or use this link:
+%p= link_to @url, @url
