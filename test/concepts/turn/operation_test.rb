@@ -338,15 +338,18 @@ class TurnOperationTest < MiniTest::Spec
         user2 = create_game_user({game_id: game.id, admin: true})
         user3 = create_game_user({game_id: game.id, admin: true})
 
+        previous_round = game.round
         (1..game.num_rounds).each do |i|
           game.reload
           ActionMailer::Base.deliveries.clear
           (1..game.users.count).each do
             game.reload
+            assert previous_round == game.round
             create_user_turn(user_id: game.current_player_id)
           end
-          previous_round = game.round
           game.reload
+          assert previous_round == game.round - 1
+          previous_round = game.round
           email_to_user = [game.current_player.email]
           email = ActionMailer::Base.deliveries.last
           if game.round > game.num_rounds
