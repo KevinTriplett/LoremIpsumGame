@@ -24,7 +24,7 @@ class Admin::UsersController < ApplicationController
   def create
     @game = get_game
     _ctx = run User::Operation::Create, game_id: @game.id do |ctx|
-      flash[:error] = "#{ctx[:model].name} was created"
+      flash[:notice] = "#{ctx[:model].name} was created"
       return redirect_to new_admin_game_user_url
     end
 
@@ -55,7 +55,7 @@ class Admin::UsersController < ApplicationController
       return redirect_to admin_game_users_url, status: 303
     end
   
-    flash[:notice] = "Unable to delete User"
+    flash[:error] = "Unable to delete User"
     return redirect_to admin_game_users_url(game_id: params[:game_id]), status: :unprocessable_entity
   end
 
