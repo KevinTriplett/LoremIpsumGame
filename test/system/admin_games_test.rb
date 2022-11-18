@@ -132,4 +132,45 @@ class AdminGamesTest < ApplicationSystemTestCase
       assert_equal 0, User.all.count
     end
   end
+
+  test "Sending group alert email" do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user1 = create_game_user({game_id: game.id})
+      user2 = create_game_user({game_id: game.id})
+      
+      subject = "This is an alert"
+      body = "Spoon too big"
+
+      visit admin_games_path
+      click_link "email"
+      assert_current_path new_admin_game_email_path(game_id: game.id)
+      click_link "Cancel"
+      assert_current_path admin_games_url
+
+      click_link "email"
+      assert_current_path new_admin_game_email_path(game_id: game.id)
+      click_button "Send Email"
+      assert_selector ".alert", text: "Please review the problems below:"
+      assert_selector ".form-group.email_subject .invalid-feedback", text: "subject must be filled"
+      assert_selector ".form-group.email_body .invalid-feedback", text: "body must be filled"
+
+      
+      fill_in "Subject", with: subject
+      fill_in "Body", with: body
+
+      ActionMailer::Base.deliveries.clear
+      click_button "Send Email"
+      assert_current_path admin_games_path
+      assert_selector ".flash", text: "Email was sent for '#{game.name}'"
+      assert_emails 2
+      email = ActionMailer::Base.deliveries.last
+      assert_equal email.subject, "Lorem Ipsum - " + subject
+      assert_equal email.body, body
+      assert_equal email.to, [user2.email]
+      email = ActionMailer::Base.deliveries.first
+      assert_equal email.to, [user1.email]
+      ActionMailer::Base.deliveries.clear
+    end
+  end
 end

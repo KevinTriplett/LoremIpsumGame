@@ -32,6 +32,13 @@ class UserMailer < ApplicationMailer
     mail(to: @user.email, cc: @admins, subject: "Lorem Ipsum - Your turn was finished for you")
   end
 
+  def group_alert
+    init_locals_and_headers
+    body = params[:body]
+    subject = "Lorem Ipsum - " + params[:subject]
+    mail(to: @user.email, subject: subject, body: body, content_type: "text/plain")
+  end
+
   private
 
   def init_locals_and_headers

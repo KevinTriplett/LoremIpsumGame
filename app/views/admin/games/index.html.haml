@@ -6,6 +6,7 @@
     %br
     = link_to "edit", edit_admin_game_path(g.id)
     = link_to "users", admin_game_users_path(g.id)
+    = link_to "email", new_admin_game_email_path(g.id)
     = link_to g.paused? ? "resume" : "pause", toggle_paused_admin_game_path(g.id), data: { turbo_method: "post"}
     = link_to g.ended? ? "un-end" : "end", toggle_ended_admin_game_path(g.id), data: { turbo_method: "post"}
     = link_to "delete", admin_game_path(g.id), data: { turbo_method: "delete", turbo_confirm: "Really delete #{g.name}?" }

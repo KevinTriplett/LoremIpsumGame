@@ -8,9 +8,10 @@ Rails.application.routes.draw do
 
   resources :admin, only: [:index]
 
-  namespace :admin do 
+  namespace :admin do
     resources :games do
       resources :users, param: :token
+      resources :emails, only: [:new, :create]
     end
   end
 

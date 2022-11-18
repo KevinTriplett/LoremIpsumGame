@@ -159,4 +159,30 @@ class UserMailerTest < ActionMailer::TestCase
       ActionMailer::Base.deliveries.clear
     end
   end
+
+  test 'group_alert' do
+    DatabaseCleaner.cleaning do
+      game = create_game
+      user = create_game_user(game_id: game.id)
+      ActionMailer::Base.deliveries.clear
+      params = {
+        user: user,
+        subject: "test subject",
+        body: "my spoon is too big https://bigspoon.com"
+      }
+      email = UserMailer.with(params).group_alert
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      assert_equal email.to, [user.email]
+      assert_nil email.cc
+      assert_nil email.bcc
+      assert_equal email.from, ['noreply@loremipsumgame.com']
+      assert_equal email.subject, "Lorem Ipsum - " + params[:subject]
+      assert_equal email.body, params[:body]
+      assert_match /https:\/\/bigspoon.com/, email.body.encoded
+      ActionMailer::Base.deliveries.clear
+    end
+  end
 end

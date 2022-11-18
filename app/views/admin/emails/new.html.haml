@@ -1,0 +1,14 @@
+%h5= "Group email for #{@game.name}"
+
+= simple_form_for @form, as: :email, url: admin_game_emails_path do |f|
+  .row
+    .col= f.error_notification
+  .row
+    .col= f.input :subject, placeholder: "Subject", label: false
+  .row
+    .col= f.input :body, as: :text, placeholder: "Body", label: false
+  .row
+    .col= f.button :submit, "Send Email", class: "btn-primary"
+.row
+  .col= link_to "Cancel", admin_games_path
+  
