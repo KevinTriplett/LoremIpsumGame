@@ -78,6 +78,7 @@ class AdminGamesTest < ApplicationSystemTestCase
     DatabaseCleaner.cleaning do
       game = create_game
       user = create_game_user(game_id: game.id, admin: true)
+      visit new_user_turn_path(user_token: user.token)
 
       visit admin_games_path
       assert_no_selector "a", text: "resume"

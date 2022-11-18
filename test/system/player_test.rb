@@ -131,7 +131,8 @@ class PlayerSystemTest < ApplicationSystemTestCase
     visit new_user_turn_path(user_token: user.token)
     assert_current_path new_user_turn_path(user_token: user.token)
 
-    game.toggle_paused
+    game.paused = !game.paused
+    game.save
 
     visit new_user_turn_path(user_token: user.token)
     assert_current_path user_turns_path(user_token: user.token)

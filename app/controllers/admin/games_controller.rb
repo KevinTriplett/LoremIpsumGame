@@ -57,8 +57,12 @@ module Admin
 
     def toggle_paused
       game = Game.find(params[:id])
-      game.toggle_paused
-      GameMailer.with(game: game).pause_notification.deliver_now if game.paused?
+      game.paused = !game.paused
+      game.paused ? game.stop_turn : game.start_turn
+      game.save!
+      game.paused? ?
+        GameMailer.with(game: game).pause_notification.deliver_now :
+        UserMailer.with(user: game.current_player).turn_notification.deliver_now
       flash[:notice] = "Game #{game.name} has #{game.paused? ? "paused" : "resumed"}"
       redirect_to admin_games_url
     end

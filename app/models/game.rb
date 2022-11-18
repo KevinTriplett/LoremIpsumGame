@@ -21,24 +21,16 @@ class Game < ActiveRecord::Base
     self.started ||= now
     self.turn_start = now
     self.turn_end = now + turn_hours.hours
-    save
+  end
+
+  def stop_turn
+    self.turn_start = self.turn_end = nil
   end
 
   def pause_this_round?
     pause_rounds > 0 &&
     round < num_rounds && # not last round
     round % pause_rounds == 0
-  end
-
-  def toggle_paused
-    self.paused = !paused
-    if paused?
-      self.turn_start = self.turn_end = nil
-    else
-      start_turn
-      UserMailer.with(user: current_player).turn_notification.deliver_now
-    end
-    save
   end
 
   def ended?
@@ -187,9 +179,7 @@ class Game < ActiveRecord::Base
 
   def self.delete_unused_pads(del)
     game_pads = Game.all.collect(&:token)
-    puts "---------------"
     puts "active game_pads: #{game_pads.inspect}"
-    puts "---------------"
 
     client = EtherpadLite.client(Rails.configuration.etherpad_url, Rails.configuration.etherpad_api_key)
     pads = client.listAllPads

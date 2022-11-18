@@ -350,19 +350,18 @@ class TurnOperationTest < MiniTest::Spec
           game.reload
           assert previous_round == game.round - 1
           previous_round = game.round
-          email_to_user = [game.current_player.email]
           email = ActionMailer::Base.deliveries.last
           if game.round > game.num_rounds
             assert !game.paused?
             assert_emails 5
             assert_equal email.subject, "Lorem Ipsum - It's Done! Time to Celebrate!"
             assert_equal email.to, [game.users.order(id: :asc).last.email]
-            assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
-          elsif previous_round % game.pause_rounds > 0
+            assert_nil email.cc
+          elsif !game.pause_this_round?
             assert !game.paused?
             assert_emails 3
             assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"
-            assert_equal email.to, email_to_user
+            assert_equal email.to, [game.current_player.email]
             assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           else
             assert game.paused?
@@ -372,12 +371,6 @@ class TurnOperationTest < MiniTest::Spec
             assert_nil email.cc
             assert_nil game.turn_start
             assert_nil game.turn_end
-            
-            game.toggle_paused
-            game.reload
-            assert !game.paused?
-            assert game.turn_start
-            assert game.turn_end
           end
           ActionMailer::Base.deliveries.clear
         end
@@ -406,11 +399,12 @@ class TurnOperationTest < MiniTest::Spec
           if game.round > game.num_rounds
             assert_emails 5
             assert_equal email.subject, "Lorem Ipsum - It's Done! Time to Celebrate!"
+            assert_nil email.cc
           else
             assert_emails 3
             assert_equal email.subject, "Lorem Ipsum - Yay! It's Your Turn"
+            assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           end
-          assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
           ActionMailer::Base.deliveries.clear
         end
       end

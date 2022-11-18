@@ -24,7 +24,7 @@ class UserMailer < ApplicationMailer
 
   def game_ended
     init_locals_and_headers
-    mail(to: @user.email, cc: @admins, subject: "Lorem Ipsum - It's Done! Time to Celebrate!")
+    mail(to: @user.email, subject: "Lorem Ipsum - It's Done! Time to Celebrate!")
   end
 
   def turn_auto_finished

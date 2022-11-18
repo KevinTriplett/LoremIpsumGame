@@ -15,8 +15,8 @@ class Turn::Operation::Create < Trailblazer::Operation
     end
 
     def start_turn_if_not_started(ctx, model:, **)
-      return true if model.game.turn_start
-      model.game.start_turn
+      model.game.turn_start ? true : model.game.start_turn
+      model.game.save
     end
   end
   
@@ -42,21 +42,21 @@ class Turn::Operation::Create < Trailblazer::Operation
     game = model.game
     if game.round_finished?
       game.shuffle_players if game.no_passes_this_round?
-      game.toggle_paused if game.pause_this_round? && !game.paused?
-      game.round += 1
-      game.users.each(&:reset_reminded)
       game.current_player_id = game.players.first.id
+      game.users.each(&:reset_reminded)
+      game.round += 1
+      game.paused = game.pause_this_round?
     else
-      game.start_turn
       game.current_player_id = game.next_player_id
     end
+    game.paused ? game.stop_turn : game.start_turn
     game.current_player.reset_reminded
+    ctx[:model].game = game
     game.save
   end
 
   def notify(ctx, model:, **)
     game = model.game
-    game.reload
     return true if game.ended?
     if game.paused?
       GameMailer.with(game: game).pause_notification.deliver_now

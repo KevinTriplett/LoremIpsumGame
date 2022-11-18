@@ -149,7 +149,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
 
       assert_equal email.to, [user.email]
-      assert_equal email.cc.to_set, game.get_admins.pluck(:email).to_set
+      assert_nil email.cc
       assert_nil email.bcc
       assert_equal email.from, ['noreply@loremipsumgame.com']
       assert_equal email.subject, "Lorem Ipsum - It's Done! Time to Celebrate!"
