@@ -20,12 +20,6 @@ DatabaseCleaner.strategy = :transaction
 DatabaseCleaner.clean_with :truncation
 
 ############################
-# SystemTestCase testing - needed?
-# require 'capybara/rails'
-# require 'capybara/minitest'
-# Capybara.server = :puma, { Silent: true }
-
-############################
 # app-specific test helpers
 
 NAMES = %w(john jane eric lee harvey sam kevin hank)
